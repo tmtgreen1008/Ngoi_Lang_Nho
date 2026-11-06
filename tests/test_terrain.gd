@@ -24,16 +24,16 @@ func run() -> void:
 	var home: Node = sm.current_map
 	check("map nhà lát cỏ (floor_tile = GRASS)", home.floor_tile == terrain.Tile.GRASS)
 	check("nhà: ô xa đường là cỏ, có ô cỏ hoa", home._tile_for_cell(Vector2i(1, 0)) == terrain.Tile.GRASS and home._tile_for_cell(Vector2i(0, 0)) == terrain.Tile.GRASS_FLOWERS)
-	check("nhà: đường đất nối spawn (18,8) với lối ra phía đông", home._tile_for_cell(Vector2i(18, 8)) == terrain.Tile.PATH and home._tile_for_cell(Vector2i(25, 4)) == terrain.Tile.PATH and home._tile_for_cell(Vector2i(25, 10)) == terrain.Tile.PATH)
+	check("nhà: đường đất nối cửa nhà (19,6), lối mòn tới vườn (16,8) và ba cổng phía đông", home._tile_for_cell(Vector2i(19, 6)) == terrain.Tile.PATH and home._tile_for_cell(Vector2i(16, 8)) == terrain.Tile.PATH and home._tile_for_cell(Vector2i(23, 5)) == terrain.Tile.PATH and home._tile_for_cell(Vector2i(23, 8)) == terrain.Tile.PATH and home._tile_for_cell(Vector2i(23, 11)) == terrain.Tile.PATH)
 	check("nhà: hoa ở vị trí cố định (gọi hai lần cho cùng kết quả)", home._tile_for_cell(Vector2i(3, 5)) == home._tile_for_cell(Vector2i(3, 5)))
 
-	# toạ độ chuột -> ô vườn: vườn đặt tại ô (2,3) = pixel (96,144), không phóng to
+	# toạ độ chuột -> ô vườn: vườn đặt tại ô (4,5) = pixel (192,240), không phóng to
 	var view: Node = home.view
 	check("vườn không bị phóng to (scale 1)", view.scale == Vector2.ONE)
-	check("vườn căn theo lưới ô: (96,144)", view.position == Vector2(96, 144))
-	check("chuột ở góc ô vườn (0,0)", view.world_to_cell(Vector2(96 + 5, 144 + 5)) == Vector2i(0, 0))
-	check("chuột ở ô vườn (3,2)", view.world_to_cell(Vector2(96 + 48 * 3 + 5, 144 + 48 * 2 + 5)) == Vector2i(3, 2))
-	check("chuột ở ô vườn (9,6) (ô cuối)", view.world_to_cell(Vector2(96 + 48 * 9 + 47, 144 + 48 * 6 + 47)) == Vector2i(9, 6))
+	check("vườn căn theo lưới ô: (192,240)", view.position == Vector2(192, 240))
+	check("chuột ở góc ô vườn (0,0)", view.world_to_cell(Vector2(192 + 5, 240 + 5)) == Vector2i(0, 0))
+	check("chuột ở ô vườn (3,2)", view.world_to_cell(Vector2(192 + 48 * 3 + 5, 240 + 48 * 2 + 5)) == Vector2i(3, 2))
+	check("chuột ở ô vườn (9,6) (ô cuối)", view.world_to_cell(Vector2(192 + 48 * 9 + 47, 240 + 48 * 6 + 47)) == Vector2i(9, 6))
 
 	home.controller.set_tool(0)
 	home.controller.use_tool_at(Vector2i(2, 2))
@@ -48,21 +48,21 @@ func run() -> void:
 	check("cây mới gieo hiện khung mầm (khung 0) của ảnh lúa", sprite.region_rect == Rect2(0, 0, 48, 48) and sprite.texture.resource_path.ends_with("rice_stages.png"))
 	await shot("terrain_home.png")
 
-	player.position = Vector2(1250, 220)
+	player.position = home.get_exit_position("grocery_store.tscn")
 	await wait(1.0)
 	check("Tạp hóa lát sàn gỗ", sm.current_map.floor_tile == terrain.Tile.WOOD_FLOOR)
 	await shot("terrain_grocery.png")
 
 	player.position = Vector2(30, 360)
 	await wait(1.0)
-	player.position = Vector2(1250, 520)
+	player.position = sm.current_map.get_exit_position("morning_market.tscn")
 	await wait(1.0)
 	check("Chợ lát nền đất chợ", sm.current_map.floor_tile == terrain.Tile.MARKET_GROUND)
 	await shot("terrain_market.png")
 
 	player.position = Vector2(30, 360)
 	await wait(1.0)
-	player.position = Vector2(1250, 370)
+	player.position = sm.current_map.get_exit_position("entertainment.tscn")
 	await wait(1.0)
 	check("Khu giải trí lát sàn ca-rô", sm.current_map.floor_tile == terrain.Tile.CAFE_FLOOR)
 	await shot("terrain_entertainment.png")

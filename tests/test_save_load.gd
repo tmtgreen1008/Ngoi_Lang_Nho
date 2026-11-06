@@ -47,7 +47,7 @@ func run() -> void:
 		tm.sleep_until_morning()
 	await wait(0.2)
 	check("tự lưu khi sang ngày mới", sv.has_save(&"autosave") and int(sv.get_slot_info(&"autosave").get("day", 0)) == 3)
-	player.position = Vector2(1250, 520)
+	player.position = sm.current_map.get_exit_position("morning_market.tscn")
 	await wait(1.0)
 	player.position = Vector2(700, 420)
 	await wait(0.2)
@@ -71,7 +71,7 @@ func run() -> void:
 	var home: Node = sm.current_map
 	home.controller.set_tool(0)
 	home.controller.use_tool_at(Vector2i(2, 2))
-	player.position = Vector2(1250, 220)
+	player.position = sm.current_map.get_exit_position("grocery_store.tscn")
 	await wait(1.0)
 	check("trước khi nạp: đang ở Tạp hóa, ngày 6", sm.current_scene_path.ends_with("grocery_store.tscn") and tm.day == 6)
 

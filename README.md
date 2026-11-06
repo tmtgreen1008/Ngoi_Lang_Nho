@@ -44,7 +44,7 @@ khi chuyển cảnh.
 | Vật phẩm và kho đồ | Vật phẩm là `Resource`; kho theo ô; cộng dồn, tràn kho, kéo/thả trong một kho và giữa hai kho |
 | Nông trại | Cuốc, gieo, cây lớn theo ngày, héo khi sang mùa không hợp, thu hoạch vào kho |
 | Giao thương | Một giao diện cửa hàng dùng cho mọi người bán; tiệm tạp hóa hàng cố định, chợ hàng ngẫu nhiên mỗi ngày; giờ mở cửa |
-| Bản đồ | Nhà, Tiệm Tạp Hóa, Chợ Quê, Khu Giải trí; chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
+| Bản đồ | Sân nhà (viền rặng cây, đường đất bo góc, biển chỉ đường), trong nhà (giường), Tiệm Tạp Hóa, Chợ Quê, Khu Giải trí; chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
 | Mini-game | Quán Net (bắn mục tiêu), Quán Bida (canh lực); trả kết quả (tiền, thời gian) về thế giới chính |
 | Lưu/nạp | File JSON, ghi an toàn, tự lưu khi sang ngày mới, màn hình chính "Ván mới / Tiếp tục" |
 
@@ -170,6 +170,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_inventory` | Thêm/bớt, tràn kho, kéo/thả, chuyển kho, lưu/nạp qua JSON |
 | `test_farm_field` | Cuốc, gieo, lớn theo ngày, héo khi đổi mùa, thu hoạch, công cụ nối kho đồ |
 | `test_shop_logic` | Kho hàng theo ngày (xác định), mua/bán, giờ mở cửa, các lỗi |
+| `test_home` | Bố cục sân nhà (vùng chơi, rặng cây, cụm cây, bóng đổ, biển chỉ đường, bo góc đường), vào nhà, ngủ trong nhà |
 | `test_art` | Icon vật phẩm, ảnh cây theo giai đoạn, ảnh người bán, hoạt ảnh Player, đồ vật chặn đường, giao diện giấy |
 | `test_terrain` | Sheet nền đất 48x48, lát nền bốn map, đổi toạ độ chuột sang ô vườn |
 | `test_inventory_ui` | Giao diện kho, kéo/thả giữa hai kho |
@@ -187,7 +188,7 @@ nên test không được nhắc tên class dùng autoload bằng `X.new()` hay 
 
 | | |
 |---|---|
-| ![Màn hình chính](docs/screenshots/start_menu_with_save.png) | ![Khu nhà](docs/screenshots/art_home.png) |
+| ![Màn hình chính](docs/screenshots/start_menu_with_save.png) | ![Khu nhà](docs/screenshots/home_layout.png) |
 | ![Cửa hàng](docs/screenshots/art_shop.png) | ![Khu giải trí](docs/screenshots/art_entertainment.png) |
 | ![Quán Net](docs/screenshots/art_aim.png) | ![Quán Bida](docs/screenshots/art_billiards.png) |
 | ![Kéo thả kho đồ](docs/screenshots/inventory_ui_after.png) | ![Menu tạm dừng](docs/screenshots/art_pause.png) |

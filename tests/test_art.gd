@@ -76,15 +76,15 @@ func run() -> void:
 
 	# --- đồ vật chặn đường: nhà (map nhà) ---
 	var home: Node = sm.current_map
-	player.position = Vector2(930, 330)
+	player.position = Vector2(890, 330)
 	await wait(0.2)
 	Input.action_press("move_up")
 	await wait(1.5)
 	Input.action_release("move_up")
-	check("nhà chặn Player: không đi xuyên qua thân nhà (dừng ở y >= 200)", player.position.y >= 195.0 and player.position.y < 330.0)
+	check("nhà chặn Player: không đi xuyên qua thân nhà (dừng ở y >= 228)", player.position.y >= 228.0 and player.position.y < 330.0)
 
 	# --- Tạp hóa: quầy chặn, NPC dùng ảnh từ dữ liệu ---
-	player.position = Vector2(1250, 220)
+	player.position = home.get_exit_position("grocery_store.tscn")
 	await wait(1.0)
 	check("sang Tạp hóa", sm.current_scene_path.ends_with("grocery_store.tscn"))
 	var npc: Node = find_by_class(sm.current_map, &"VendorNPC")
@@ -107,7 +107,7 @@ func run() -> void:
 	# --- Khu giải trí: trạm có ảnh, mini-game dùng ảnh ---
 	player.position = Vector2(30, 360)
 	await wait(1.0)
-	player.position = Vector2(1250, 370)
+	player.position = sm.current_map.get_exit_position("entertainment.tscn")
 	await wait(1.0)
 	check("sang Khu giải trí", sm.current_scene_path.ends_with("entertainment.tscn"))
 	var station: Node = find_by_class(sm.current_map, &"ArcadeStation")

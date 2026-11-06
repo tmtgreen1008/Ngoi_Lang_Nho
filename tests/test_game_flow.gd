@@ -20,17 +20,17 @@ func run() -> void:
 	var lua: ItemData = db.get_item(&"lua")
 
 	check("ván mới vào map nhà", sm.current_scene_path == "res://maps/home/home.tscn")
-	check("Player xuất hiện ở spawn mặc định", player.position.distance_to(Vector2(900, 400)) < 5)
+	check("Player xuất hiện ở spawn mặc định", player.position.distance_to(sm.current_map.get_spawn_position(&"default")) < 5)
 	check("kết thúc hiệu ứng chuyển cảnh", not sm.is_transitioning)
 	check("đồ khởi đầu: 10 hạt giống, 100 đ", player.inventory.count_of(seed_item) == 10 and economy.money == 100)
 
 	# --- đi lại và tường ---
-	player.position = Vector2(30, 100)
+	player.position = Vector2(170, 300)
 	Input.action_press("move_left")
 	await wait(1.0)
 	Input.action_release("move_left")
-	check("tường chặn Player ở mép trái", player.position.x >= 0.0 and player.position.x < 30.0)
-	player.position = Vector2(900, 400)
+	check("tường chặn Player ở mép trái vùng chơi (x >= 144)", player.position.x >= 144.0 and player.position.x < 170.0)
+	player.position = sm.current_map.get_spawn_position(&"default")
 
 	# --- vườn ở nhà ---
 	var home: Node = sm.current_map
@@ -43,7 +43,7 @@ func run() -> void:
 	await shot("flow_home_planted.png")
 
 	# --- đi Tạp hóa ---
-	player.position = Vector2(1250, 220)
+	player.position = home.get_exit_position("grocery_store.tscn")
 	await wait(1.0)
 	check("sang Tiệm Tạp Hóa", sm.current_scene_path.ends_with("grocery_store.tscn"))
 	check("Player ở spawn của map Tạp hóa", player.position.distance_to(Vector2(160, 360)) < 5)
@@ -73,7 +73,7 @@ func run() -> void:
 	player.position = Vector2(30, 360)
 	await wait(1.0)
 	check("về lại map nhà", sm.current_scene_path.ends_with("home.tscn"))
-	check("Player ở spawn from_grocery", player.position.distance_to(Vector2(1150, 220)) < 5)
+	check("Player ở spawn from_grocery", player.position.distance_to(sm.current_map.get_spawn_position(&"from_grocery")) < 5)
 	var home2: Node = sm.current_map
 	var plot: Variant = home2.field.get_plot(Vector2i(1, 1))
 	check("cây vẫn còn sau chuyến đi", plot != null and plot.is_planted())
@@ -84,7 +84,7 @@ func run() -> void:
 	check("thu hoạch được 3 lúa", home2.controller.use_tool_at(Vector2i(1, 1)) and player.inventory.count_of(lua) == 3)
 
 	# --- sang Chợ, yêu cầu chuyển map thứ hai khi đang chuyển bị bỏ qua ---
-	player.position = Vector2(1250, 520)
+	player.position = home2.get_exit_position("morning_market.tscn")
 	await wait(0.2)
 	bus.scene_change_requested.emit("res://maps/grocery_store/grocery_store.tscn", &"default")
 	await wait(1.0)

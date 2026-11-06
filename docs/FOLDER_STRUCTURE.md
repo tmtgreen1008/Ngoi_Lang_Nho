@@ -11,6 +11,7 @@ res://
 ├─ core/                       # Hạ tầng dùng chung, không phụ thuộc gameplay
 │  ├─ terrain_tiles.gd         # [có] Sheet nền đất 48x48 (TerrainTiles): enum ô, tileset, vùng nguồn
 │  ├─ ui_theme.gd              # [có] Giao diện giấy và gỗ (UiTheme): khung 9-slice, nút 3 trạng thái, icon HUD
+│  ├─ shadow.gd                # [có] Bóng đổ bầu dục dưới chân nhân vật, nhà, cây (Shadow)
 │  ├─ autoload/
 │  │  ├─ event_bus.gd          # [có] Kênh signal toàn cục
 │  │  ├─ time_manager.gd       # [có] Đồng hồ, lịch, mùa
@@ -36,12 +37,14 @@ res://
 ├─ entities/                   # Thực thể trong thế giới = scene + script riêng
 │  ├─ player/                  # [có] player.tscn + player.gd (di chuyển, kho đồ, nhắm đối tượng)
 │  ├─ arcade/                  # [có] arcade_station.tscn (trạm chơi mini-game, bấm E)
+│  ├─ signpost/                # [có] signpost.gd: biển chỉ đường gỗ, chữ vẽ bằng font game
 │  ├─ npc/
 │  └─ vendor/                  # [có] vendor_npc.tscn (dùng chung cho tạp hóa và thương lái)
 │
 ├─ maps/                       # Mỗi map là một scene độc lập
-│  ├─ map_base.gd              # [có] Lớp nền map: nền, tường, add_spawn(), add_exit()
-│  ├─ home/                    # [có] Vườn (FarmField), giường, lối ra Tạp hóa/Chợ
+│  ├─ map_base.gd              # [có] Lớp nền map: vùng chơi, rặng cây, đường bo góc, đốm cỏ, cụm cây, bóng, biển chỉ đường
+│  ├─ home/                    # [có] Sân nhà (viền cây, vườn, đường đất bo góc, biển chỉ đường, cửa vào nhà)
+│  ├─ house_interior/          # [có] Trong nhà: phòng có giường để ngủ
 │  ├─ entertainment/           # [có] Khu Giải trí: trạm Quán Net và Quán Bida
 │  ├─ grocery_store/           # [có] Mở 6h–21h, hàng cố định
 │  └─ morning_market/          # [có] Mở 5h–11h, hàng RNG theo ngày
@@ -69,7 +72,7 @@ res://
 │  ├─ audio/
 │  └─ fonts/
 │
-├─ tests/                      # [có] test_base.gd + 12 bài test + run_all.sh (xem README)
+├─ tests/                      # [có] test_base.gd + 13 bài test + run_all.sh (xem README)
 ├─ tools/                      # [có] slice_sheet.gd, process_assets.sh (ảnh AI -> asset), assign_art.gd (gắn ảnh vào .tres)
 └─ docs/                       # Tài liệu đồ án, screenshots/
 ```

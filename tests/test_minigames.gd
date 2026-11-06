@@ -23,7 +23,7 @@ func run() -> void:
 	bus.minigame_finished.connect(func(id: StringName, r: Dictionary) -> void: results.append([id, r]))
 	tm.start()  # đồng hồ đang chạy để kiểm tra việc dừng/bật lại
 
-	player.position = Vector2(1250, 370)
+	player.position = sm.current_map.get_exit_position("entertainment.tscn")
 	await wait(1.0)
 	check("Nhà có lối ra Khu Giải trí", sm.current_scene_path.ends_with("entertainment.tscn"))
 	check("Player ở spawn của Khu Giải trí", player.position.distance_to(Vector2(160, 360)) < 5)
