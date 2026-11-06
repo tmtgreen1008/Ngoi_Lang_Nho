@@ -78,7 +78,11 @@ func advance_minutes(minutes: int) -> void:
 	while remaining > 0:
 		var step: int = mini(remaining, minutes_per_tick)
 		remaining -= step
+		var day_before: int = day
 		_advance_clock(step)
+		# Thức quá nửa đêm thì ngày kết thúc: phút còn dư bị bỏ, sáng mai luôn bắt đầu đúng giờ dậy.
+		if day != day_before:
+			break
 
 
 ## Ngủ: kết thúc ngày hiện tại và bắt đầu ngày mới lúc [member wake_up_hour].

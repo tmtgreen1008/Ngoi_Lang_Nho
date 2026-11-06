@@ -64,7 +64,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if visible:
 		close()
-	elif not _shop_open and not _minigame_open and not SceneManager.is_transitioning:
+	elif SceneManager.current_map != null and not _shop_open and not _minigame_open and not SceneManager.is_transitioning:
 		open()
 	else:
 		return

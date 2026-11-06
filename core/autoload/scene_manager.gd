@@ -27,7 +27,8 @@ func _ready() -> void:
 	layer.layer = 100
 	add_child(layer)
 	_fade = ColorRect.new()
-	_fade.color = Color(0, 0, 0, 1)
+	# Trong suốt lúc khởi động: nếu đen đặc sẽ che mất màn hình chính (layer thấp hơn).
+	_fade.color = Color(0, 0, 0, 0)
 	_fade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(_fade)
@@ -53,7 +54,10 @@ func change_scene(scene_path: String, spawn_id: StringName = DEFAULT_SPAWN, capt
 		return
 	is_transitioning = true
 
-	if current_map != null:
+	if current_map == null:
+		# Vào map đầu tiên (từ màn hình chính): che đen ngay để map hiện ra rồi mờ dần.
+		_fade.color.a = 1.0
+	else:
 		await _fade_to(1.0)
 		if capture_state:
 			EventBus.world_state_save_requested.emit(current_scene_path)

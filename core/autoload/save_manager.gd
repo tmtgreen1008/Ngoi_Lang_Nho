@@ -40,6 +40,23 @@ func get_slot_info(slot: StringName = DEFAULT_SLOT) -> Dictionary:
 	return result["data"].get("meta", {})
 
 
+## Slot có bản lưu hợp lệ mới nhất (so sánh thời điểm lưu), hoặc &"" nếu chưa có bản nào.
+## Dùng cho nút "Tiếp tục" ở màn hình chính.
+func get_latest_slot() -> StringName:
+	var best_slot: StringName = &""
+	var best_time: String = ""
+	for slot: StringName in [DEFAULT_SLOT, AUTOSAVE_SLOT]:
+		var info: Dictionary = get_slot_info(slot)
+		if info.is_empty():
+			continue
+		# Chuỗi ISO "YYYY-MM-DDTHH:MM:SS" so sánh theo thứ tự chữ cái cũng là thứ tự thời gian.
+		var saved_at: String = String(info.get("saved_at", ""))
+		if best_slot == &"" or saved_at > best_time:
+			best_slot = slot
+			best_time = saved_at
+	return best_slot
+
+
 ## Lưu ván chơi hiện tại vào [param slot]. Trả về lỗi hoặc "".
 func save_game(slot: StringName = DEFAULT_SLOT) -> String:
 	if _busy or SceneManager.is_transitioning:
@@ -85,8 +102,20 @@ func load_game(slot: StringName = DEFAULT_SLOT) -> String:
 	TimeManager.load_save_data(data.get("time", {}))
 
 	# Không ghi trạng thái map cũ (sẽ đè lên dữ liệu vừa nạp).
+	# Đăng ký lắng nghe TRƯỚC khi gọi: khi chưa có map nào (nạp từ màn hình chính),
+	# change_scene không có bước làm mờ trước nên phát scene_changed ngay trong lời gọi,
+	# nếu chỉ await sau đó sẽ lỡ tín hiệu và chờ mãi.
+	var map_loaded: Array = [false]
+	var mark_loaded: Callable = func(_path: String) -> void: map_loaded[0] = true
+	EventBus.scene_changed.connect(mark_loaded, CONNECT_ONE_SHOT)
 	SceneManager.change_scene(map_path, SceneManager.DEFAULT_SPAWN, false)
-	await EventBus.scene_changed
+	if not map_loaded[0]:
+		if not SceneManager.is_transitioning:
+			# change_scene từ chối (không nạp được scene): không chờ vô ích.
+			EventBus.scene_changed.disconnect(mark_loaded)
+			_busy = false
+			return "Không nạp được map của bản lưu."
+		await EventBus.scene_changed
 	var position_data: Array = player_data.get("position", [])
 	if player != null and position_data.size() == 2:
 		player.global_position = Vector2(float(position_data[0]), float(position_data[1]))
