@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_iau6v"]
+
+[resource]
+script = ExtResource("1_iau6v")
+id = &"mi_tom"
+display_name = "Mì tôm"
+description = "Gói mì ăn liền, no nhanh."
+category = 2
+base_price = 8

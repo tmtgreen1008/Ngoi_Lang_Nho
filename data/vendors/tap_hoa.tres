@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="VendorData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_h7r1v"]
+[ext_resource type="Resource" path="res://data/items/mi_tom.tres" id="2_f7gat"]
+[ext_resource type="Resource" path="res://data/items/cam_ga.tres" id="3_0j37l"]
+[ext_resource type="Resource" path="res://data/items/xa_phong.tres" id="4_b3vlj"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_lua.tres" id="5_7r3qq"]
+[ext_resource type="Script" path="res://core/resources/vendor_data.gd" id="6_vgpgk"]
+
+[resource]
+script = ExtResource("6_vgpgk")
+id = &"tap_hoa"
+display_name = "Tiệm Tạp Hóa bà Tư"
+fixed_items = Array[ExtResource("1_h7r1v")]([ExtResource("2_f7gat"), ExtResource("3_0j37l"), ExtResource("4_b3vlj"), ExtResource("5_7r3qq")])
+buys_from_player = false

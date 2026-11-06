@@ -12,6 +12,7 @@ res://
 │  │  ├─ event_bus.gd          # [có] Kênh signal toàn cục
 │  │  ├─ time_manager.gd       # [có] Đồng hồ, lịch, mùa
 │  │  ├─ item_database.gd      # [có] Tra ItemData theo id (tự quét data/items, data/crops)
+│  │  ├─ economy_manager.gd    # [có] Tiền của người chơi
 │  │  ├─ world_state_manager.gd   # [sau] Lưu trạng thái từng map khi chuyển scene
 │  │  ├─ scene_manager.gd         # [sau] Chuyển map, điểm spawn
 │  │  └─ save_manager.gd          # [sau] Ghi/đọc file save
@@ -19,17 +20,19 @@ res://
 │     ├─ item_data.gd          # [có]
 │     ├─ crop_item_data.gd     # [có]
 │     ├─ inventory_slot.gd     # [có] Một ô kho (item + số lượng), dữ liệu runtime
-│     └─ vendor_data.gd        # [sau] Danh sách hàng, giờ mở cửa, hệ số giá
+│     ├─ vendor_data.gd        # [có] Giờ mở cửa, hàng cố định/ngẫu nhiên, hệ số giá
+│     └─ vendor_stock_entry.gd # [có] Một dòng hàng runtime (item + số lượng)
 │
 ├─ components/                 # Node độc lập gắn vào Entity (Composition over Inheritance)
 │  ├─ inventory/               # [có] inventory_component.gd
 │  ├─ farming/                 # [có] farm_field (logic), farm_view (vẽ), farm_tool_controller, farm_plot, farm_demo (main scene tạm)
+│  ├─ vendor/                  # [có] vendor_component.gd (kho hàng ngày, mua/bán)
 │  └─ interactable/            # InteractableComponent
 │
 ├─ entities/                   # Thực thể trong thế giới = scene + script riêng
 │  ├─ player/
 │  ├─ npc/
-│  └─ vendor/                  # Bà chủ tạp hóa, thương lái ở chợ
+│  └─ vendor/                  # Bà chủ tạp hóa, thương lái ở chợ (NPC gắn VendorComponent)
 │
 ├─ maps/                       # Mỗi map là một scene độc lập
 │  ├─ home/                    # Nhà, vườn (TileMap), chuồng trại
@@ -42,7 +45,7 @@ res://
 │
 ├─ ui/                         # Giao diện, chỉ nghe EventBus
 │  ├─ hud/                     # Đồng hồ, tiền, thanh nhanh
-│  ├─ shop/                    # shop_ui.tscn dùng chung cho mọi Vendor
+│  ├─ shop/                    # [có] shop_ui.tscn dùng chung cho mọi Vendor, shop_demo (main scene tạm)
 │  └─ inventory/               # [có] inventory_ui, inventory_slot_ui, inventory_demo (main scene tạm)
 │
 ├─ data/                       # File .tres: toàn bộ số liệu game (không hardcode trong code)

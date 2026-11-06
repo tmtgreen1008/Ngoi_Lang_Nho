@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="VendorData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_hg7ru"]
+[ext_resource type="Resource" path="res://data/items/rau_muong.tres" id="2_hc2ld"]
+[ext_resource type="Resource" path="res://data/items/ca_chua.tres" id="3_j0klp"]
+[ext_resource type="Resource" path="res://data/items/bap_cai.tres" id="4_30g61"]
+[ext_resource type="Resource" path="res://data/items/trung_ga.tres" id="5_vegqc"]
+[ext_resource type="Resource" path="res://data/items/dua_leo.tres" id="6_hed7f"]
+[ext_resource type="Script" path="res://core/resources/vendor_data.gd" id="7_7i6k7"]
+
+[resource]
+script = ExtResource("7_7i6k7")
+id = &"thuong_lai_rau"
+display_name = "Sạp rau chú Năm"
+open_hour = 5.0
+close_hour = 11.0
+random_pool = Array[ExtResource("1_hg7ru")]([ExtResource("2_hc2ld"), ExtResource("3_j0klp"), ExtResource("4_30g61"), ExtResource("5_vegqc"), ExtResource("6_hed7f")])
+daily_random_count = 3
+buy_multiplier = 1.2
+sell_multiplier = 0.6
+buyable_categories = Array[int]([1, 2])

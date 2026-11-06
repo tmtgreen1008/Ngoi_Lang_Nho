@@ -5,13 +5,14 @@ config_version=5
 
 config/name="Hương Quê"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-run/main_scene="res://components/farming/farm_demo.tscn"
+run/main_scene="res://ui/shop/shop_demo.tscn"
 
 [autoload]
 
 EventBus="*res://core/autoload/event_bus.gd"
 TimeManager="*res://core/autoload/time_manager.gd"
 ItemDatabase="*res://core/autoload/item_database.gd"
+EconomyManager="*res://core/autoload/economy_manager.gd"
 
 [display]
 

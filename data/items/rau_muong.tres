@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_ajog6"]
+
+[resource]
+script = ExtResource("1_ajog6")
+id = &"rau_muong"
+display_name = "Rau muống"
+description = "Bó rau muống tươi."
+category = 1
+base_price = 6
