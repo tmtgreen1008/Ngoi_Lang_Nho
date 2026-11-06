@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_item"]
+
+[resource]
+script = ExtResource("1_item")
+id = &"lua"
+display_name = "Lúa"
+description = "Lúa mới gặt, đem ra chợ bán hoặc xay thành gạo."
+category = 1
+base_price = 30
+is_stackable = true
+max_stack_size = 99

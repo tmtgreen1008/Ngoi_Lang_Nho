@@ -1,0 +1,13 @@
+# Godot 4
+.godot/
+export.cfg
+export_credentials.cfg
+*.translation
+
+# Mono (neu sau nay dung C#)
+.mono/
+
+# He dieu hanh / editor
+.DS_Store
+Thumbs.db
+.vscode/
