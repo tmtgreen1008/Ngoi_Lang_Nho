@@ -38,6 +38,8 @@ signal inventory_changed(owner_id: StringName)
 
 signal money_changed(new_amount: int, delta: int)
 ## Mở/đóng giao diện cửa hàng. [param vendor] là VendorData (Resource, tạo ở bước sau).
+## Yêu cầu mở cửa hàng (VendorNPC phát). [param vendor] là VendorComponent, [param buyer] là InventoryComponent của người mua; ShopUI nghe.
+signal shop_open_requested(vendor: Node, buyer: Node)
 signal shop_opened(vendor: Resource)
 signal shop_closed(vendor: Resource)
 ## Giao dịch hoàn tất. [param is_buying] = true nếu người chơi mua.
@@ -49,6 +51,8 @@ signal transaction_completed(item: ItemData, amount: int, total_price: int, is_b
 signal interaction_started(interactable: Node)
 signal interaction_ended(interactable: Node)
 signal dialogue_requested(speaker_id: StringName, dialogue_id: StringName)
+## Gợi ý tương tác thay đổi (Player phát). Chuỗi rỗng = ẩn gợi ý. HUD nghe.
+signal interaction_prompt_changed(text: String)
 
 # --- Nông trại & chăn nuôi ------------------------------------------------------
 

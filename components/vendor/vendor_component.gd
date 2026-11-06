@@ -10,7 +10,12 @@ extends Node
 ## Kho hàng thay đổi (đổi ngày hoặc có giao dịch).
 signal stock_changed
 
-@export var data: VendorData
+@export var data: VendorData:
+	set(value):
+		data = value
+		# Đổi dữ liệu sau khi đã vào cây (vd: NPC gán data) thì dựng lại kho hàng.
+		if is_node_ready():
+			generate_daily_stock()
 
 ## Kho hàng hiện tại: hàng cố định trước, rồi hàng ngẫu nhiên của ngày.
 var stock: Array[VendorStockEntry] = []

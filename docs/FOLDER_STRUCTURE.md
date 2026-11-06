@@ -27,14 +27,15 @@ res://
 │  ├─ inventory/               # [có] inventory_component.gd
 │  ├─ farming/                 # [có] farm_field (logic), farm_view (vẽ), farm_tool_controller, farm_plot, farm_demo (main scene tạm)
 │  ├─ vendor/                  # [có] vendor_component.gd (kho hàng ngày, mua/bán)
-│  └─ interactable/            # InteractableComponent
+│  └─ interactable/            # [có] interactable_component.gd (Area2D, signal interacted)
 │
 ├─ entities/                   # Thực thể trong thế giới = scene + script riêng
-│  ├─ player/
+│  ├─ player/                  # [có] player.tscn + player.gd (di chuyển, kho đồ, nhắm đối tượng)
 │  ├─ npc/
-│  └─ vendor/                  # Bà chủ tạp hóa, thương lái ở chợ (NPC gắn VendorComponent)
+│  └─ vendor/                  # [có] vendor_npc.tscn (dùng chung cho tạp hóa và thương lái)
 │
 ├─ maps/                       # Mỗi map là một scene độc lập
+│  ├─ sandbox/                 # [có] map thử nghiệm (main scene tạm)
 │  ├─ home/                    # Nhà, vườn (TileMap), chuồng trại
 │  ├─ grocery_store/           # Mở 6h–21h, hàng cố định
 │  └─ morning_market/          # Mở 5h–11h, hàng RNG theo ngày
@@ -44,7 +45,7 @@ res://
 │  └─ billiards/
 │
 ├─ ui/                         # Giao diện, chỉ nghe EventBus
-│  ├─ hud/                     # Đồng hồ, tiền, thanh nhanh
+│  ├─ hud/                     # [có] hud.gd (giờ, tiền, gợi ý tương tác); thanh nhanh [sau]
 │  ├─ shop/                    # [có] shop_ui.tscn dùng chung cho mọi Vendor, shop_demo (main scene tạm)
 │  └─ inventory/               # [có] inventory_ui, inventory_slot_ui, inventory_demo (main scene tạm)
 │

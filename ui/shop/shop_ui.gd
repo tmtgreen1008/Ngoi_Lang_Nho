@@ -25,7 +25,20 @@ func _ready() -> void:
 	EventBus.money_changed.connect(func(_amount: int, _delta: int) -> void: _refresh())
 	EventBus.inventory_changed.connect(func(_owner: StringName) -> void: _refresh())
 	EventBus.time_ticked.connect(func(_h: int, _m: int) -> void: _refresh())
+	EventBus.shop_open_requested.connect(_on_shop_open_requested)
 	hide()
+
+
+## Esc (ui_cancel) đóng cửa hàng đang mở.
+func _unhandled_input(event: InputEvent) -> void:
+	if visible and event.is_action_pressed("ui_cancel"):
+		close()
+		get_viewport().set_input_as_handled()
+
+
+func _on_shop_open_requested(vendor: Node, buyer: Node) -> void:
+	if vendor is VendorComponent and buyer is InventoryComponent:
+		open(vendor, buyer)
 
 
 ## Mở cửa hàng của [param vendor] cho người chơi có kho [param buyer].
