@@ -16,7 +16,7 @@ res://
 │  │  ├─ economy_manager.gd    # [có] Tiền của người chơi
 │  │  ├─ world_state_manager.gd   # [có] Nhớ trạng thái node "world_persistent" của từng map
 │  │  ├─ scene_manager.gd         # [có] Chuyển map (fade), giữ Player, đặt tại SpawnPoint
-│  │  └─ save_manager.gd          # [sau] Ghi/đọc file save
+│  │  └─ save_manager.gd          # [có] Lưu/nạp JSON (user://saves), tự lưu khi sang ngày
 │  └─ resources/               # Lớp Resource (định nghĩa dữ liệu)
 │     ├─ item_data.gd          # [có]
 │     ├─ crop_item_data.gd     # [có]
@@ -49,6 +49,7 @@ res://
 │
 ├─ ui/                         # Giao diện, chỉ nghe EventBus
 │  ├─ hud/                     # [có] hud.gd (giờ, tiền, gợi ý tương tác); thanh nhanh [sau]
+│  ├─ pause/                   # [có] pause_menu.gd (Esc: Tiếp tục / Lưu / Tải)
 │  ├─ shop/                    # [có] shop_ui.tscn dùng chung cho mọi Vendor, shop_demo (main scene tạm)
 │  └─ inventory/               # [có] inventory_ui, inventory_slot_ui, inventory_demo (main scene tạm)
 │

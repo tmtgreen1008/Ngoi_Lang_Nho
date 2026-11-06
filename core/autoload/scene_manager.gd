@@ -41,8 +41,10 @@ func register_world(world: Node, player: Node2D) -> void:
 
 
 ## Chuyển tới map [param scene_path], đặt Player tại SpawnPoint [param spawn_id].
+## [param capture_state] = false khi nạp game: không ghi trạng thái map cũ, vì sẽ
+## đè lên trạng thái vừa nạp từ file.
 ## Bỏ qua nếu đang chuyển dở. Hàm chạy bất đồng bộ, không cần await.
-func change_scene(scene_path: String, spawn_id: StringName = DEFAULT_SPAWN) -> void:
+func change_scene(scene_path: String, spawn_id: StringName = DEFAULT_SPAWN, capture_state: bool = true) -> void:
 	if is_transitioning or _world == null:
 		return
 	var packed: PackedScene = load(scene_path) as PackedScene
@@ -53,7 +55,8 @@ func change_scene(scene_path: String, spawn_id: StringName = DEFAULT_SPAWN) -> v
 
 	if current_map != null:
 		await _fade_to(1.0)
-		EventBus.world_state_save_requested.emit(current_scene_path)
+		if capture_state:
+			EventBus.world_state_save_requested.emit(current_scene_path)
 		_world.remove_child(current_map)
 		current_map.queue_free()
 		current_map = null

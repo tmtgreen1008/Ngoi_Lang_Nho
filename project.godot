@@ -15,6 +15,7 @@ ItemDatabase="*res://core/autoload/item_database.gd"
 EconomyManager="*res://core/autoload/economy_manager.gd"
 WorldStateManager="*res://core/autoload/world_state_manager.gd"
 SceneManager="*res://core/autoload/scene_manager.gd"
+SaveManager="*res://core/autoload/save_manager.gd"
 
 [display]
 
