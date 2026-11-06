@@ -42,7 +42,7 @@ res://
 ├─ ui/                         # Giao diện, chỉ nghe EventBus
 │  ├─ hud/                     # Đồng hồ, tiền, thanh nhanh
 │  ├─ shop/                    # shop_ui.tscn dùng chung cho mọi Vendor
-│  └─ inventory/
+│  └─ inventory/               # [có] inventory_ui, inventory_slot_ui, inventory_demo (main scene tạm)
 │
 ├─ data/                       # File .tres: toàn bộ số liệu game (không hardcode trong code)
 │  ├─ items/                   # lua.tres, ...

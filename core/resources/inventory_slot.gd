@@ -44,6 +44,29 @@ func remove(count: int) -> int:
 	return removed
 
 
+## Chuyển nội dung ô [param from_slot] sang ô [param to_slot] (có thể thuộc kho khác).
+## Đích trống thì dời sang; cùng loại thì gộp (phần thừa ở lại ô nguồn);
+## khác loại thì đổi chỗ. Trả về false nếu không có gì thay đổi.
+static func move_between(from_slot: InventorySlot, to_slot: InventorySlot) -> bool:
+	if from_slot == to_slot or from_slot.is_empty():
+		return false
+	if to_slot.is_empty() or to_slot.item.id == from_slot.item.id:
+		var leftover: int = to_slot.add(from_slot.item, from_slot.amount)
+		if leftover == from_slot.amount:
+			return false  # Ô đích đã đầy, không gộp được.
+		from_slot.amount = leftover
+		if leftover <= 0:
+			from_slot.clear()
+		return true
+	var moved_item: ItemData = from_slot.item
+	var moved_amount: int = from_slot.amount
+	from_slot.item = to_slot.item
+	from_slot.amount = to_slot.amount
+	to_slot.item = moved_item
+	to_slot.amount = moved_amount
+	return true
+
+
 func clear() -> void:
 	item = null
 	amount = 0

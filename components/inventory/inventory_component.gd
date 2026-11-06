@@ -95,30 +95,26 @@ func has_item(item: ItemData, amount: int = 1) -> bool:
 ## Ô đích trống thì dời sang; cùng loại thì gộp (phần thừa ở lại ô nguồn);
 ## khác loại thì đổi chỗ. Trả về false nếu chỉ số sai hoặc không có gì đổi.
 func move_slot(from_index: int, to_index: int) -> bool:
+	return transfer_slot(from_index, self, to_index)
+
+
+## Như [method move_slot] nhưng đích có thể là kho khác (Player ↔ Rương ↔ Kệ hàng).
+func transfer_slot(from_index: int, target: InventoryComponent, to_index: int) -> bool:
+	if target == null:
+		return false
 	_build_slots()
-	if from_index == to_index or not _is_valid_index(from_index) or not _is_valid_index(to_index):
+	target._build_slots()
+	if not _is_valid_index(from_index) or not target._is_valid_index(to_index):
 		return false
-	var from_slot: InventorySlot = slots[from_index]
-	var to_slot: InventorySlot = slots[to_index]
-	if from_slot.is_empty():
+	if not InventorySlot.move_between(slots[from_index], target.slots[to_index]):
 		return false
-	if to_slot.is_empty() or to_slot.item.id == from_slot.item.id:
-		var leftover: int = to_slot.add(from_slot.item, from_slot.amount)
-		if leftover == from_slot.amount:
-			return false  # Ô đích đã đầy, không gộp được.
-		from_slot.amount = leftover
-		if leftover <= 0:
-			from_slot.clear()
-	else:
-		var moved_item: ItemData = from_slot.item
-		var moved_amount: int = from_slot.amount
-		from_slot.item = to_slot.item
-		from_slot.amount = to_slot.amount
-		to_slot.item = moved_item
-		to_slot.amount = moved_amount
 	slot_changed.emit(from_index)
-	slot_changed.emit(to_index)
 	_notify_changed()
+	if target != self:
+		target.slot_changed.emit(to_index)
+		target._notify_changed()
+	else:
+		slot_changed.emit(to_index)
 	return true
 
 
