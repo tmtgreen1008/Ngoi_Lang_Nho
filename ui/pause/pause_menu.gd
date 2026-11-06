@@ -22,6 +22,7 @@ func _ready() -> void:
 	add_child(center)
 	_panel = PanelContainer.new()
 	_panel.custom_minimum_size = Vector2(420, 0)
+	_panel.theme = UiTheme.get_theme()
 	center.add_child(_panel)
 	var margin := MarginContainer.new()
 	for side: String in ["left", "top", "right", "bottom"]:
@@ -48,7 +49,7 @@ func _ready() -> void:
 
 	_message_label = Label.new()
 	_message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_message_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
+	_message_label.add_theme_color_override("font_color", UiTheme.ACCENT_RED)
 	box.add_child(_message_label)
 
 	EventBus.shop_opened.connect(func(_vendor: Resource) -> void: _shop_open = true)

@@ -10,7 +10,7 @@ khi chuyển cảnh.
 | Engine | Godot 4.7 (GL Compatibility) |
 | Ngôn ngữ | GDScript, dùng static typing |
 | Ngôn ngữ giao diện | Tiếng Việt |
-| Trạng thái | Bản chơi được ở mức cơ bản; hình vẽ là khối màu tạm, chưa có âm thanh |
+| Trạng thái | Bản chơi được ở mức cơ bản; có art pixel-art do AI tạo (xem mục Asset), chưa có âm thanh |
 
 ## Chạy game
 
@@ -136,6 +136,26 @@ hợp lệ trước khi đổi bất kỳ trạng thái nào, nên file hỏng k
 
 Cấu trúc thư mục chi tiết: [docs/FOLDER_STRUCTURE.md](docs/FOLDER_STRUCTURE.md).
 
+## Asset (hình ảnh)
+
+Toàn bộ hình ảnh là pixel-art do AI tạo theo một khối phong cách và bảng 17 màu chung
+(prompt trong [docs/ASSET_PROMPTS.md](docs/ASSET_PROMPTS.md)), rồi được xử lý bằng công cụ trong repo:
+
+| Bước | Công cụ |
+|---|---|
+| 1. Ảnh gốc (20 ảnh) | `assets/art/source/` (Godot bỏ qua thư mục này nhờ `.gdignore`) |
+| 2. Cắt, thu về đúng cỡ pixel, xoá nền hồng tím, khử viền | `bash tools/process_assets.sh` (dùng [tools/slice_sheet.gd](tools/slice_sheet.gd)) |
+| 3. Gắn icon, ảnh cây, ảnh người bán vào dữ liệu `.tres` | `godot --headless --path . -s tools/assign_art.gd` |
+
+Kết quả nằm trong `assets/art/`: `tiles` (nền đất 48x48), `crops` (cây lúa 3 giai đoạn), `characters`
+(Player 3x4 khung 32x48, hai NPC), `icons` (10 vật phẩm 32x32), `props` (nhà, giường, quầy, sạp, máy tính,
+bàn bida, cây cối), `ui` (khung giấy, nút, icon HUD, logo, nền màn hình chính), `minigames`.
+Mỗi ảnh được thu về cỡ "1 pixel ra = 1 pixel nghệ thuật" của chính nó (AI vẽ mỗi ảnh một cỡ khác nhau),
+nên nhân vật và NPC cao bằng nhau dù pixel gốc to nhỏ khác nhau.
+
+Ảnh nằm trong dữ liệu chứ không nằm trong code: `ItemData.icon`, `CropItemData.growth_sheet`,
+`VendorData.npc_sheet`. Thêm vật phẩm, cây hay người bán mới chỉ cần thêm file `.tres` kèm ảnh.
+
 ## Kiểm thử
 
 Bộ test chạy bằng chính Godot, không cần thư viện ngoài:
@@ -150,6 +170,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_inventory` | Thêm/bớt, tràn kho, kéo/thả, chuyển kho, lưu/nạp qua JSON |
 | `test_farm_field` | Cuốc, gieo, lớn theo ngày, héo khi đổi mùa, thu hoạch, công cụ nối kho đồ |
 | `test_shop_logic` | Kho hàng theo ngày (xác định), mua/bán, giờ mở cửa, các lỗi |
+| `test_art` | Icon vật phẩm, ảnh cây theo giai đoạn, ảnh người bán, hoạt ảnh Player, đồ vật chặn đường, giao diện giấy |
 | `test_terrain` | Sheet nền đất 48x48, lát nền bốn map, đổi toạ độ chuột sang ô vườn |
 | `test_inventory_ui` | Giao diện kho, kéo/thả giữa hai kho |
 | `test_shop_ui` | Giao diện cửa hàng dùng chung, nút mua/bán, khoá khi đóng cửa |
@@ -166,14 +187,14 @@ nên test không được nhắc tên class dùng autoload bằng `X.new()` hay 
 
 | | |
 |---|---|
-| ![Màn hình chính](docs/screenshots/start_menu_with_save.png) | ![Menu tạm dừng](docs/screenshots/save_2_after_save.png) |
-| ![Vườn đã gieo](docs/screenshots/flow_1_home_planted.png) | ![Lúa chín](docs/screenshots/flow_3_home_ripe.png) |
-| ![Cửa hàng](docs/screenshots/shop_1_grocery.png) | ![Quán Bida](docs/screenshots/mini_4_billiards.png) |
-| ![Kéo thả kho đồ](docs/screenshots/inventory_ui_after_drag.png) | ![Quán Net](docs/screenshots/mini_2_aim_playing.png) |
+| ![Màn hình chính](docs/screenshots/start_menu_with_save.png) | ![Khu nhà](docs/screenshots/art_home.png) |
+| ![Cửa hàng](docs/screenshots/art_shop.png) | ![Khu giải trí](docs/screenshots/art_entertainment.png) |
+| ![Quán Net](docs/screenshots/art_aim.png) | ![Quán Bida](docs/screenshots/art_billiards.png) |
+| ![Kéo thả kho đồ](docs/screenshots/inventory_ui_after.png) | ![Menu tạm dừng](docs/screenshots/art_pause.png) |
 
 ## Hạn chế hiện tại và hướng phát triển
 
-- Hình vẽ là khối màu tạm (tileset tạo bằng code); chưa có sprite, hoạt ảnh, âm thanh.
+- Chưa có âm thanh. Art do AI tạo nên mỗi ảnh có mật độ pixel hơi khác nhau (nhà được phóng 2 lần cho cân với Player); nhân vật chỉ có hoạt ảnh đi bộ, chưa có hoạt ảnh cuốc/gieo/thu hoạch; đồ vật luôn vẽ dưới Player nên khi đi sau nhà Player vẫn hiện đè lên nhà.
 - Chưa có: nấu ăn, giặt đồ, chuồng trại (nuôi gà/lợn), NPC có hội thoại, nhiều sạp ở Chợ.
 - Các con số (giá, thưởng mini-game, tốc độ) là số tạm, chưa cân bằng bằng chơi thử.
 - Chỉ có một slot lưu thủ công và một slot tự lưu; chưa có cơ chế nâng cấp định dạng file lưu giữa các phiên bản.

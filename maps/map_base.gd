@@ -56,6 +56,46 @@ func _tile_for_cell(_cell: Vector2i) -> TerrainTiles.Tile:
 	return floor_tile
 
 
+## Đồ trang trí trong sheet props/decor_sheet.png (thứ tự khung trong ảnh).
+enum Decor { BANANA, BAMBOO, BUSH, FENCE, JAR }
+
+const DECOR_SHEET: String = "res://assets/art/props/decor_sheet.png"
+const DECOR_CELL: int = 48
+
+
+## Đặt một đồ vật bằng ảnh [param texture_path], chân đồ vật ở [param feet].
+## [param scale_factor] phóng to nguyên lần (pixel không méo). [param blocker_height] > 0 thì
+## chặn Player bằng một dải hình chữ nhật cao chừng đó, rộng 90% đồ vật, ngay sát chân.
+func add_prop(texture_path: String, feet: Vector2, scale_factor: int = 1, blocker_height: float = 0.0) -> Sprite2D:
+	var texture: Texture2D = load(texture_path)
+	var sprite := Sprite2D.new()
+	sprite.texture = texture
+	sprite.centered = false
+	sprite.offset = Vector2(-texture.get_width() / 2.0, -texture.get_height())
+	sprite.position = feet
+	sprite.scale = Vector2(scale_factor, scale_factor)
+	add_child(sprite)
+	if blocker_height > 0.0:
+		_add_blocker(feet, texture.get_width() * scale_factor * 0.9, blocker_height)
+	return sprite
+
+
+## Đặt một món trang trí (cây, hàng rào, chum) với chân ở [param feet].
+## [param blocker_width] > 0 thì chặn Player bằng dải rộng chừng đó cao 10 px.
+func add_decor(decor: Decor, feet: Vector2, blocker_width: float = 0.0) -> Sprite2D:
+	var sprite := Sprite2D.new()
+	sprite.texture = load(DECOR_SHEET)
+	sprite.region_enabled = true
+	sprite.region_rect = Rect2(decor * DECOR_CELL, 0, DECOR_CELL, DECOR_CELL)
+	sprite.centered = false
+	sprite.offset = Vector2(-DECOR_CELL / 2.0, -DECOR_CELL)
+	sprite.position = feet
+	add_child(sprite)
+	if blocker_width > 0.0:
+		_add_blocker(feet, blocker_width, 10.0)
+	return sprite
+
+
 ## Đặt một điểm xuất hiện của Player.
 func add_spawn(id: StringName, pos: Vector2) -> SpawnPoint:
 	var spawn := SpawnPoint.new()
@@ -75,6 +115,18 @@ func add_exit(center: Vector2, size: Vector2, target_scene: String, target_spawn
 	exit.label_text = label
 	add_child(exit)
 	return exit
+
+
+## Dải chặn Player: rộng [param width], cao [param height], đáy nằm tại [param feet].
+func _add_blocker(feet: Vector2, width: float, height: float) -> void:
+	var body := StaticBody2D.new()
+	var shape := CollisionShape2D.new()
+	var box := RectangleShape2D.new()
+	box.size = Vector2(width, height)
+	shape.shape = box
+	body.position = feet + Vector2(0, -height / 2.0)
+	body.add_child(shape)
+	add_child(body)
 
 
 ## Bốn bức tường vô hình quanh màn hình để Player không đi ra ngoài.

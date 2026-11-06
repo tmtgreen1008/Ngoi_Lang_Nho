@@ -11,14 +11,15 @@ func _build() -> void:
 	add_spawn(&"from_home", Vector2(160, 360))
 	add_exit(Vector2(30, 360), Vector2(40, 120), HOME_MAP, &"from_market", "Về nhà")
 
+	# Chú Năm đứng bên trái sạp; sạp chặn lối đi ở phần bàn.
 	var npc: VendorNPC = NPC_SCENE.instantiate()
 	npc.vendor_data = VENDOR_DATA
-	npc.body_color = Color(0.5, 0.75, 0.4)
-	npc.position = Vector2(760, 300)
+	npc.position = Vector2(690, 360)
 	add_child(npc)
+	add_prop("res://assets/art/props/market_stall.png", Vector2(800, 380), 1, 20.0)
 
-
-func _draw() -> void:
-	super._draw()
-	# Mái sạp tạm.
-	draw_rect(Rect2(650, 250, 220, 24), Color(0.75, 0.3, 0.25))
+	add_decor(Decor.JAR, Vector2(300, 200))
+	add_decor(Decor.BUSH, Vector2(980, 230))
+	add_decor(Decor.BAMBOO, Vector2(1120, 200))
+	add_decor(Decor.BANANA, Vector2(260, 560))
+	add_decor(Decor.JAR, Vector2(1040, 540))

@@ -12,6 +12,10 @@ var _inventory: InventoryComponent
 var _slot_uis: Array[InventorySlotUI] = []
 
 
+func _ready() -> void:
+	theme = UiTheme.get_theme()
+
+
 ## Gắn bảng với [param inventory] và đặt tiêu đề. Có thể gọi lại để đổi kho.
 func setup(inventory: InventoryComponent, title: String) -> void:
 	if _inventory != null and _inventory.slot_changed.is_connected(_on_slot_changed):

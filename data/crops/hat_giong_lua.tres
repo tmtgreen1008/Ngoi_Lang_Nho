@@ -1,6 +1,12 @@
-[gd_resource type="Resource" script_class="CropItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CropItemData" format=3]
 
 [ext_resource type="Script" path="res://core/resources/crop_item_data.gd" id="1_crop"]
+[ext_resource type="Texture2D" path="res://assets/art/crops/rice_stages.png" id="1_i2j4l"]
+[ext_resource type="Texture2D" path="res://assets/art/icons/item_icons.png" id="2_rxokl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lmuvu"]
+atlas = ExtResource("2_rxokl")
+region = Rect2(32, 0, 32, 32)
 
 [resource]
 script = ExtResource("1_crop")
@@ -8,10 +14,10 @@ grow_days = 4
 harvest_item_id = &"lua"
 harvest_amount = 3
 allowed_seasons = Array[int]([0, 1])
+growth_sheet = ExtResource("1_i2j4l")
 id = &"hat_giong_lua"
 display_name = "Hạt giống lúa"
 description = "Gieo vào đất đã cuốc, thu hoạch sau vài ngày."
+icon = SubResource("AtlasTexture_lmuvu")
 category = 0
 base_price = 10
-is_stackable = true
-max_stack_size = 99

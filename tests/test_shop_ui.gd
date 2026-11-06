@@ -3,12 +3,18 @@ extends "res://tests/test_base.gd"
 ## sự kiện shop_opened/shop_closed, mở qua EventBus.shop_open_requested.
 
 
+## Nút [param button_text] trong dòng có nhãn [param row_text] (dòng có thể bắt đầu bằng icon).
 func _find_row_button(list: Node, row_text: String, button_text: String) -> Button:
 	for row: Node in list.get_children():
-		if row.get_child_count() > 0 and row.get_child(0) is Label and row.get_child(0).text == row_text:
-			for child: Node in row.get_children():
-				if child is Button and child.text == button_text:
-					return child
+		var has_label: bool = false
+		for child: Node in row.get_children():
+			if child is Label and child.text == row_text:
+				has_label = true
+		if not has_label:
+			continue
+		for child: Node in row.get_children():
+			if child is Button and child.text == button_text:
+				return child
 	return null
 
 

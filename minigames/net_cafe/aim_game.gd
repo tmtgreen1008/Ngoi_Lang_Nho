@@ -10,7 +10,8 @@ extends MinigameBase
 @export_range(0, 100, 1) var pay_per_hit: int = 2
 @export_range(0, 1000, 1) var max_payout: int = 40
 
-const TARGET_SIZE: Vector2 = Vector2(60, 60)
+const TARGET_SIZE: Vector2 = Vector2(64, 64)
+const TARGET_TEXTURE: Texture2D = preload("res://assets/art/minigames/aim_target.png")
 
 var hits: int = 0
 var misses: int = 0
@@ -85,7 +86,11 @@ func spawn_target() -> Button:
 	if not is_playing:
 		return null
 	var target := Button.new()
-	target.text = "◎"
+	target.icon = TARGET_TEXTURE
+	target.flat = true
+	target.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	for state: String in ["normal", "hover", "pressed", "focus", "disabled"]:
+		target.add_theme_stylebox_override(state, StyleBoxEmpty.new())
 	target.custom_minimum_size = TARGET_SIZE
 	target.size = TARGET_SIZE
 	var max_x: float = maxf(0.0, _field.size.x - TARGET_SIZE.x)

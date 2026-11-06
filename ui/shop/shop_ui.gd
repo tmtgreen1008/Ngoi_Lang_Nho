@@ -19,6 +19,8 @@ var _buyer: InventoryComponent
 
 
 func _ready() -> void:
+	theme = UiTheme.get_theme()
+	_message_label.add_theme_color_override("font_color", UiTheme.ACCENT_RED)
 	_tabs.set_tab_title(0, "Mua")
 	_tabs.set_tab_title(1, "Bán")
 	_close_button.pressed.connect(close)
@@ -88,7 +90,7 @@ func _rebuild_buy_list(is_open: bool) -> void:
 	for entry: VendorStockEntry in _vendor.stock:
 		var price: int = data.get_buy_price(entry.item)
 		var stock_text: String = "" if entry.is_unlimited() else "còn %d" % entry.amount
-		var row: HBoxContainer = _make_row(entry.item.display_name, "%d đ  %s" % [price, stock_text])
+		var row: HBoxContainer = _make_row(entry.item.display_name, "%d đ  %s" % [price, stock_text], entry.item.icon)
 		for count: int in [1, 5]:
 			var can_buy: bool = is_open and entry.has_stock(count) and EconomyManager.can_afford(price * count)
 			row.add_child(_make_button("Mua %d" % count, can_buy, _on_buy_pressed.bind(entry.item, count)))
@@ -110,7 +112,7 @@ func _rebuild_sell_list(is_open: bool) -> void:
 		seen[slot.item.id] = true
 		var owned: int = _buyer.count_of(slot.item)
 		var price: int = data.get_sell_price(slot.item)
-		var row: HBoxContainer = _make_row(slot.item.display_name, "%d đ  (có %d)" % [price, owned])
+		var row: HBoxContainer = _make_row(slot.item.display_name, "%d đ  (có %d)" % [price, owned], slot.item.icon)
 		row.add_child(_make_button("Bán 1", is_open, _on_sell_pressed.bind(slot.item, 1)))
 		row.add_child(_make_button("Bán hết", is_open, _on_sell_pressed.bind(slot.item, owned)))
 		_sell_list.add_child(row)
@@ -128,9 +130,17 @@ func _on_sell_pressed(item: ItemData, count: int) -> void:
 	_message_label.text = error if not error.is_empty() else "Đã bán %d %s." % [count, item.display_name]
 
 
-func _make_row(name_text: String, detail_text: String) -> HBoxContainer:
+func _make_row(name_text: String, detail_text: String, icon: Texture2D = null) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
+	if icon != null:
+		# Icon 32x32 hiện đúng cỡ gốc, đứng đầu dòng (trước tên); chỉ thêm khi vật phẩm có icon.
+		var icon_rect := TextureRect.new()
+		icon_rect.texture = icon
+		icon_rect.custom_minimum_size = Vector2(32, 32)
+		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		row.add_child(icon_rect)
 	var name_label := Label.new()
 	name_label.text = name_text
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL

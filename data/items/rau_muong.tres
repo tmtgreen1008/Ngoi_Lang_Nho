@@ -1,11 +1,17 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
 [ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_ajog6"]
+[ext_resource type="Texture2D" path="res://assets/art/icons/item_icons.png" id="1_msrgu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qfetx"]
+atlas = ExtResource("1_msrgu")
+region = Rect2(0, 32, 32, 32)
 
 [resource]
 script = ExtResource("1_ajog6")
 id = &"rau_muong"
 display_name = "Rau muống"
 description = "Bó rau muống tươi."
+icon = SubResource("AtlasTexture_qfetx")
 category = 1
 base_price = 6

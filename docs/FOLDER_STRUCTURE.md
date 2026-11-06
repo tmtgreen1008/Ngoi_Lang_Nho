@@ -10,6 +10,7 @@ res://
 ├─ main.tscn / main.gd         # [có] Scene gốc: World + Player + HUD + ShopUI, nhờ SceneManager nạp map đầu
 ├─ core/                       # Hạ tầng dùng chung, không phụ thuộc gameplay
 │  ├─ terrain_tiles.gd         # [có] Sheet nền đất 48x48 (TerrainTiles): enum ô, tileset, vùng nguồn
+│  ├─ ui_theme.gd              # [có] Giao diện giấy và gỗ (UiTheme): khung 9-slice, nút 3 trạng thái, icon HUD
 │  ├─ autoload/
 │  │  ├─ event_bus.gd          # [có] Kênh signal toàn cục
 │  │  ├─ time_manager.gd       # [có] Đồng hồ, lịch, mùa
@@ -64,12 +65,12 @@ res://
 │  └─ vendors/                 # tap_hoa.tres, thuong_lai_rau.tres, ...
 │
 ├─ assets/
-│  ├─ art/                     # [có] tiles/terrain_tiles.png (nền đất, đã nối vào game), palette.hex, source/ (ảnh gốc)
+│  ├─ art/                     # [có] tiles, crops, characters, icons, props, ui, minigames (đã xử lý); source/ = 20 ảnh gốc; palette.hex
 │  ├─ audio/
 │  └─ fonts/
 │
-├─ tests/                      # [có] test_base.gd + 11 bài test + run_all.sh (xem README)
-├─ tools/                      # [có] slice_sheet.gd (cắt/thu nhỏ/quy về bảng màu ảnh AI)
+├─ tests/                      # [có] test_base.gd + 12 bài test + run_all.sh (xem README)
+├─ tools/                      # [có] slice_sheet.gd, process_assets.sh (ảnh AI -> asset), assign_art.gd (gắn ảnh vào .tres)
 └─ docs/                       # Tài liệu đồ án, screenshots/
 ```
 

@@ -51,6 +51,7 @@ run_test test_inventory
 run_test test_farm_field
 run_test test_shop_logic
 run_test test_terrain
+run_test test_art
 run_test test_inventory_ui
 run_test test_shop_ui
 run_test test_game_flow

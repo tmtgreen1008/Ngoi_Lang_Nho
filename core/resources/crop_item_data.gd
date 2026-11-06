@@ -13,6 +13,12 @@ extends ItemData
 @export_range(1, 99, 1) var harvest_amount: int = 1
 ## Các mùa được phép gieo (giá trị của TimeManager.Season). Rỗng = mọi mùa.
 @export var allowed_seasons: Array[int] = []
+## Ảnh cây lớn lên: ba khung xếp ngang bằng nhau (mầm, đang lớn, chín), mỗi khung là một ô
+## vuông của lưới nền (TerrainTiles.TILE_SIZE), gốc cây ở đáy khung.
+@export var growth_sheet: Texture2D
+
+## Số khung trong [member growth_sheet].
+const GROWTH_FRAMES: int = 3
 
 
 func _init() -> void:
@@ -27,6 +33,13 @@ func can_plant_in(season: int) -> bool:
 ## Cây đã chín sau [param days_grown] ngày chưa.
 func is_ripe(days_grown: int) -> bool:
 	return days_grown >= grow_days
+
+
+## Khung hình (0 = mầm, 1 = đang lớn, 2 = chín) ứng với [param days_grown] ngày đã lớn.
+func get_growth_frame(days_grown: int) -> int:
+	if is_ripe(days_grown):
+		return GROWTH_FRAMES - 1
+	return 1 if days_grown / float(grow_days) >= 0.5 else 0
 
 
 func is_valid() -> bool:

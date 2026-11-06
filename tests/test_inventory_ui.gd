@@ -47,9 +47,10 @@ func run() -> void:
 	var bag_slots: Array = _slot_uis(bag_ui)
 	var chest_slots: Array = _slot_uis(chest_ui)
 	check("mỗi bảng có 6 ô giao diện", bag_slots.size() == 6 and chest_slots.size() == 6)
-	check("ô hạt giống hiện tên và số lượng", bag_slots[0]._name_label.text == "Hạt giống lúa" and bag_slots[0]._amount_label.text == "x5")
+	check("ô hạt giống hiện icon (không hiện tên chữ) và số lượng", bag_slots[0]._icon.texture == seed_item.icon and seed_item.icon != null and bag_slots[0]._name_label.text == "" and bag_slots[0]._amount_label.text == "x5")
+	check("tooltip vẫn có tên vật phẩm", bag_slots[0].tooltip_text.begins_with("Hạt giống lúa"))
 	check("ô lúa đầy hiện x99", bag_slots[1]._amount_label.text == "x99")
-	check("ô trống không hiện chữ", bag_slots[5]._name_label.text == "" and bag_slots[5]._amount_label.text == "")
+	check("ô trống không hiện icon, không hiện chữ", bag_slots[5]._icon.texture == null and bag_slots[5]._name_label.text == "" and bag_slots[5]._amount_label.text == "")
 	await shot("inventory_ui_before.png")
 
 	var data: Dictionary = _drag_data(bag, 1)
@@ -64,5 +65,5 @@ func run() -> void:
 
 	chest_slots[5]._drop_data(Vector2.ZERO, _drag_data(bag, 0))
 	check("hạt giống chuyển sang ô trống của rương", chest.slots[5].item.id == &"hat_giong_lua" and bag.slots[0].is_empty())
-	check("ô nguồn trên giao diện được dọn sạch", bag_slots[0]._name_label.text == "")
+	check("ô nguồn trên giao diện được dọn sạch", bag_slots[0]._icon.texture == null and bag_slots[0]._amount_label.text == "")
 	await shot("inventory_ui_after.png")

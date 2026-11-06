@@ -72,12 +72,7 @@ func _build_frame() -> void:
 	add_child(center)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(880, 560)
-	var panel_style := StyleBoxFlat.new()
-	panel_style.bg_color = Color(0.14, 0.16, 0.22, 1.0)
-	panel_style.border_color = Color(0.35, 0.4, 0.55)
-	panel_style.set_border_width_all(2)
-	panel_style.set_corner_radius_all(8)
-	panel.add_theme_stylebox_override("panel", panel_style)
+	panel.theme = UiTheme.get_theme()
 	center.add_child(panel)
 	var margin := MarginContainer.new()
 	for side: String in ["left", "top", "right", "bottom"]:

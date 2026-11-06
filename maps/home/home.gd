@@ -42,6 +42,7 @@ func _build() -> void:
 	if player != null:
 		controller.inventory = player.get("inventory")
 
+	_build_scenery()
 	_build_bed()
 	_build_hud()
 	controller.tool_changed.connect(func(_t: FarmToolController.Tool) -> void: _update_status())
@@ -82,16 +83,32 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Giường: tương tác để ngủ qua đêm (sang ngày mới, cây lớn thêm một ngày).
 func _build_bed() -> void:
+	# Giường (phản có màn) đặt ngoài hiên cạnh nhà; chân giường ở (770, 225).
+	var bed_feet := Vector2(770, 225)
+	add_prop("res://assets/art/props/bed.png", bed_feet, 1, 14.0)
 	var bed := InteractableComponent.new()
-	bed.position = Vector2(900, 150)
+	bed.position = bed_feet + Vector2(0, -30)
 	bed.prompt_text = "Đi ngủ"
 	bed.interact_radius = 50.0
 	bed.interacted.connect(func(_who: Node) -> void: TimeManager.sleep_until_morning())
 	add_child(bed)
-	var label := Label.new()
-	label.text = "Giường"
-	label.position = Vector2(868, 176)
-	add_child(label)
+
+
+## Ngôi nhà, cây cối, hàng rào và chum quanh khu nhà. Nhà phóng to 2 lần (cửa cao hơn Player).
+func _build_scenery() -> void:
+	add_prop("res://assets/art/props/house.png", Vector2(930, 200), 2, 16.0)
+	add_decor(Decor.JAR, Vector2(850, 206))
+	add_decor(Decor.BANANA, Vector2(1050, 190))
+	add_decor(Decor.BANANA, Vector2(70, 100))
+	add_decor(Decor.BAMBOO, Vector2(1060, 110))
+	add_decor(Decor.BAMBOO, Vector2(640, 120))
+	add_decor(Decor.BUSH, Vector2(700, 110))
+	add_decor(Decor.BUSH, Vector2(640, 600))
+	add_decor(Decor.BUSH, Vector2(900, 590))
+	add_decor(Decor.BAMBOO, Vector2(80, 620))
+	# Hàng rào tre phía nam mảnh vườn, mỗi đoạn rộng một ô.
+	for i: int in 10:
+		add_decor(Decor.FENCE, Vector2(120 + i * TerrainTiles.TILE_SIZE, 528), 38.0)
 
 
 func _build_hud() -> void:
@@ -109,9 +126,3 @@ func _build_hud() -> void:
 
 func _update_status() -> void:
 	_status_label.text = "Công cụ: %s   (1: Cuốc   2: Gieo hạt   3: Thu hoạch; chuột trái để dùng)" % controller.get_tool_name()
-
-
-func _draw() -> void:
-	super._draw()
-	# Ngôi nhà tạm: một khối nâu phía trên giường.
-	draw_rect(Rect2(780, 90, 240, 40), Color(0.55, 0.38, 0.25))

@@ -9,6 +9,8 @@ extends Resource
 
 @export var id: StringName = &""
 @export var display_name: String = ""
+## Ảnh người bán: hai khung đứng yên xếp ngang (khung nhún nhẹ), mỗi khung 32x48.
+@export var npc_sheet: Texture2D
 
 @export_group("Giờ mở cửa")
 @export_range(0.0, 24.0, 0.5) var open_hour: float = 6.0

@@ -1,11 +1,17 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
+[ext_resource type="Texture2D" path="res://assets/art/icons/item_icons.png" id="1_0m35u"]
 [ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_720he"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_04cbl"]
+atlas = ExtResource("1_0m35u")
+region = Rect2(96, 32, 32, 32)
 
 [resource]
 script = ExtResource("1_720he")
 id = &"trung_ga"
 display_name = "Trứng gà"
 description = "Trứng gà ta."
+icon = SubResource("AtlasTexture_04cbl")
 category = 2
 base_price = 7

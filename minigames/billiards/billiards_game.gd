@@ -12,6 +12,11 @@ extends MinigameBase
 ## Số lần thanh lực chạy đi-về mỗi giây.
 @export_range(0.2, 5.0, 0.1) var meter_speed: float = 0.8
 
+const BALLS_TEXTURE: Texture2D = preload("res://assets/art/minigames/billiard_balls.png")
+## Mỗi ô bi trong sheet rộng 23 px; vẽ gấp đôi trên bàn.
+const BALL_CELL: int = 23
+const BALL_DRAW_SIZE: float = 46.0
+
 var shots_taken: int = 0
 var pocketed: int = 0
 var is_playing: bool = false
@@ -52,7 +57,7 @@ func _setup() -> void:
 
 	_feedback_label = Label.new()
 	_feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_feedback_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
+	_feedback_label.add_theme_color_override("font_color", UiTheme.ACCENT_RED)
 	content.add_child(_feedback_label)
 
 	var row := HBoxContainer.new()
@@ -163,13 +168,23 @@ func _draw_table() -> void:
 	for x: float in [felt.position.x, felt.get_center().x, felt.end.x]:
 		for y: float in [felt.position.y, felt.end.y]:
 			_table.draw_circle(Vector2(x, y), 17.0, pocket_color)
-	# Các bi còn lại xếp thành hàng giữa bàn; bi vào lỗ thì biến mất.
+	# Các bi còn lại xếp thành cụm giữa bàn; bi vào lỗ thì biến mất. Bi lấy từ sheet ảnh:
+	# ô 0 là bi cái, ô 1..5 là bi màu (đỏ, vàng, xanh, cam, tím).
 	var remaining: int = shots_per_round - pocketed
-	var colors: Array[Color] = [Color.RED, Color.YELLOW, Color.BLUE, Color.ORANGE, Color.PURPLE]
 	for i: int in remaining:
-		var pos: Vector2 = Vector2(felt.get_center().x + 120.0 + (i % 3) * 26.0, felt.get_center().y + (i / 3) * 26.0 - 13.0)
-		_table.draw_circle(pos, 12.0, colors[i % colors.size()])
-	_table.draw_circle(Vector2(felt.position.x + 200.0, felt.get_center().y), 12.0, Color.WHITE)  # bi cái
+		var pos := Vector2(felt.get_center().x + 120.0 + (i % 3) * BALL_DRAW_SIZE, felt.get_center().y + (i / 3) * BALL_DRAW_SIZE - BALL_DRAW_SIZE / 2.0)
+		_draw_ball(1 + i % 5, pos)
+	_draw_ball(0, Vector2(felt.position.x + 200.0, felt.get_center().y))
+
+
+## Vẽ viên bi số [param index] trong sheet, tâm tại [param center].
+func _draw_ball(index: int, center: Vector2) -> void:
+	var half: float = BALL_DRAW_SIZE / 2.0
+	_table.draw_texture_rect_region(
+		BALLS_TEXTURE,
+		Rect2(center - Vector2(half, half), Vector2(BALL_DRAW_SIZE, BALL_DRAW_SIZE)),
+		Rect2(index * BALL_CELL, 0, BALL_CELL, BALL_CELL)
+	)
 
 
 func _draw_meter() -> void:

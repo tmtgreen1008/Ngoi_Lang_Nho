@@ -7,6 +7,14 @@
 [node name="VendorNPC" type="Node2D"]
 script = ExtResource("1_npc")
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+offset = Vector2(0, -10)
+hframes = 2
+
+[node name="IdleTimer" type="Timer" parent="."]
+wait_time = 0.7
+autostart = true
+
 [node name="Vendor" type="Node" parent="."]
 script = ExtResource("2_vendor")
 
@@ -15,9 +23,10 @@ script = ExtResource("3_inter")
 interact_radius = 44.0
 
 [node name="NameLabel" type="Label" parent="."]
+z_index = 10
 offset_left = -80.0
-offset_top = 18.0
+offset_top = -66.0
 offset_right = 80.0
-offset_bottom = 41.0
+offset_bottom = -43.0
 theme_override_font_sizes/font_size = 13
 horizontal_alignment = 1

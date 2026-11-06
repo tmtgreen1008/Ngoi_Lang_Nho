@@ -96,8 +96,11 @@ func run() -> void:
 	var money: int = economy.money
 	var sell_button: Button = null
 	for row: Node in main.shop_ui._sell_list.get_children():
-		if row.get_child(0).text == "Lúa":
-			sell_button = row.get_child(2)
+		for child: Node in row.get_children():
+			if child is Label and child.text == "Lúa":
+				for candidate: Node in row.get_children():
+					if candidate is Button and candidate.text == "Bán 1":
+						sell_button = candidate
 	check("có nút bán lúa", sell_button != null)
 	sell_button.pressed.emit()
 	check("bán 1 lúa +18 đ", economy.money == money + 18)

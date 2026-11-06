@@ -1,39 +1,27 @@
 class_name FarmView
 extends Node2D
-## Vẽ FarmField bằng hai TileMapLayer: lớp đất (cỏ/đất cuốc, lấy từ TerrainTiles) và lớp
-## cây (3 giai đoạn), cộng một lưới mờ đánh dấu vùng canh tác.
+## Vẽ FarmField: lớp đất (TileMapLayer, ô cỏ/đất cuốc từ TerrainTiles), cây (mỗi cây một
+## Sprite2D lấy ảnh từ CropItemData.growth_sheet) và một lưới mờ đánh dấu vùng canh tác.
 ##
 ## Chỉ đọc dữ liệu từ FarmField và nghe plot_changed; không sửa trạng thái vườn.
-## Ô đất dùng ảnh thật; ô cây vẫn là khối màu tạm (tạo bằng code) cho tới khi có ảnh
-## cây lúa (xem docs/ASSET_PROMPTS.md, mục 2).
+## Ảnh cây nằm trong dữ liệu của từng loại cây nên thêm cây mới không cần sửa code.
 
 const TILE_SIZE: int = TerrainTiles.TILE_SIZE
-## Nguồn 0 = nền đất thật; nguồn 1 = cây tạm.
-const TERRAIN_SOURCE: int = 0
-const CROP_SOURCE: int = 1
-const CROP_SEEDLING := Vector2i(0, 0)
-const CROP_GROWING := Vector2i(1, 0)
-const CROP_RIPE := Vector2i(2, 0)
 
 var field: FarmField
 
 var _ground: TileMapLayer
-var _crops: TileMapLayer
 var _grid: Node2D
+var _crop_sprites: Dictionary = {}  # Vector2i -> Sprite2D
 
 
 func _init() -> void:
-	var tile_set: TileSet = _build_tile_set()
 	_ground = TileMapLayer.new()
-	_ground.tile_set = tile_set
+	_ground.tile_set = _build_tile_set()
 	add_child(_ground)
-	_crops = TileMapLayer.new()
-	_crops.tile_set = tile_set
-	add_child(_crops)
-	# Lưới vẽ sau cùng để nằm trên đất và cây.
+	# Lưới vẽ sau cây để nằm trên cùng.
 	_grid = Node2D.new()
 	_grid.draw.connect(_draw_grid)
-	add_child(_grid)
 
 
 ## Gắn view với [param farm_field] và vẽ toàn bộ vườn.
@@ -43,6 +31,8 @@ func setup(farm_field: FarmField) -> void:
 	for x: int in range(field.field_area.position.x, field.field_area.end.x):
 		for y: int in range(field.field_area.position.y, field.field_area.end.y):
 			_refresh_cell(Vector2i(x, y))
+	if _grid.get_parent() == null:
+		add_child(_grid)
 	_grid.queue_redraw()
 
 
@@ -51,25 +41,51 @@ func world_to_cell(global_pos: Vector2) -> Vector2i:
 	return _ground.local_to_map(_ground.to_local(global_pos))
 
 
+## Sprite cây ở [param cell], hoặc null nếu ô không có cây.
+func get_crop_sprite(cell: Vector2i) -> Sprite2D:
+	return _crop_sprites.get(cell)
+
+
 func _refresh_cell(cell: Vector2i) -> void:
 	if not field.is_farmable(cell):
 		return
 	var plot: FarmPlot = field.get_plot(cell)
 	var tilled: bool = plot != null and plot.is_tilled
 	var tile: TerrainTiles.Tile = TerrainTiles.Tile.SOIL if tilled else TerrainTiles.Tile.GRASS
-	_ground.set_cell(cell, TERRAIN_SOURCE, TerrainTiles.atlas_coords(tile))
+	_ground.set_cell(cell, 0, TerrainTiles.atlas_coords(tile))
 	if plot != null and plot.is_planted():
-		_crops.set_cell(cell, CROP_SOURCE, _stage_tile(plot))
+		_show_crop(cell, plot)
 	else:
-		_crops.erase_cell(cell)
+		_hide_crop(cell)
 
 
-## Chọn ô cây theo tiến độ: chín, đã nửa đường, hoặc mới nảy mầm.
-func _stage_tile(plot: FarmPlot) -> Vector2i:
-	if plot.is_ripe():
-		return CROP_RIPE
-	var ratio: float = plot.days_grown / float(plot.crop.grow_days)
-	return CROP_GROWING if ratio >= 0.5 else CROP_SEEDLING
+## Hiện cây ở [param cell] với khung hình ứng với số ngày đã lớn.
+func _show_crop(cell: Vector2i, plot: FarmPlot) -> void:
+	var sheet: Texture2D = plot.crop.growth_sheet
+	if sheet == null:
+		_hide_crop(cell)
+		return
+	var sprite: Sprite2D = _crop_sprites.get(cell)
+	if sprite == null:
+		sprite = Sprite2D.new()
+		sprite.centered = false
+		sprite.position = Vector2(cell * TILE_SIZE)
+		add_child(sprite)
+		# Cây luôn nằm dưới lưới mờ.
+		if _grid.get_parent() == self:
+			move_child(_grid, get_child_count() - 1)
+		_crop_sprites[cell] = sprite
+	sprite.texture = sheet
+	sprite.region_enabled = true
+	var frame: int = plot.crop.get_growth_frame(plot.days_grown)
+	sprite.region_rect = Rect2(frame * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)
+
+
+func _hide_crop(cell: Vector2i) -> void:
+	var sprite: Sprite2D = _crop_sprites.get(cell)
+	if sprite != null:
+		sprite.queue_free()
+		_crop_sprites.erase(cell)
 
 
 ## Lưới mờ quanh từng ô canh tác, để thấy được ranh giới mảnh vườn trên nền cỏ.
@@ -87,28 +103,5 @@ func _draw_grid() -> void:
 static func _build_tile_set() -> TileSet:
 	var tile_set := TileSet.new()
 	tile_set.tile_size = Vector2i(TILE_SIZE, TILE_SIZE)
-	tile_set.add_source(TerrainTiles.create_atlas_source(), TERRAIN_SOURCE)
-	tile_set.add_source(_build_crop_source(), CROP_SOURCE)
+	tile_set.add_source(TerrainTiles.create_atlas_source(), 0)
 	return tile_set
-
-
-## Ba ô cây tạm (mầm, đang lớn, chín) vẽ bằng khối màu trên nền trong suốt.
-static func _build_crop_source() -> TileSetAtlasSource:
-	var image: Image = Image.create(TILE_SIZE * 3, TILE_SIZE, false, Image.FORMAT_RGBA8)
-	_paint_crop(image, 0, Color(0.44, 0.68, 0.25), 8, 12)
-	_paint_crop(image, 1, Color(0.36, 0.6, 0.24), 18, 24)
-	_paint_crop(image, 2, Color(0.91, 0.77, 0.28), 26, 34)
-	var source := TileSetAtlasSource.new()
-	source.texture = ImageTexture.create_from_image(image)
-	source.texture_region_size = Vector2i(TILE_SIZE, TILE_SIZE)
-	for i: int in 3:
-		source.create_tile(Vector2i(i, 0))
-	return source
-
-
-## Vẽ cây là thân thẳng đứng cao [param height] px, rộng [param width] px.
-static func _paint_crop(image: Image, index: int, color: Color, width: int, height: int) -> void:
-	var origin := Vector2i(index * TILE_SIZE, 0)
-	var stem := Vector2i(origin.x + (TILE_SIZE - width) / 2, origin.y + TILE_SIZE - 6 - height)
-	image.fill_rect(Rect2i(stem, Vector2i(width, height)), color)
-	image.fill_rect(Rect2i(stem, Vector2i(width, 2)), color.lightened(0.25))

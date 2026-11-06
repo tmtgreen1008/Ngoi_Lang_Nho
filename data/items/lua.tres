@@ -1,13 +1,17 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" format=3]
 
 [ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_item"]
+[ext_resource type="Texture2D" path="res://assets/art/icons/item_icons.png" id="1_jjgcc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i42tc"]
+atlas = ExtResource("1_jjgcc")
+region = Rect2(0, 0, 32, 32)
 
 [resource]
 script = ExtResource("1_item")
 id = &"lua"
 display_name = "Lúa"
 description = "Lúa mới gặt, đem ra chợ bán hoặc xay thành gạo."
+icon = SubResource("AtlasTexture_i42tc")
 category = 1
 base_price = 30
-is_stackable = true
-max_stack_size = 99
