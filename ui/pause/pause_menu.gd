@@ -10,6 +10,7 @@ var _info_label: Label
 var _message_label: Label
 var _load_button: Button
 var _shop_open: bool = false
+var _minigame_open: bool = false
 
 
 func _ready() -> void:
@@ -52,6 +53,9 @@ func _ready() -> void:
 
 	EventBus.shop_opened.connect(func(_vendor: Resource) -> void: _shop_open = true)
 	EventBus.shop_closed.connect(func(_vendor: Resource) -> void: _shop_open = false)
+	# Mini-game có nút Thoát riêng, Esc không mở menu tạm dừng lúc đó.
+	EventBus.minigame_started.connect(func(_id: StringName) -> void: _minigame_open = true)
+	EventBus.minigame_finished.connect(func(_id: StringName, _result: Dictionary) -> void: _minigame_open = false)
 	hide()
 
 
@@ -60,7 +64,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if visible:
 		close()
-	elif not _shop_open and not SceneManager.is_transitioning:
+	elif not _shop_open and not _minigame_open and not SceneManager.is_transitioning:
 		open()
 	else:
 		return

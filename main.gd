@@ -23,6 +23,7 @@ func _ready() -> void:
 
 	add_child(Hud.new())
 	add_child(PauseMenu.new())
+	add_child(MinigameHost.new())
 	var ui_layer := CanvasLayer.new()
 	ui_layer.layer = 20
 	add_child(ui_layer)

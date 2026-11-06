@@ -53,6 +53,8 @@ signal interaction_ended(interactable: Node)
 signal dialogue_requested(speaker_id: StringName, dialogue_id: StringName)
 ## Gợi ý tương tác thay đổi (Player phát). Chuỗi rỗng = ẩn gợi ý. HUD nghe.
 signal interaction_prompt_changed(text: String)
+## Thông báo nhanh cho người chơi (HUD nghe và hiện vài giây).
+signal toast_requested(text: String)
 
 # --- Nông trại & chăn nuôi ------------------------------------------------------
 
@@ -73,6 +75,8 @@ signal world_state_save_requested(scene_path: String)
 
 # --- Mini-game ------------------------------------------------------------------
 
+## Yêu cầu chơi mini-game (trạm chơi phát). [param scene_path] là scene MinigameBase; MinigameHost nghe.
+signal minigame_requested(scene_path: String)
 signal minigame_started(minigame_id: StringName)
 ## Trả kết quả về Scene chính, vd: {"money": 50, "stamina": -20}.
 signal minigame_finished(minigame_id: StringName, result: Dictionary)

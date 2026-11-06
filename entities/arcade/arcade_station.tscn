@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://entities/arcade/arcade_station.gd" id="1_st"]
+[ext_resource type="Script" path="res://components/interactable/interactable_component.gd" id="2_inter"]
+
+[node name="ArcadeStation" type="Node2D"]
+script = ExtResource("1_st")
+
+[node name="Interactable" type="Area2D" parent="."]
+script = ExtResource("2_inter")
+interact_radius = 70.0
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -80.0
+offset_right = 80.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1

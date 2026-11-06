@@ -7,6 +7,10 @@ extends CanvasLayer
 var _time_label: Label
 var _money_label: Label
 var _prompt_label: Label
+var _toast_label: Label
+var _toast_timer: Timer
+
+const TOAST_SECONDS: float = 4.0
 
 
 func _ready() -> void:
@@ -33,6 +37,18 @@ func _ready() -> void:
 	_prompt_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_prompt_label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.5))
 
+	_toast_label = _make_label(root, 20)
+	_toast_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	_toast_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_toast_label.position.y = 90.0
+	_toast_label.add_theme_color_override("font_color", Color(0.6, 1.0, 0.7))
+	_toast_label.hide()
+	_toast_timer = Timer.new()
+	_toast_timer.one_shot = true
+	_toast_timer.timeout.connect(_toast_label.hide)
+	add_child(_toast_timer)
+	EventBus.toast_requested.connect(show_toast)
+
 	EventBus.time_ticked.connect(func(_h: int, _m: int) -> void: _update_time())
 	EventBus.day_changed.connect(func(_d: int) -> void: _update_time())
 	EventBus.money_changed.connect(func(_amount: int, _delta: int) -> void: _update_money())
@@ -42,6 +58,13 @@ func _ready() -> void:
 	EventBus.shop_closed.connect(func(_vendor: Resource) -> void: _prompt_label.show())
 	_update_time()
 	_update_money()
+
+
+## Hiện thông báo nhanh [param text] giữa màn hình vài giây (thông báo mới thay thông báo cũ).
+func show_toast(text: String) -> void:
+	_toast_label.text = text
+	_toast_label.show()
+	_toast_timer.start(TOAST_SECONDS)
 
 
 func _make_label(parent: Node, font_size: int) -> Label:

@@ -33,6 +33,7 @@ res://
 │
 ├─ entities/                   # Thực thể trong thế giới = scene + script riêng
 │  ├─ player/                  # [có] player.tscn + player.gd (di chuyển, kho đồ, nhắm đối tượng)
+│  ├─ arcade/                  # [có] arcade_station.tscn (trạm chơi mini-game, bấm E)
 │  ├─ npc/
 │  └─ vendor/                  # [có] vendor_npc.tscn (dùng chung cho tạp hóa và thương lái)
 │
@@ -40,15 +41,18 @@ res://
 │  ├─ map_base.gd              # [có] Lớp nền map: nền, tường, add_spawn(), add_exit()
 │  ├─ sandbox/                 # [cũ] map thử nghiệm, đã được ba map thật thay thế (có thể xóa)
 │  ├─ home/                    # [có] Vườn (FarmField), giường, lối ra Tạp hóa/Chợ
+│  ├─ entertainment/           # [có] Khu Giải trí: trạm Quán Net và Quán Bida
 │  ├─ grocery_store/           # [có] Mở 6h–21h, hàng cố định
 │  └─ morning_market/          # [có] Mở 5h–11h, hàng RNG theo ngày
 │
 ├─ minigames/                  # Scene mini-game, trả kết quả qua EventBus.minigame_finished
-│  ├─ net_cafe/
-│  └─ billiards/
+│  ├─ minigame_base.gd         # [có] Lớp nền: khung UI, phí, finish() trả kết quả
+│  ├─ minigame_host.gd         # [có] Thu phí, dừng đồng hồ, áp kết quả (tiền, thời gian)
+│  ├─ net_cafe/                # [có] aim_game (bắn mục tiêu)
+│  └─ billiards/               # [có] billiards_game (canh lực)
 │
 ├─ ui/                         # Giao diện, chỉ nghe EventBus
-│  ├─ hud/                     # [có] hud.gd (giờ, tiền, gợi ý tương tác); thanh nhanh [sau]
+│  ├─ hud/                     # [có] hud.gd (giờ, tiền, gợi ý tương tác, thông báo nhanh); thanh nhanh [sau]
 │  ├─ pause/                   # [có] pause_menu.gd (Esc: Tiếp tục / Lưu / Tải)
 │  ├─ shop/                    # [có] shop_ui.tscn dùng chung cho mọi Vendor, shop_demo (main scene tạm)
 │  └─ inventory/               # [có] inventory_ui, inventory_slot_ui, inventory_demo (main scene tạm)

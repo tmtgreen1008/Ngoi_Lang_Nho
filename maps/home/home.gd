@@ -7,6 +7,7 @@ extends MapBase
 
 const GROCERY_MAP: String = "res://maps/grocery_store/grocery_store.tscn"
 const MARKET_MAP: String = "res://maps/morning_market/morning_market.tscn"
+const ENTERTAINMENT_MAP: String = "res://maps/entertainment/entertainment.tscn"
 
 var field: FarmField
 var view: FarmView
@@ -20,8 +21,10 @@ func _build() -> void:
 	add_spawn(&"default", Vector2(900, 400))
 	add_spawn(&"from_grocery", Vector2(1150, 220))
 	add_spawn(&"from_market", Vector2(1150, 520))
+	add_spawn(&"from_entertainment", Vector2(1150, 370))
 	add_exit(Vector2(1250, 220), Vector2(40, 120), GROCERY_MAP, &"from_home", "Tiệm Tạp Hóa")
 	add_exit(Vector2(1250, 520), Vector2(40, 120), MARKET_MAP, &"from_home", "Chợ Quê")
+	add_exit(Vector2(1250, 370), Vector2(40, 100), ENTERTAINMENT_MAP, &"from_home", "Khu Giải trí")
 
 	field = FarmField.new()
 	field.name = "FarmField"

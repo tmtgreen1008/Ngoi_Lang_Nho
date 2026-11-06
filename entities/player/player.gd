@@ -16,6 +16,7 @@ extends CharacterBody2D
 var movement_locked: bool = false
 
 var _in_transition: bool = false
+var _in_minigame: bool = false
 var _nearby: Array[InteractableComponent] = []
 var _target: InteractableComponent = null
 
@@ -29,11 +30,14 @@ func _ready() -> void:
 	# Đứng yên trong lúc chuyển map.
 	EventBus.scene_change_requested.connect(func(_path: String, _spawn: StringName) -> void: _in_transition = true)
 	EventBus.scene_changed.connect(func(_path: String) -> void: _in_transition = false)
+	# Đứng yên trong lúc chơi mini-game.
+	EventBus.minigame_started.connect(func(_id: StringName) -> void: _in_minigame = true)
+	EventBus.minigame_finished.connect(func(_id: StringName, _result: Dictionary) -> void: _in_minigame = false)
 
 
 func _physics_process(_delta: float) -> void:
 	var direction := Vector2.ZERO
-	if not movement_locked and not _in_transition:
+	if not movement_locked and not _in_transition and not _in_minigame:
 		direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = direction * speed
 	move_and_slide()
@@ -41,7 +45,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if movement_locked or _in_transition or not event.is_action_pressed("interact"):
+	if movement_locked or _in_transition or _in_minigame or not event.is_action_pressed("interact"):
 		return
 	if _target != null and _target.can_interact():
 		EventBus.interaction_started.emit(_target)
