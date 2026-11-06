@@ -1,13 +1,34 @@
 extends MapBase
-## Khu nhà: mảnh vườn (cuốc, gieo, thu hoạch), giường để ngủ, lối ra Tiệm Tạp Hóa và Chợ.
+## Khu nhà: sân nhỏ gọn quanh ngôi nhà, mảnh vườn, con đường dẫn ra làng.
 ##
-## Vườn (FarmField) thuộc nhóm world_persistent nên được WorldStateManager nhớ khi
-## người chơi đi chợ; quay về cây vẫn còn và đã lớn thêm đúng số ngày vắng mặt.
+## Bố cục (toạ độ thế giới, ô lưới 48px, vùng chơi 1008x528 viền bằng rặng cây):
+## - Nhà ở góc trên phải; bước vào cửa nhà thì sang map trong nhà (nơi có giường để ngủ).
+## - Con đường đất đi từ cửa nhà xuống ngã ba, rẽ trái thành lối mòn tới mảnh vườn,
+##   rẽ phải ra cổng phía đông; ở ngã ba có biển chỉ đường tới Tiệm Tạp Hóa, Khu Giải trí, Chợ.
+## - Cây trồng thành cụm (rặng chuối, bụi tre, hàng bụi hoa) thay vì rải lẻ tẻ.
+##
+## Vườn (FarmField) thuộc nhóm world_persistent nên được WorldStateManager nhớ khi người chơi
+## đi vắng; quay về cây vẫn còn và đã lớn thêm đúng số ngày vắng mặt.
 ## Điều khiển vườn: chuột trái dùng công cụ; phím 1/2/3 đổi Cuốc / Gieo hạt / Thu hoạch.
 
 const GROCERY_MAP: String = "res://maps/grocery_store/grocery_store.tscn"
 const MARKET_MAP: String = "res://maps/morning_market/morning_market.tscn"
 const ENTERTAINMENT_MAP: String = "res://maps/entertainment/entertainment.tscn"
+const INTERIOR_MAP: String = "res://maps/house_interior/house_interior.tscn"
+
+## Chân ngôi nhà (giữa đáy ảnh), nhà phóng 2 lần.
+const HOUSE_FEET := Vector2(936, 232)
+## Cửa nhà: khe hở giữa hai dải chặn thân nhà.
+const DOOR_LEFT: float = 928.0
+const DOOR_RIGHT: float = 972.0
+## Ô lưới góc trên trái của mảnh vườn.
+const FARM_CELL := Vector2i(4, 5)
+## Cột ô lưới của đường từ cửa nhà (x ~ 950 là cột 19), cột đường dọc ở cổng (x ~ 1080 là cột 22).
+const YARD_PATH_COLUMN: int = 19
+const TRUNK_COLUMN: int = 22
+const MAIN_ROAD_ROW: int = 8
+## Các hàng ô lưới của ba lối ra phía đông (Tạp hóa, Khu giải trí, Chợ).
+const GATE_ROWS: Array[int] = [5, 8, 11]
 
 var field: FarmField
 var view: FarmView
@@ -17,21 +38,44 @@ var _status_label: Label
 var _feedback_label: Label
 
 
-func _build() -> void:
-	add_spawn(&"default", Vector2(900, 400))
-	add_spawn(&"from_grocery", Vector2(1150, 220))
-	add_spawn(&"from_market", Vector2(1150, 520))
-	add_spawn(&"from_entertainment", Vector2(1150, 370))
-	add_exit(Vector2(1250, 220), Vector2(40, 120), GROCERY_MAP, &"from_home", "Tiệm Tạp Hóa")
-	add_exit(Vector2(1250, 520), Vector2(40, 120), MARKET_MAP, &"from_home", "Chợ Quê")
-	add_exit(Vector2(1250, 370), Vector2(40, 100), ENTERTAINMENT_MAP, &"from_home", "Khu Giải trí")
+func _init() -> void:
+	playable_rect = Rect2(144, 96, 1008, 528)
+	border_style = BorderStyle.TREES
+	ground_variation = true
 
+
+func _build() -> void:
+	var cell_size: float = TerrainTiles.TILE_SIZE
+	var door_x: float = (DOOR_LEFT + DOOR_RIGHT) / 2.0
+	add_spawn(&"default", Vector2(door_x, 330))
+	add_spawn(&"from_house", Vector2(door_x, 296))
+	# Điểm xuất hiện khi từ các nơi khác về: ngay trong cổng phía đông.
+	var gate_x: float = playable_rect.end.x - cell_size
+	add_spawn(&"from_grocery", Vector2(gate_x, (GATE_ROWS[0] + 0.5) * cell_size))
+	add_spawn(&"from_entertainment", Vector2(gate_x, (GATE_ROWS[1] + 0.5) * cell_size))
+	add_spawn(&"from_market", Vector2(gate_x, (GATE_ROWS[2] + 0.5) * cell_size))
+
+	var edge_x: float = playable_rect.end.x - 6.0
+	add_exit(Vector2(edge_x, (GATE_ROWS[0] + 0.5) * cell_size), Vector2(24, 70), GROCERY_MAP, &"from_home", "")
+	add_exit(Vector2(edge_x, (GATE_ROWS[1] + 0.5) * cell_size), Vector2(24, 70), ENTERTAINMENT_MAP, &"from_home", "")
+	add_exit(Vector2(edge_x, (GATE_ROWS[2] + 0.5) * cell_size), Vector2(24, 70), MARKET_MAP, &"from_home", "")
+	# Bước vào cửa nhà (khe hở giữa hai dải chặn) thì vào trong nhà.
+	add_exit(Vector2(door_x, HOUSE_FEET.y + 24.0), Vector2(DOOR_RIGHT - DOOR_LEFT, 28), INTERIOR_MAP, &"from_home", "")
+
+	_build_garden()
+	_build_house()
+	_build_scenery()
+	_build_hud()
+
+
+## Mảnh vườn và công cụ làm vườn (chuột trái, phím 1/2/3).
+func _build_garden() -> void:
 	field = FarmField.new()
 	field.name = "FarmField"
 	add_child(field)
 	view = FarmView.new()
-	# Căn theo lưới ô 48px (cột 2, hàng 3) để các ô vườn khớp với ô nền, không phóng to để pixel không méo.
-	view.position = Vector2(2, 3) * TerrainTiles.TILE_SIZE
+	# Căn theo lưới ô 48px, không phóng to để pixel không méo.
+	view.position = Vector2(FARM_CELL * TerrainTiles.TILE_SIZE)
 	add_child(view)
 	view.setup(field)
 
@@ -41,30 +85,42 @@ func _build() -> void:
 	var player: Node = get_tree().get_first_node_in_group("player")
 	if player != null:
 		controller.inventory = player.get("inventory")
-
-	_build_scenery()
-	_build_bed()
-	_build_hud()
 	controller.tool_changed.connect(func(_t: FarmToolController.Tool) -> void: _update_status())
 	controller.feedback.connect(func(text: String) -> void: _feedback_label.text = text)
-	_update_status()
+
+	# Hàng rào tre phía nam mảnh vườn, mỗi đoạn rộng một ô.
+	var fence_y: float = (FARM_CELL.y + field.field_area.size.y) * TerrainTiles.TILE_SIZE + 24.0
+	for i: int in int(field.field_area.size.x):
+		add_decor(Decor.FENCE, Vector2(FARM_CELL.x * TerrainTiles.TILE_SIZE + 24.0 + i * TerrainTiles.TILE_SIZE, fence_y), 38.0)
 
 
-## Nền khu nhà: cỏ rải hoa, cùng con đường đất nối chỗ xuất hiện với ba lối ra phía đông.
-func _tile_for_cell(cell: Vector2i) -> TerrainTiles.Tile:
-	if _is_path_cell(cell):
-		return TerrainTiles.Tile.PATH
-	# Hoa mọc rải rác, vị trí cố định theo ô (không ngẫu nhiên mỗi lần vẽ).
-	if (cell.x * 7 + cell.y * 13) % 11 == 0:
-		return TerrainTiles.Tile.GRASS_FLOWERS
-	return TerrainTiles.Tile.GRASS
+## Ngôi nhà: hai dải chặn hai bên cửa, chừa khe hở cho Player bước vào.
+func _build_house() -> void:
+	var house: Sprite2D = add_prop("res://assets/art/props/house.png", HOUSE_FEET, 2)
+	var half_width: float = house.texture.get_width() * house.scale.x / 2.0
+	var left_edge: float = HOUSE_FEET.x - half_width
+	var right_edge: float = HOUSE_FEET.x + half_width
+	_add_blocker_span(left_edge, DOOR_LEFT, HOUSE_FEET.y, 16.0)
+	_add_blocker_span(DOOR_RIGHT, right_edge, HOUSE_FEET.y, 16.0)
 
 
-func _is_path_cell(cell: Vector2i) -> bool:
-	var on_trunk: bool = cell.x == 23 and cell.y >= 3 and cell.y <= 11  # dọc theo cột các lối ra
-	var on_branch: bool = cell.x >= 23 and cell.y in [4, 7, 10]  # ba nhánh ra mép phải
-	var on_main: bool = cell.y == 8 and cell.x >= 12 and cell.x <= 23  # từ vườn tới ngã ba
-	return on_trunk or on_branch or on_main
+## Cây cối thành cụm, bụi hoa thành hàng, chum đặt cạnh nhà.
+func _build_scenery() -> void:
+	add_decor(Decor.JAR, Vector2(866, 238))
+	# Rặng chuối cạnh nhà phía đông và góc dưới phải.
+	add_cluster(Decor.BANANA, Vector2(1080, 210), 3, 28.0, 11)
+	add_cluster(Decor.BANANA, Vector2(1000, 560), 3, 30.0, 12)
+	# Bụi tre trên góc trái và dưới trái.
+	add_cluster(Decor.BAMBOO, Vector2(232, 150), 5, 40.0, 13)
+	add_cluster(Decor.BAMBOO, Vector2(210, 585), 3, 26.0, 14)
+	# Hàng bụi hoa ngăn sân nhà và bãi trống phía bắc vườn.
+	for i: int in 6:
+		add_decor(Decor.BUSH, Vector2(540 + i * 34, 150 + (i % 2) * 6))
+	# Hai bụi hoa hai bên bậc thềm.
+	add_decor(Decor.BUSH, Vector2(880, 252))
+	add_decor(Decor.BUSH, Vector2(1002, 252))
+	# Biển chỉ đường ở ngã ba: ba tấm ván chỉ ra làng.
+	add_signpost(Vector2(1010, 376), ["Tiệm Tạp Hóa", "Khu Giải trí", "Chợ Quê"], true)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -81,34 +137,23 @@ func _unhandled_input(event: InputEvent) -> void:
 				controller.set_tool(FarmToolController.Tool.HARVEST)
 
 
-## Giường: tương tác để ngủ qua đêm (sang ngày mới, cây lớn thêm một ngày).
-func _build_bed() -> void:
-	# Giường (phản có màn) đặt ngoài hiên cạnh nhà; chân giường ở (770, 225).
-	var bed_feet := Vector2(770, 225)
-	add_prop("res://assets/art/props/bed.png", bed_feet, 1, 14.0)
-	var bed := InteractableComponent.new()
-	bed.position = bed_feet + Vector2(0, -30)
-	bed.prompt_text = "Đi ngủ"
-	bed.interact_radius = 50.0
-	bed.interacted.connect(func(_who: Node) -> void: TimeManager.sleep_until_morning())
-	add_child(bed)
+## Nền khu nhà: cỏ rải hoa, cùng con đường đất nối cửa nhà, vườn và cổng phía đông.
+func _tile_for_cell(cell: Vector2i) -> TerrainTiles.Tile:
+	if _is_path_cell(cell):
+		return TerrainTiles.Tile.PATH
+	# Hoa mọc rải rác, vị trí cố định theo ô (không ngẫu nhiên mỗi lần vẽ).
+	if (cell.x * 7 + cell.y * 13) % 11 == 0:
+		return TerrainTiles.Tile.GRASS_FLOWERS
+	return TerrainTiles.Tile.GRASS
 
 
-## Ngôi nhà, cây cối, hàng rào và chum quanh khu nhà. Nhà phóng to 2 lần (cửa cao hơn Player).
-func _build_scenery() -> void:
-	add_prop("res://assets/art/props/house.png", Vector2(930, 200), 2, 16.0)
-	add_decor(Decor.JAR, Vector2(850, 206))
-	add_decor(Decor.BANANA, Vector2(1050, 190))
-	add_decor(Decor.BANANA, Vector2(70, 100))
-	add_decor(Decor.BAMBOO, Vector2(1060, 110))
-	add_decor(Decor.BAMBOO, Vector2(640, 120))
-	add_decor(Decor.BUSH, Vector2(700, 110))
-	add_decor(Decor.BUSH, Vector2(640, 600))
-	add_decor(Decor.BUSH, Vector2(900, 590))
-	add_decor(Decor.BAMBOO, Vector2(80, 620))
-	# Hàng rào tre phía nam mảnh vườn, mỗi đoạn rộng một ô.
-	for i: int in 10:
-		add_decor(Decor.FENCE, Vector2(120 + i * TerrainTiles.TILE_SIZE, 528), 38.0)
+func _is_path_cell(cell: Vector2i) -> bool:
+	var farm_right: int = FARM_CELL.x + 10  # cột đầu tiên sau mảnh vườn
+	var yard: bool = cell.x == YARD_PATH_COLUMN and cell.y >= 5 and cell.y <= MAIN_ROAD_ROW  # từ cửa nhà xuống
+	var main_road: bool = cell.y == MAIN_ROAD_ROW and cell.x >= farm_right and cell.x <= TRUNK_COLUMN  # lối mòn tới vườn
+	var trunk: bool = cell.x == TRUNK_COLUMN and cell.y >= GATE_ROWS[0] and cell.y <= GATE_ROWS[2]  # đường dọc ở cổng
+	var branches: bool = cell.x >= TRUNK_COLUMN and cell.x <= TRUNK_COLUMN + 1 and cell.y in GATE_ROWS  # ba nhánh ra cổng (dừng ở mép vùng chơi)
+	return yard or main_road or trunk or branches
 
 
 func _build_hud() -> void:
@@ -117,12 +162,21 @@ func _build_hud() -> void:
 	_status_label = Label.new()
 	_status_label.position = Vector2(60, 640)
 	_status_label.add_theme_font_size_override("font_size", 18)
+	_style_hint(_status_label)
 	layer.add_child(_status_label)
 	_feedback_label = Label.new()
 	_feedback_label.position = Vector2(60, 672)
 	_feedback_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
+	_style_hint(_feedback_label)
 	layer.add_child(_feedback_label)
+	_update_status()
 
 
 func _update_status() -> void:
 	_status_label.text = "Công cụ: %s   (1: Cuốc   2: Gieo hạt   3: Thu hoạch; chuột trái để dùng)" % controller.get_tool_name()
+
+
+## Chữ nằm trên nền cây rậm cần viền đen mới đọc được.
+func _style_hint(label: Label) -> void:
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 5)

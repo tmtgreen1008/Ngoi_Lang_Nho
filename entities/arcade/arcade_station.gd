@@ -23,6 +23,10 @@ func _ready() -> void:
 		sprite.offset = Vector2(-size.x / 2.0, -size.y)
 		add_child(sprite)
 		move_child(sprite, 0)  # Ảnh nằm dưới tên và vùng tương tác.
+	var shadow: Sprite2D = Shadow.create(size.x * 0.85)
+	shadow.position = Vector2(0, -2)
+	add_child(shadow)
+	move_child(shadow, 0)
 	_add_blocker(size)
 	interactable.position = Vector2(0, -size.y / 2.0)
 	_name_label.text = station_name

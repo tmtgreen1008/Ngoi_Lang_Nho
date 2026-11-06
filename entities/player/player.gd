@@ -36,6 +36,7 @@ var _target: InteractableComponent = null
 
 func _ready() -> void:
 	add_to_group(&"player")
+	_add_shadow()
 	_interaction_area.area_entered.connect(_on_area_entered)
 	_interaction_area.area_exited.connect(_on_area_exited)
 	EventBus.shop_opened.connect(func(_vendor: Resource) -> void: movement_locked = true)
@@ -118,3 +119,11 @@ func _animate(direction: Vector2, delta: float) -> void:
 ## Toạ độ khung hình đang hiển thị (cột, hàng); dùng cho kiểm thử.
 func get_frame_coords() -> Vector2i:
 	return _sprite.frame_coords
+
+
+## Bóng đổ bầu dục dưới chân (chân ở y = +14), đặt dưới sprite.
+func _add_shadow() -> void:
+	var shadow: Sprite2D = Shadow.create(22.0)
+	shadow.position = Vector2(0, 13)
+	add_child(shadow)
+	move_child(shadow, 0)

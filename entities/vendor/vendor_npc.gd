@@ -17,6 +17,10 @@ extends Node2D
 
 
 func _ready() -> void:
+	var shadow: Sprite2D = Shadow.create(24.0)
+	shadow.position = Vector2(0, 13)
+	add_child(shadow)
+	move_child(shadow, 0)
 	vendor.data = vendor_data
 	if vendor_data != null:
 		_name_label.text = vendor_data.display_name
