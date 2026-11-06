@@ -12,22 +12,28 @@ extends CharacterBody2D
 @onready var inventory: InventoryComponent = $Inventory
 @onready var _interaction_area: Area2D = $InteractionArea
 
+## Bị khoá khi cửa hàng đang mở.
 var movement_locked: bool = false
 
+var _in_transition: bool = false
 var _nearby: Array[InteractableComponent] = []
 var _target: InteractableComponent = null
 
 
 func _ready() -> void:
+	add_to_group(&"player")
 	_interaction_area.area_entered.connect(_on_area_entered)
 	_interaction_area.area_exited.connect(_on_area_exited)
 	EventBus.shop_opened.connect(func(_vendor: Resource) -> void: movement_locked = true)
 	EventBus.shop_closed.connect(func(_vendor: Resource) -> void: movement_locked = false)
+	# Đứng yên trong lúc chuyển map.
+	EventBus.scene_change_requested.connect(func(_path: String, _spawn: StringName) -> void: _in_transition = true)
+	EventBus.scene_changed.connect(func(_path: String) -> void: _in_transition = false)
 
 
 func _physics_process(_delta: float) -> void:
 	var direction := Vector2.ZERO
-	if not movement_locked:
+	if not movement_locked and not _in_transition:
 		direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = direction * speed
 	move_and_slide()
@@ -35,7 +41,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if movement_locked or not event.is_action_pressed("interact"):
+	if movement_locked or _in_transition or not event.is_action_pressed("interact"):
 		return
 	if _target != null and _target.can_interact():
 		EventBus.interaction_started.emit(_target)

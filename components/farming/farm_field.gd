@@ -13,11 +13,15 @@ signal plot_changed(cell: Vector2i)
 ## Vùng ô lưới được phép canh tác (toạ độ ô, không phải pixel).
 @export var field_area: Rect2i = Rect2i(0, 0, 10, 7)
 
+## Khoá để WorldStateManager nhớ vườn này khi người chơi rời map (duy nhất trong map).
+@export var persistent_key: StringName = &"farm_field"
+
 var _plots: Dictionary = {}  # Vector2i -> FarmPlot
 var _last_day: int = 1
 
 
 func _ready() -> void:
+	add_to_group(WorldStateManager.PERSISTENT_GROUP)
 	_last_day = TimeManager.day
 	EventBus.day_changed.connect(_on_day_changed)
 	EventBus.season_changed.connect(_on_season_changed)
@@ -116,10 +120,22 @@ func load_save_data(data: Dictionary) -> void:
 			plot.crop = ItemDatabase.get_item(crop_id) as CropItemData
 			plot.days_grown = int(entry.get("days", 0)) if plot.crop != null else 0
 		_plots[Vector2i(int(entry["x"]), int(entry["y"]))] = plot
+	# Trong lúc vắng mặt (đổi map, tắt game) thời gian vẫn trôi: bù lại số ngày đã qua.
+	_wither_out_of_season(TimeManager.season)
+	_on_day_changed(TimeManager.day)
 	for cell: Vector2i in old_cells:
 		plot_changed.emit(cell)
 	for cell: Vector2i in _plots:
 		plot_changed.emit(cell)
+
+
+## Giao diện cho WorldStateManager (xem world_state_manager.gd).
+func get_world_state() -> Dictionary:
+	return get_save_data()
+
+
+func apply_world_state(state: Dictionary) -> void:
+	load_save_data(state)
 
 
 ## Cây lớn theo số ngày đã trôi qua kể từ lần xử lý trước, nên nạp game
@@ -137,6 +153,11 @@ func _on_day_changed(day: int) -> void:
 
 
 func _on_season_changed(season: int, _year: int) -> void:
+	_wither_out_of_season(season)
+
+
+## Cây không hợp [param season] thì héo.
+func _wither_out_of_season(season: int) -> void:
 	for cell: Vector2i in _plots:
 		var plot: FarmPlot = _plots[cell]
 		if plot.is_planted() and not plot.crop.can_plant_in(season):

@@ -7,14 +7,15 @@ tách riêng trong `data/` để sửa số liệu mà không đụng code.
 ```
 res://
 ├─ project.godot
+├─ main.tscn / main.gd         # [có] Scene gốc: World + Player + HUD + ShopUI, nhờ SceneManager nạp map đầu
 ├─ core/                       # Hạ tầng dùng chung, không phụ thuộc gameplay
 │  ├─ autoload/
 │  │  ├─ event_bus.gd          # [có] Kênh signal toàn cục
 │  │  ├─ time_manager.gd       # [có] Đồng hồ, lịch, mùa
 │  │  ├─ item_database.gd      # [có] Tra ItemData theo id (tự quét data/items, data/crops)
 │  │  ├─ economy_manager.gd    # [có] Tiền của người chơi
-│  │  ├─ world_state_manager.gd   # [sau] Lưu trạng thái từng map khi chuyển scene
-│  │  ├─ scene_manager.gd         # [sau] Chuyển map, điểm spawn
+│  │  ├─ world_state_manager.gd   # [có] Nhớ trạng thái node "world_persistent" của từng map
+│  │  ├─ scene_manager.gd         # [có] Chuyển map (fade), giữ Player, đặt tại SpawnPoint
 │  │  └─ save_manager.gd          # [sau] Ghi/đọc file save
 │  └─ resources/               # Lớp Resource (định nghĩa dữ liệu)
 │     ├─ item_data.gd          # [có]
@@ -27,7 +28,8 @@ res://
 │  ├─ inventory/               # [có] inventory_component.gd
 │  ├─ farming/                 # [có] farm_field (logic), farm_view (vẽ), farm_tool_controller, farm_plot, farm_demo (main scene tạm)
 │  ├─ vendor/                  # [có] vendor_component.gd (kho hàng ngày, mua/bán)
-│  └─ interactable/            # [có] interactable_component.gd (Area2D, signal interacted)
+│  ├─ interactable/            # [có] interactable_component.gd (Area2D, signal interacted)
+│  └─ transition/              # [có] scene_exit.gd (lối ra), spawn_point.gd (điểm xuất hiện)
 │
 ├─ entities/                   # Thực thể trong thế giới = scene + script riêng
 │  ├─ player/                  # [có] player.tscn + player.gd (di chuyển, kho đồ, nhắm đối tượng)
@@ -35,10 +37,11 @@ res://
 │  └─ vendor/                  # [có] vendor_npc.tscn (dùng chung cho tạp hóa và thương lái)
 │
 ├─ maps/                       # Mỗi map là một scene độc lập
-│  ├─ sandbox/                 # [có] map thử nghiệm (main scene tạm)
-│  ├─ home/                    # Nhà, vườn (TileMap), chuồng trại
-│  ├─ grocery_store/           # Mở 6h–21h, hàng cố định
-│  └─ morning_market/          # Mở 5h–11h, hàng RNG theo ngày
+│  ├─ map_base.gd              # [có] Lớp nền map: nền, tường, add_spawn(), add_exit()
+│  ├─ sandbox/                 # [cũ] map thử nghiệm, đã được ba map thật thay thế (có thể xóa)
+│  ├─ home/                    # [có] Vườn (FarmField), giường, lối ra Tạp hóa/Chợ
+│  ├─ grocery_store/           # [có] Mở 6h–21h, hàng cố định
+│  └─ morning_market/          # [có] Mở 5h–11h, hàng RNG theo ngày
 │
 ├─ minigames/                  # Scene mini-game, trả kết quả qua EventBus.minigame_finished
 │  ├─ net_cafe/
