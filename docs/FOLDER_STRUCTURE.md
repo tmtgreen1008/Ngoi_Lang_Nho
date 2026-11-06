@@ -11,16 +11,18 @@ res://
 │  ├─ autoload/
 │  │  ├─ event_bus.gd          # [có] Kênh signal toàn cục
 │  │  ├─ time_manager.gd       # [có] Đồng hồ, lịch, mùa
+│  │  ├─ item_database.gd      # [có] Tra ItemData theo id (tự quét data/items, data/crops)
 │  │  ├─ world_state_manager.gd   # [sau] Lưu trạng thái từng map khi chuyển scene
 │  │  ├─ scene_manager.gd         # [sau] Chuyển map, điểm spawn
 │  │  └─ save_manager.gd          # [sau] Ghi/đọc file save
 │  └─ resources/               # Lớp Resource (định nghĩa dữ liệu)
 │     ├─ item_data.gd          # [có]
 │     ├─ crop_item_data.gd     # [có]
+│     ├─ inventory_slot.gd     # [có] Một ô kho (item + số lượng), dữ liệu runtime
 │     └─ vendor_data.gd        # [sau] Danh sách hàng, giờ mở cửa, hệ số giá
 │
 ├─ components/                 # Node độc lập gắn vào Entity (Composition over Inheritance)
-│  ├─ inventory/               # InventoryComponent, Slot
+│  ├─ inventory/               # [có] inventory_component.gd
 │  └─ interactable/            # InteractableComponent
 │
 ├─ entities/                   # Thực thể trong thế giới = scene + script riêng
