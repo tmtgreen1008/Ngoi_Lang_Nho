@@ -26,7 +26,7 @@ res://
 │
 ├─ components/                 # Node độc lập gắn vào Entity (Composition over Inheritance)
 │  ├─ inventory/               # [có] inventory_component.gd
-│  ├─ farming/                 # [có] farm_field (logic), farm_view (vẽ), farm_tool_controller, farm_plot, farm_demo (main scene tạm)
+│  ├─ farming/                 # [có] farm_field (logic), farm_view (vẽ), farm_tool_controller, farm_plot
 │  ├─ vendor/                  # [có] vendor_component.gd (kho hàng ngày, mua/bán)
 │  ├─ interactable/            # [có] interactable_component.gd (Area2D, signal interacted)
 │  └─ transition/              # [có] scene_exit.gd (lối ra), spawn_point.gd (điểm xuất hiện)
@@ -39,7 +39,6 @@ res://
 │
 ├─ maps/                       # Mỗi map là một scene độc lập
 │  ├─ map_base.gd              # [có] Lớp nền map: nền, tường, add_spawn(), add_exit()
-│  ├─ sandbox/                 # [cũ] map thử nghiệm, đã được ba map thật thay thế (có thể xóa)
 │  ├─ home/                    # [có] Vườn (FarmField), giường, lối ra Tạp hóa/Chợ
 │  ├─ entertainment/           # [có] Khu Giải trí: trạm Quán Net và Quán Bida
 │  ├─ grocery_store/           # [có] Mở 6h–21h, hàng cố định
@@ -53,9 +52,10 @@ res://
 │
 ├─ ui/                         # Giao diện, chỉ nghe EventBus
 │  ├─ hud/                     # [có] hud.gd (giờ, tiền, gợi ý tương tác, thông báo nhanh); thanh nhanh [sau]
+│  ├─ menu/                    # [có] start_menu.gd (Ván mới / Tiếp tục / Thoát)
 │  ├─ pause/                   # [có] pause_menu.gd (Esc: Tiếp tục / Lưu / Tải)
-│  ├─ shop/                    # [có] shop_ui.tscn dùng chung cho mọi Vendor, shop_demo (main scene tạm)
-│  └─ inventory/               # [có] inventory_ui, inventory_slot_ui, inventory_demo (main scene tạm)
+│  ├─ shop/                    # [có] shop_ui.tscn dùng chung cho mọi Vendor
+│  └─ inventory/               # [có] inventory_ui, inventory_slot_ui
 │
 ├─ data/                       # File .tres: toàn bộ số liệu game (không hardcode trong code)
 │  ├─ items/                   # lua.tres, ...
@@ -67,7 +67,8 @@ res://
 │  ├─ audio/
 │  └─ fonts/
 │
-└─ docs/                       # Tài liệu đồ án
+├─ tests/                      # [có] test_base.gd + 10 bài test + run_all.sh (xem README)
+└─ docs/                       # Tài liệu đồ án, screenshots/
 ```
 
 ## Quy tắc phụ thuộc
