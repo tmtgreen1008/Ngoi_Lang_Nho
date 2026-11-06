@@ -5,7 +5,7 @@ config_version=5
 
 config/name="Hương Quê"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-run/main_scene="res://ui/inventory/inventory_demo.tscn"
+run/main_scene="res://components/farming/farm_demo.tscn"
 
 [autoload]
 

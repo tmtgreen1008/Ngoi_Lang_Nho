@@ -23,6 +23,7 @@ res://
 │
 ├─ components/                 # Node độc lập gắn vào Entity (Composition over Inheritance)
 │  ├─ inventory/               # [có] inventory_component.gd
+│  ├─ farming/                 # [có] farm_field (logic), farm_view (vẽ), farm_tool_controller, farm_plot, farm_demo (main scene tạm)
 │  └─ interactable/            # InteractableComponent
 │
 ├─ entities/                   # Thực thể trong thế giới = scene + script riêng

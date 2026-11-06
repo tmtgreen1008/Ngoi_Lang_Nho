@@ -55,6 +55,8 @@ signal dialogue_requested(speaker_id: StringName, dialogue_id: StringName)
 signal tile_tilled(cell: Vector2i)
 signal crop_planted(cell: Vector2i, crop: CropItemData)
 signal crop_harvested(cell: Vector2i, crop: CropItemData)
+## Cây héo vì sang mùa không hợp (FarmField phát).
+signal crop_withered(cell: Vector2i, crop: CropItemData)
 signal animal_fed(animal_id: StringName)
 
 # --- Bản đồ & trạng thái thế giới -----------------------------------------------

@@ -6,6 +6,7 @@
 script = ExtResource("1_crop")
 grow_days = 4
 harvest_item_id = &"lua"
+harvest_amount = 3
 allowed_seasons = Array[int]([0, 1])
 id = &"hat_giong_lua"
 display_name = "Hạt giống lúa"

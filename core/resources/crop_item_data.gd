@@ -9,6 +9,8 @@ extends ItemData
 @export_range(1, 365, 1) var grow_days: int = 1
 ## Id của ItemData nhận được khi thu hoạch (vd: &"lua").
 @export var harvest_item_id: StringName = &""
+## Số vật phẩm nhận được mỗi lần thu hoạch.
+@export_range(1, 99, 1) var harvest_amount: int = 1
 ## Các mùa được phép gieo (giá trị của TimeManager.Season). Rỗng = mọi mùa.
 @export var allowed_seasons: Array[int] = []
 
