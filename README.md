@@ -150,6 +150,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_inventory` | Thêm/bớt, tràn kho, kéo/thả, chuyển kho, lưu/nạp qua JSON |
 | `test_farm_field` | Cuốc, gieo, lớn theo ngày, héo khi đổi mùa, thu hoạch, công cụ nối kho đồ |
 | `test_shop_logic` | Kho hàng theo ngày (xác định), mua/bán, giờ mở cửa, các lỗi |
+| `test_terrain` | Sheet nền đất 48x48, lát nền bốn map, đổi toạ độ chuột sang ô vườn |
 | `test_inventory_ui` | Giao diện kho, kéo/thả giữa hai kho |
 | `test_shop_ui` | Giao diện cửa hàng dùng chung, nút mua/bán, khoá khi đóng cửa |
 | `test_game_flow` | Luồng chơi trọn vẹn qua các map, vườn được nhớ và tự bù ngày |

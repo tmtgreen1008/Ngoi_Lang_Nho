@@ -9,6 +9,7 @@ res://
 ├─ project.godot
 ├─ main.tscn / main.gd         # [có] Scene gốc: World + Player + HUD + ShopUI, nhờ SceneManager nạp map đầu
 ├─ core/                       # Hạ tầng dùng chung, không phụ thuộc gameplay
+│  ├─ terrain_tiles.gd         # [có] Sheet nền đất 48x48 (TerrainTiles): enum ô, tileset, vùng nguồn
 │  ├─ autoload/
 │  │  ├─ event_bus.gd          # [có] Kênh signal toàn cục
 │  │  ├─ time_manager.gd       # [có] Đồng hồ, lịch, mùa
@@ -63,11 +64,12 @@ res://
 │  └─ vendors/                 # tap_hoa.tres, thuong_lai_rau.tres, ...
 │
 ├─ assets/
-│  ├─ art/
+│  ├─ art/                     # [có] tiles/terrain_tiles.png (nền đất, đã nối vào game), palette.hex, source/ (ảnh gốc)
 │  ├─ audio/
 │  └─ fonts/
 │
-├─ tests/                      # [có] test_base.gd + 10 bài test + run_all.sh (xem README)
+├─ tests/                      # [có] test_base.gd + 11 bài test + run_all.sh (xem README)
+├─ tools/                      # [có] slice_sheet.gd (cắt/thu nhỏ/quy về bảng màu ảnh AI)
 └─ docs/                       # Tài liệu đồ án, screenshots/
 ```
 

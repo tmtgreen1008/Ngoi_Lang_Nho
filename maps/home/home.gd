@@ -30,8 +30,8 @@ func _build() -> void:
 	field.name = "FarmField"
 	add_child(field)
 	view = FarmView.new()
-	view.position = Vector2(60, 130)
-	view.scale = Vector2(2, 2)
+	# Căn theo lưới ô 48px (cột 2, hàng 3) để các ô vườn khớp với ô nền, không phóng to để pixel không méo.
+	view.position = Vector2(2, 3) * TerrainTiles.TILE_SIZE
 	add_child(view)
 	view.setup(field)
 
@@ -47,6 +47,23 @@ func _build() -> void:
 	controller.tool_changed.connect(func(_t: FarmToolController.Tool) -> void: _update_status())
 	controller.feedback.connect(func(text: String) -> void: _feedback_label.text = text)
 	_update_status()
+
+
+## Nền khu nhà: cỏ rải hoa, cùng con đường đất nối chỗ xuất hiện với ba lối ra phía đông.
+func _tile_for_cell(cell: Vector2i) -> TerrainTiles.Tile:
+	if _is_path_cell(cell):
+		return TerrainTiles.Tile.PATH
+	# Hoa mọc rải rác, vị trí cố định theo ô (không ngẫu nhiên mỗi lần vẽ).
+	if (cell.x * 7 + cell.y * 13) % 11 == 0:
+		return TerrainTiles.Tile.GRASS_FLOWERS
+	return TerrainTiles.Tile.GRASS
+
+
+func _is_path_cell(cell: Vector2i) -> bool:
+	var on_trunk: bool = cell.x == 23 and cell.y >= 3 and cell.y <= 11  # dọc theo cột các lối ra
+	var on_branch: bool = cell.x >= 23 and cell.y in [4, 7, 10]  # ba nhánh ra mép phải
+	var on_main: bool = cell.y == 8 and cell.x >= 12 and cell.x <= 23  # từ vườn tới ngã ba
+	return on_trunk or on_branch or on_main
 
 
 func _unhandled_input(event: InputEvent) -> void:

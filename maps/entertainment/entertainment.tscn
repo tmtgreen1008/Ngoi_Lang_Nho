@@ -6,3 +6,4 @@
 script = ExtResource("1_s")
 map_title = "Khu Giải trí"
 background_color = Color(0.2, 0.2, 0.32, 1)
+floor_tile = 6

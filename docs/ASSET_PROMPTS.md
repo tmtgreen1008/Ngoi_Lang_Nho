@@ -19,7 +19,13 @@ Mọi prompt dùng chung một khối **STYLE** và một **bảng 17 màu** đ�
    - Xoá nền hồng tím #FF00FF thành trong suốt.
    - **Đưa về bảng màu chuẩn** `assets/art/palette.hex` (Aseprite/LibreSprite: *Palette > Load Palette*, rồi *Color Mode > Indexed*; hoặc GIMP: *Image > Mode > Indexed > Use custom palette*). Bước này làm các ảnh khác lượt nhau vẫn cùng màu.
    - Lưu PNG vào đúng đường dẫn trong bảng.
+   - **Đã có công cụ làm các bước trên**: `tools/slice_sheet.gd`. Ví dụ với sheet nền đất (cắt vùng ảnh, chia lưới 4x2, thu nhỏ mỗi ô về 48x48, quy về bảng màu):
+     `godot --headless --path . -s tools/slice_sheet.gd -- in=anh_tai_ve.png out=assets/art/tiles/terrain_tiles.png cols=4 rows=2 cell=48,48 palette=assets/art/palette.hex`
+     Với sheet có nền hồng tím, thêm `key=magenta` để xoá nền. Xem phần đầu `tools/slice_sheet.gd` để biết hết tham số.
+   - **Tải ảnh gốc từ ChatGPT** (nút tải xuống), đừng chụp màn hình: chụp màn hình bị nén và lẫn giao diện.
 6. Gửi lại cho tôi các file đã xử lý; tôi sẽ nối vào game (thay các khối màu hiện tại) và viết script cắt sheet nếu cần.
+
+**Kích thước ô: dùng 48x48, không phải 32x32.** Thử với sheet nền đất đầu tiên cho thấy AI vẽ khoảng 48 "pixel" mỗi ô dù prompt ghi 32; thu về 32 làm mất gần hết chi tiết (nước, hoa, vân gỗ), còn 48 giữ nguyên. Bảng kích thước bên dưới chỉ là gợi ý ban đầu: sau khi có ảnh của từng nhóm, ta xem mật độ pixel thực tế rồi chốt cỡ cuối, các sprite (người, vật) sẽ theo tỷ lệ với ô 48.
 
 **Giới hạn cần biết:** AI hay vẽ lệch ô lưới, sai số ô, hoặc sai chữ có dấu tiếng Việt. Vì vậy: ảnh nào có chữ (logo) được yêu cầu **không chứa chữ**, chữ sẽ thêm bằng font trong game; sheet nhiều ô có thể phải tạo lại hoặc cắt tay.
 
@@ -29,7 +35,7 @@ Mọi prompt dùng chung một khối **STYLE** và một **bảng 17 màu** đ�
 
 | # | Asset | File lưu (trong `assets/art/`) | Kích thước cuối | Giai đoạn |
 |---|---|---|---|---|
-| 1 | Nền đất (8 ô) | `tiles/terrain_tiles.png` | 128x64 (lưới 4x2, ô 32x32) | 1 |
+| 1 | Nền đất (8 ô) | `tiles/terrain_tiles.png` | 192x96 (lưới 4x2, ô 48x48) | 1 |
 | 2 | Cây lúa 3 giai đoạn | `crops/rice_stages.png` | 96x32 (3 ô 32x32) | 1 |
 | 3 | Player (4 hướng x 3 khung) | `characters/player_sheet.png` | 96x192 (lưới 3x4, ô 32x48) | 1 |
 | 4 | Bà Tư, chủ tạp hóa | `characters/npc_ba_tu.png` | 64x48 (2 khung 32x48) | 1 |
@@ -97,7 +103,7 @@ STYLE: 2D top-down pixel art for a cozy Vietnamese countryside life-sim, inspire
 Dùng cho 4 map và mảnh vườn. Phải **lặp liền mạch** (seamless).
 
 ```
-Create a pixel-art tileset sheet of 8 square seamless terrain tiles arranged in a clean grid of 4 columns by 2 rows, equal square cells with no gaps and no grid lines drawn. Each tile must tile seamlessly with itself on all four edges. Tiles, left to right, top row then bottom row: (1) plain short grass in #5B9A3C with a few darker #2F5D34 and lighter #6FAE3F pixel tufts; (2) the same grass with a few tiny white #FFF8E7 and yellow #E8C547 wildflowers; (3) packed dirt village path in #C9A66B with small #A67C52 pebbles and #7A5230 specks; (4) freshly tilled farm soil in #7A5230 with parallel darker #4E3320 furrows, ready for planting; (5) wooden plank floor of a village shop, horizontal planks in #A67C52 with #7A5230 gaps and a few knots; (6) market ground of trampled earth in #C9A66B with scattered straw strokes in #E8C547 and a few dark #4E3320 footprints; (7) internet-cafe floor, dark checkered tiles alternating #2B2B33 and #3E5C8A with subtle lighter edges; (8) calm pond water in #5FA8A8 with a few lighter #FFF8E7 ripple pixels. Top-down view, no outlines on terrain, flat colors only. STYLE: 2D top-down pixel art for a cozy Vietnamese countryside life-sim, inspired by the feel of Stardew Valley but with its own identity (Red River delta village, sunny spring). Chunky, clearly visible pixels, crisp hard edges, NO anti-aliasing, NO blur, NO gradients, NO photo-realism, NO 3D rendering. Flat shading with at most 2 shade steps per color. Soft warm afternoon light from the top-left. Use ONLY this limited warm earthy palette: #2A1F1A #4E3320 #7A5230 #A67C52 #C9A66B #F1E6C8 #FFF8E7 #E8C547 #D9803A #B5472F #E8B88A #6FAE3F #5B9A3C #2F5D34 #5FA8A8 #3E5C8A #2B2B33. Mood: warm, peaceful, nostalgic. No text, no letters, no watermark, no signature. Final game size will be 32x32 pixels per tile, so keep detail simple and bold.
+Create a pixel-art tileset sheet of 8 square seamless terrain tiles arranged in a clean grid of 4 columns by 2 rows, equal square cells with no gaps and no grid lines drawn. Each tile must tile seamlessly with itself on all four edges. Tiles, left to right, top row then bottom row: (1) plain short grass in #5B9A3C with a few darker #2F5D34 and lighter #6FAE3F pixel tufts; (2) the same grass with a few tiny white #FFF8E7 and yellow #E8C547 wildflowers; (3) packed dirt village path in #C9A66B with small #A67C52 pebbles and #7A5230 specks; (4) freshly tilled farm soil in #7A5230 with parallel darker #4E3320 furrows, ready for planting; (5) wooden plank floor of a village shop, horizontal planks in #A67C52 with #7A5230 gaps and a few knots; (6) market ground of trampled earth in #C9A66B with scattered straw strokes in #E8C547 and a few dark #4E3320 footprints; (7) internet-cafe floor, dark checkered tiles alternating #2B2B33 and #3E5C8A with subtle lighter edges; (8) calm pond water in #5FA8A8 with a few lighter #FFF8E7 ripple pixels. Top-down view, no outlines on terrain, flat colors only. STYLE: 2D top-down pixel art for a cozy Vietnamese countryside life-sim, inspired by the feel of Stardew Valley but with its own identity (Red River delta village, sunny spring). Chunky, clearly visible pixels, crisp hard edges, NO anti-aliasing, NO blur, NO gradients, NO photo-realism, NO 3D rendering. Flat shading with at most 2 shade steps per color. Soft warm afternoon light from the top-left. Use ONLY this limited warm earthy palette: #2A1F1A #4E3320 #7A5230 #A67C52 #C9A66B #F1E6C8 #FFF8E7 #E8C547 #D9803A #B5472F #E8B88A #6FAE3F #5B9A3C #2F5D34 #5FA8A8 #3E5C8A #2B2B33. Mood: warm, peaceful, nostalgic. No text, no letters, no watermark, no signature. Final game size will be 48x48 pixels per tile: design the art on a 48x48 pixel grid per tile (each visible pixel block is one art pixel), keep detail simple and bold.
 ```
 
 #### 2. Cây lúa 3 giai đoạn (`crops/rice_stages.png`)
