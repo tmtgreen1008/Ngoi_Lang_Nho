@@ -101,7 +101,9 @@ func _refresh_info() -> void:
 
 func _on_save_pressed() -> void:
 	var error: String = SaveManager.save_game()
-	_message_label.text = error if not error.is_empty() else "Đã lưu game."
+	var failed: bool = not error.is_empty()
+	_message_label.text = error if failed else "Đã lưu game."
+	_message_label.add_theme_color_override("font_color", UiTheme.notice_color(&"error" if failed else &"success"))
 	_refresh_info()
 
 
@@ -112,6 +114,7 @@ func _on_load_pressed() -> void:
 	if not error.is_empty():
 		open()
 		_message_label.text = error
+		_message_label.add_theme_color_override("font_color", UiTheme.notice_color(&"error"))
 
 
 func _add_button(parent: Node, text: String, on_pressed: Callable) -> Button:

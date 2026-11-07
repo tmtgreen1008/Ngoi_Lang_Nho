@@ -55,6 +55,8 @@ signal dialogue_requested(speaker_id: StringName, dialogue_id: StringName)
 signal interaction_prompt_changed(text: String)
 ## Thông báo nhanh cho người chơi (HUD nghe và hiện vài giây).
 signal toast_requested(text: String)
+## Thông báo có phân loại: [param kind] là &"success" (xanh), &"error" (đỏ) hoặc &"info" (nâu).
+signal notice_requested(text: String, kind: StringName)
 
 # --- Nông trại & chăn nuôi ------------------------------------------------------
 

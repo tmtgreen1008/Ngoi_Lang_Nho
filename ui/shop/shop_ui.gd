@@ -7,6 +7,7 @@ extends PanelContainer
 ## rồi hiển thị lỗi trả về. UI tự vẽ lại khi nghe EventBus (tiền, kho, giờ).
 
 @onready var _title_label: Label = $Margin/VBox/TitleLabel
+@onready var _status_label: Label = $Margin/VBox/StatusLabel
 @onready var _info_label: Label = $Margin/VBox/InfoLabel
 @onready var _tabs: TabContainer = $Margin/VBox/Tabs
 @onready var _buy_list: VBoxContainer = $Margin/VBox/Tabs/BuyTab/BuyList
@@ -20,7 +21,6 @@ var _buyer: InventoryComponent
 
 func _ready() -> void:
 	theme = UiTheme.get_theme()
-	_message_label.add_theme_color_override("font_color", UiTheme.ACCENT_RED)
 	_tabs.set_tab_title(0, "Mua")
 	_tabs.set_tab_title(1, "Bán")
 	_close_button.pressed.connect(close)
@@ -74,8 +74,10 @@ func _refresh() -> void:
 	var data: VendorData = _vendor.data
 	var is_open: bool = _vendor.is_open()
 	_title_label.text = data.display_name
-	_info_label.text = "%s  |  Mở cửa %s-%s giờ  |  Tiền: %d đ" % [
-		"ĐANG MỞ" if is_open else "ĐÃ ĐÓNG CỬA",
+	# Trạng thái mở/đóng ở dòng riêng, có màu (xanh/đỏ); giờ mở cửa và tiền ở dòng dưới.
+	_status_label.text = "ĐANG MỞ" if is_open else "ĐÃ ĐÓNG CỬA"
+	_status_label.add_theme_color_override("font_color", UiTheme.notice_color(&"success" if is_open else &"error"))
+	_info_label.text = "Mở cửa %s - %s giờ   |   Tiền: %d đ" % [
 		_format_hour(data.open_hour),
 		_format_hour(data.close_hour),
 		EconomyManager.money,
@@ -90,7 +92,7 @@ func _rebuild_buy_list(is_open: bool) -> void:
 	for entry: VendorStockEntry in _vendor.stock:
 		var price: int = data.get_buy_price(entry.item)
 		var stock_text: String = "" if entry.is_unlimited() else "còn %d" % entry.amount
-		var row: HBoxContainer = _make_row(entry.item.display_name, "%d đ  %s" % [price, stock_text], entry.item.icon)
+		var row: HBoxContainer = _make_row(entry.item.display_name, "%d đ  %s" % [price, stock_text], entry.item.icon, entry.item.description)
 		for count: int in [1, 5]:
 			var can_buy: bool = is_open and entry.has_stock(count) and EconomyManager.can_afford(price * count)
 			row.add_child(_make_button("Mua %d" % count, can_buy, _on_buy_pressed.bind(entry.item, count)))
@@ -112,7 +114,7 @@ func _rebuild_sell_list(is_open: bool) -> void:
 		seen[slot.item.id] = true
 		var owned: int = _buyer.count_of(slot.item)
 		var price: int = data.get_sell_price(slot.item)
-		var row: HBoxContainer = _make_row(slot.item.display_name, "%d đ  (có %d)" % [price, owned], slot.item.icon)
+		var row: HBoxContainer = _make_row(slot.item.display_name, "%d đ  (có %d)" % [price, owned], slot.item.icon, slot.item.description)
 		row.add_child(_make_button("Bán 1", is_open, _on_sell_pressed.bind(slot.item, 1)))
 		row.add_child(_make_button("Bán hết", is_open, _on_sell_pressed.bind(slot.item, owned)))
 		_sell_list.add_child(row)
@@ -122,15 +124,15 @@ func _rebuild_sell_list(is_open: bool) -> void:
 
 func _on_buy_pressed(item: ItemData, count: int) -> void:
 	var error: String = _vendor.buy(item, count, _buyer)
-	_message_label.text = error if not error.is_empty() else "Đã mua %d %s." % [count, item.display_name]
+	_set_message(error if not error.is_empty() else "Đã mua %d %s." % [count, item.display_name], not error.is_empty())
 
 
 func _on_sell_pressed(item: ItemData, count: int) -> void:
 	var error: String = _vendor.sell(item, count, _buyer)
-	_message_label.text = error if not error.is_empty() else "Đã bán %d %s." % [count, item.display_name]
+	_set_message(error if not error.is_empty() else "Đã bán %d %s." % [count, item.display_name], not error.is_empty())
 
 
-func _make_row(name_text: String, detail_text: String, icon: Texture2D = null) -> HBoxContainer:
+func _make_row(name_text: String, detail_text: String, icon: Texture2D = null, tooltip: String = "") -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	if icon != null:
@@ -144,6 +146,10 @@ func _make_row(name_text: String, detail_text: String, icon: Texture2D = null) -
 	var name_label := Label.new()
 	name_label.text = name_text
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Trỏ chuột vào tên hiện mô tả vật phẩm.
+	if not tooltip.is_empty():
+		name_label.mouse_filter = Control.MOUSE_FILTER_PASS
+		name_label.tooltip_text = tooltip
 	row.add_child(name_label)
 	var detail_label := Label.new()
 	detail_label.text = detail_text
@@ -178,3 +184,9 @@ static func _format_hour(hour_float: float) -> String:
 	var hours: int = int(hour_float)
 	var minutes: int = roundi((hour_float - hours) * 60.0)
 	return str(hours) if minutes == 0 else "%d:%02d" % [hours, minutes]
+
+
+## Dòng thông báo dưới danh sách: đỏ khi lỗi, xanh khi thành công.
+func _set_message(text: String, is_error: bool) -> void:
+	_message_label.text = text
+	_message_label.add_theme_color_override("font_color", UiTheme.notice_color(&"error" if is_error else &"success"))

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://ui/shop/shop_ui.gd" id="1_shop"]
 
 [node name="ShopUI" type="PanelContainer"]
-custom_minimum_size = Vector2(520, 420)
+custom_minimum_size = Vector2(520, 0)
 script = ExtResource("1_shop")
 
 [node name="Margin" type="MarginContainer" parent="."]
@@ -23,13 +23,18 @@ theme_override_font_sizes/font_size = 22
 text = "Cửa hàng"
 horizontal_alignment = 1
 
+[node name="StatusLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 1
+
 [node name="InfoLabel" type="Label" parent="Margin/VBox"]
 layout_mode = 2
 horizontal_alignment = 1
 
 [node name="Tabs" type="TabContainer" parent="Margin/VBox"]
 layout_mode = 2
-size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 200)
 current_tab = 0
 
 [node name="BuyTab" type="ScrollContainer" parent="Margin/VBox/Tabs"]

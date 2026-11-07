@@ -42,7 +42,7 @@ func run() -> void:
 	var rect: Rect2 = home.playable_rect
 
 	# --- tên map: thông báo, không còn chữ nổi trên nền ---
-	check("vào map hiện thông báo tên 'Khu nhà'", hud._toast_label.visible and hud._toast_label.text == "Khu nhà")
+	check("vào map hiện thông báo tên 'Khu nhà' (màu nâu thông tin, không đỏ)", hud._toast_label.visible and hud._toast_label.text == "Khu nhà" and hud._toast_label.get_theme_color("font_color") == load("res://core/ui_theme.gd").INK)
 	var floating: int = 0
 	for child: Node in home.get_children():
 		if child is Label:
@@ -163,7 +163,7 @@ func run() -> void:
 	for i: int in 4:
 		await press_action("interact")
 	check("ngủ 4 lần: sang 4 ngày mới", tm.day == days_before + 4)
-	check("báo thông báo sau khi ngủ", hud._toast_label.text.begins_with("Bạn ngủ"))
+	check("báo thông báo sau khi ngủ, màu xanh thành công", hud._toast_label.text.begins_with("Bạn ngủ") and hud._toast_label.get_theme_color("font_color") == load("res://core/ui_theme.gd").SUCCESS_GREEN)
 
 	player.position = interior.get_exit_position("home.tscn")
 	await wait(1.0)

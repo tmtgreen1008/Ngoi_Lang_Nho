@@ -3,10 +3,10 @@ extends RefCounted
 ## Giao diện chung kiểu giấy và gỗ: khung giấy 9-slice, nút 3 trạng thái, icon HUD.
 ## Ảnh lấy từ assets/art/ui/ (panel_paper.png, buttons.png, hud_icons.png).
 ##
-## Gắn [method get_theme] vào GỐC của một khối giao diện nền sáng (cửa hàng, menu, mini-game):
-##   panel.theme = UiTheme.get_theme()
-## Chữ trong khối đó tự đổi sang nâu đậm cho đọc được trên giấy. KHÔNG gắn cho khối chữ
-## trắng viền đen nằm trên nền game (HUD, nhãn trên map).
+## Gắn [method get_theme] vào GỐC của một khối giao diện nền giấy (cửa hàng, menu, mini-game,
+## các bảng HUD): panel.theme = UiTheme.get_theme()
+## Chữ trong khối đó tự đổi sang nâu đậm cho đọc được trên giấy. Chữ đặt thẳng lên nền game
+## (không có bảng giấy) thì phải trắng viền đen.
 
 ## Icon trong sheet hud_icons.png (lưới 4 cột x 2 hàng, ô 32x32), theo thứ tự ảnh.
 enum HudIcon { COIN, CLOCK, SPRING, SUMMER, AUTUMN, WINTER, KEY_E }
@@ -24,7 +24,20 @@ const INK_SOFT := Color("#4E3320")
 const PAPER_LIGHT := Color("#FFF8E7")
 const ACCENT_RED := Color("#B5472F")
 
+const SUCCESS_GREEN := Color("#2F5D34")
+
 static var _theme: Theme
+
+
+## Màu chữ của thông báo trên nền giấy theo loại: &"success" xanh lá đậm, &"error" đỏ,
+## còn lại (&"info") nâu đậm.
+static func notice_color(kind: StringName) -> Color:
+	match kind:
+		&"success":
+			return SUCCESS_GREEN
+		&"error":
+			return ACCENT_RED
+	return INK
 
 
 ## Theme dùng chung (tạo một lần).
@@ -45,6 +58,18 @@ static func hud_icon(icon: HudIcon) -> Texture2D:
 ## Icon mùa ứng với giá trị TimeManager.Season (0 Xuân, 1 Hạ, 2 Thu, 3 Đông).
 static func season_icon(season: int) -> Texture2D:
 	return hud_icon(([HudIcon.SPRING, HudIcon.SUMMER, HudIcon.AUTUMN, HudIcon.WINTER] as Array)[clampi(season, 0, 3)])
+
+
+## Khung giấy gọn cho HUD trên nền game: viền 24px giữ nguyên, lề nội dung nhỏ để bảng thấp.
+static func hud_panel_style() -> StyleBoxTexture:
+	var style := StyleBoxTexture.new()
+	style.texture = load(PANEL_PATH)
+	style.set_texture_margin_all(24)
+	style.content_margin_left = 22
+	style.content_margin_right = 22
+	style.content_margin_top = 12
+	style.content_margin_bottom = 12
+	return style
 
 
 static func _build() -> Theme:
@@ -88,6 +113,7 @@ static func _build() -> Theme:
 	tab_panel.set_corner_radius_all(4)
 	tab_panel.set_content_margin_all(6)
 	theme.set_stylebox("panel", "TabContainer", tab_panel)
+	theme.set_font_size("font_size", "TabContainer", 16)
 	theme.set_color("font_selected_color", "TabContainer", INK)
 	theme.set_color("font_unselected_color", "TabContainer", INK_SOFT)
 	theme.set_color("font_hovered_color", "TabContainer", INK)

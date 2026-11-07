@@ -71,6 +71,7 @@ func run() -> void:
 	check("đồng hồ chạy lại", tm.is_running())
 	check("game đã giải phóng, host rảnh", not host.is_active() and not is_instance_valid(game))
 	check("toast tóm tắt kết quả", hud._toast_label.visible and hud._toast_label.text.contains("Quán Net") and hud._toast_label.text.contains("+1 đ"))
+	check("thắng tiền: toast màu xanh thành công", hud._toast_label.get_theme_color("font_color") == load("res://core/ui_theme.gd").SUCCESS_GREEN)
 	await shot("minigames_toast.png")
 	Input.action_press("move_right")
 	await wait(0.3)
@@ -84,6 +85,7 @@ func run() -> void:
 	await press_action("interact")
 	check("hết tiền: không vào được, giữ nguyên tiền", not host.is_active() and economy.money == 3)
 	check("hết tiền: có thông báo lý do", hud._toast_label.text == "Không đủ tiền: cần 5 đ.")
+	check("hết tiền: toast màu đỏ báo lỗi", hud._toast_label.get_theme_color("font_color") == load("res://core/ui_theme.gd").ACCENT_RED)
 	economy.earn(100)
 
 	# --- Quán Bida ---

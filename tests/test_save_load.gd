@@ -117,6 +117,7 @@ func run() -> void:
 	check("đủ 3 nút", buttons.has("Tiếp tục") and buttons.has("Lưu game") and buttons.has("Tải game"))
 	buttons["Lưu game"].pressed.emit()
 	check("lưu qua menu tạo slot1 và báo thành công", sv.has_save(&"slot1") and menu._message_label.text == "Đã lưu game.")
+	check("báo lưu thành công bằng chữ xanh", menu._message_label.get_theme_color("font_color") == load("res://core/ui_theme.gd").SUCCESS_GREEN)
 	check("nút Tải bật sau khi có bản lưu", not buttons["Tải game"].disabled)
 	var saved_money: int = economy.money
 	await press_action("ui_cancel")

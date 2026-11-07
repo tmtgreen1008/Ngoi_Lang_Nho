@@ -45,7 +45,7 @@ func _build() -> void:
 
 func _on_bed_used(_interactor: Node) -> void:
 	TimeManager.sleep_until_morning()
-	EventBus.toast_requested.emit("Bạn ngủ một giấc ngon. Sang ngày mới!")
+	EventBus.notice_requested.emit("Bạn ngủ một giấc ngon. Sang ngày mới!", &"success")
 
 
 func _draw() -> void:

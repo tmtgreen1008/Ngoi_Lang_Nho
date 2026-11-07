@@ -27,6 +27,7 @@ func run() -> void:
 	tm.load_save_data({})
 	economy.load_save_data({})
 
+	var ui_theme: GDScript = load("res://core/ui_theme.gd")
 	var vendor_script: GDScript = load("res://components/vendor/vendor_component.gd")
 	var inventory_script: GDScript = load("res://components/inventory/inventory_component.gd")
 	var grocery: Node = vendor_script.new()
@@ -57,7 +58,15 @@ func run() -> void:
 	check("nút Mua 1 bật", buy_button != null and not buy_button.disabled)
 	buy_button.pressed.emit()
 	check("bấm nút mua: trừ tiền, thêm hàng", economy.money == 92 and inv.count_of(db.get_item(&"mi_tom")) == 1)
-	check("hiện thông báo thành công", shop._message_label.text == "Đã mua 1 Mì tôm.")
+	check("hiện thông báo thành công bằng chữ xanh", shop._message_label.text == "Đã mua 1 Mì tôm." and shop._message_label.get_theme_color("font_color") == ui_theme.SUCCESS_GREEN)
+	check("trạng thái ĐANG MỞ màu xanh, giờ mở cửa ở dòng riêng", shop._status_label.text == "ĐANG MỞ" and shop._status_label.get_theme_color("font_color") == ui_theme.SUCCESS_GREEN and shop._info_label.text.begins_with("Mở cửa 6 - 21 giờ"))
+	var mi_tom_label: Label = null
+	for row: Node in shop._buy_list.get_children():
+		for child: Node in row.get_children():
+			if child is Label and child.text == "Mì tôm":
+				mi_tom_label = child
+	check("trỏ vào tên vật phẩm hiện mô tả", mi_tom_label != null and mi_tom_label.tooltip_text == db.get_item(&"mi_tom").description and not mi_tom_label.tooltip_text.is_empty())
+	check("vùng danh sách không bị kéo giãn: cao đúng bằng nội dung (<= 215)", shop._tabs.size.y <= 215.0)
 	check("nhãn tiền được cập nhật", shop._info_label.text.contains("92"))
 	check("tab Bán của tạp hóa báo không thu mua", shop._sell_list.get_child(0).text.contains("không thu mua"))
 
@@ -74,7 +83,7 @@ func run() -> void:
 
 	tm.advance_minutes(5 * 60)  # 11:00: chợ đóng
 	await shot("shop_market_closed.png")
-	check("hiện ĐÃ ĐÓNG CỬA", shop._info_label.text.begins_with("ĐÃ ĐÓNG CỬA"))
+	check("hiện ĐÃ ĐÓNG CỬA bằng chữ đỏ ở dòng trạng thái", shop._status_label.text == "ĐÃ ĐÓNG CỬA" and shop._status_label.get_theme_color("font_color") == ui_theme.ACCENT_RED)
 	var all_disabled: bool = true
 	var buttons: Array = find_buttons(shop._buy_list) + find_buttons(shop._sell_list)
 	for button in buttons:

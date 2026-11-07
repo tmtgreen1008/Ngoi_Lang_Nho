@@ -16,11 +16,18 @@ var index: int = -1
 var _icon: TextureRect
 var _name_label: Label
 var _amount_label: Label
+var _normal_style: StyleBoxFlat
+var _hover_style: StyleBoxFlat
 
 
 func _init() -> void:
 	custom_minimum_size = SLOT_SIZE
-	add_theme_stylebox_override("panel", _make_style(Color(0.20, 0.15, 0.10), Color(0.45, 0.33, 0.20)))
+	_normal_style = _make_style(Color(0.20, 0.15, 0.10), Color(0.45, 0.33, 0.20))
+	_hover_style = _make_style(Color(0.28, 0.21, 0.13), Color(0.95, 0.78, 0.40))
+	add_theme_stylebox_override("panel", _normal_style)
+	# Viền sáng khi trỏ chuột vào ô (hoặc kéo đồ qua ô).
+	mouse_entered.connect(_set_highlight.bind(true))
+	mouse_exited.connect(_set_highlight.bind(false))
 
 	_icon = TextureRect.new()
 	_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -34,6 +41,7 @@ func _init() -> void:
 	_name_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_name_label.add_theme_font_size_override("font_size", 12)
+	_name_label.add_theme_color_override("font_color", Color.WHITE)
 	_name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_name_label)
 
@@ -41,9 +49,10 @@ func _init() -> void:
 	_amount_label = Label.new()
 	_amount_label.size_flags_horizontal = Control.SIZE_SHRINK_END
 	_amount_label.size_flags_vertical = Control.SIZE_SHRINK_END
-	_amount_label.add_theme_font_size_override("font_size", 13)
+	_amount_label.add_theme_font_size_override("font_size", 14)
+	_amount_label.add_theme_color_override("font_color", Color.WHITE)
 	_amount_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	_amount_label.add_theme_constant_override("outline_size", 4)
+	_amount_label.add_theme_constant_override("outline_size", 5)
 	_amount_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_amount_label)
 
@@ -113,3 +122,8 @@ static func _make_style(fill: Color, border: Color) -> StyleBoxFlat:
 	style.set_corner_radius_all(6)
 	style.set_content_margin_all(4)
 	return style
+
+
+## Bật/tắt viền sáng của ô.
+func _set_highlight(on: bool) -> void:
+	add_theme_stylebox_override("panel", _hover_style if on else _normal_style)

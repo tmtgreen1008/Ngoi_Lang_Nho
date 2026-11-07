@@ -33,7 +33,7 @@ func _on_requested(scene_path: String) -> void:
 		push_error("MinigameHost: khong nap duoc mini-game '%s'" % scene_path)
 		return
 	if not EconomyManager.can_afford(game.entry_fee):
-		EventBus.toast_requested.emit("Không đủ tiền: cần %d đ." % game.entry_fee)
+		EventBus.notice_requested.emit("Không đủ tiền: cần %d đ." % game.entry_fee, &"error")
 		game.free()
 		return
 
@@ -59,7 +59,7 @@ func _on_finished(minigame_id: StringName, result: Dictionary) -> void:
 	if _clock_was_running:
 		TimeManager.start()
 	game.queue_free()
-	EventBus.toast_requested.emit(_summary(game.title, money, minutes))
+	EventBus.notice_requested.emit(_summary(game.title, money, minutes), &"success" if money > _fee_paid else &"info")
 
 
 func _summary(title: String, money: int, minutes: int) -> String:

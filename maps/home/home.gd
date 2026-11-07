@@ -34,7 +34,8 @@ var field: FarmField
 var view: FarmView
 var controller: FarmToolController
 
-var _status_label: Label
+var _tool_buttons: Dictionary = {}  # FarmToolController.Tool -> Button
+var _feedback_panel: PanelContainer
 var _feedback_label: Label
 
 
@@ -86,7 +87,7 @@ func _build_garden() -> void:
 	if player != null:
 		controller.inventory = player.get("inventory")
 	controller.tool_changed.connect(func(_t: FarmToolController.Tool) -> void: _update_status())
-	controller.feedback.connect(func(text: String) -> void: _feedback_label.text = text)
+	controller.feedback.connect(_show_feedback)
 
 	# Hàng rào tre phía nam mảnh vườn, mỗi đoạn rộng một ô.
 	var fence_y: float = (FARM_CELL.y + field.field_area.size.y) * TerrainTiles.TILE_SIZE + 24.0
@@ -125,7 +126,7 @@ func _build_scenery() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		_feedback_label.text = ""
+		_show_feedback("")
 		controller.use_tool_at(view.world_to_cell(view.get_global_mouse_position()))
 	elif event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
@@ -159,24 +160,51 @@ func _is_path_cell(cell: Vector2i) -> bool:
 func _build_hud() -> void:
 	var layer := CanvasLayer.new()
 	add_child(layer)
-	_status_label = Label.new()
-	_status_label.position = Vector2(60, 640)
-	_status_label.add_theme_font_size_override("font_size", 18)
-	_style_hint(_status_label)
-	layer.add_child(_status_label)
+	# Thanh công cụ góc dưới trái: ba nút bật/tắt, nút đang chọn lõm xuống.
+	var bar := PanelContainer.new()
+	bar.theme = UiTheme.get_theme()
+	bar.add_theme_stylebox_override("panel", UiTheme.hud_panel_style())
+	bar.position = Vector2(20, 640)
+	layer.add_child(bar)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	bar.add_child(row)
+	var group := ButtonGroup.new()
+	for tool: int in FarmToolController.TOOL_NAMES:
+		var button := Button.new()
+		button.toggle_mode = true
+		button.button_group = group
+		button.focus_mode = Control.FOCUS_NONE
+		button.text = "%d  %s" % [tool + 1, FarmToolController.TOOL_NAMES[tool]]
+		button.pressed.connect(controller.set_tool.bind(tool))
+		_tool_buttons[tool] = button
+		row.add_child(button)
+	var hint := Label.new()
+	hint.text = "Chuột trái để dùng"
+	hint.add_theme_font_size_override("font_size", 14)
+	hint.add_theme_color_override("font_color", UiTheme.INK_SOFT)
+	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(hint)
+
+	# Phản hồi (lỗi/kết quả) hiện thành tờ giấy nhỏ phía trên thanh công cụ, rỗng thì ẩn.
+	_feedback_panel = PanelContainer.new()
+	_feedback_panel.theme = UiTheme.get_theme()
+	_feedback_panel.add_theme_stylebox_override("panel", UiTheme.hud_panel_style())
+	_feedback_panel.position = Vector2(20, 590)
+	_feedback_panel.hide()
+	layer.add_child(_feedback_panel)
 	_feedback_label = Label.new()
-	_feedback_label.position = Vector2(60, 672)
-	_feedback_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
-	_style_hint(_feedback_label)
-	layer.add_child(_feedback_label)
+	_feedback_label.add_theme_color_override("font_color", UiTheme.ACCENT_RED)
+	_feedback_panel.add_child(_feedback_label)
 	_update_status()
 
 
+func _show_feedback(text: String) -> void:
+	_feedback_label.text = text
+	_feedback_panel.visible = not text.is_empty()
+	_feedback_panel.reset_size()
+
+
 func _update_status() -> void:
-	_status_label.text = "Công cụ: %s   (1: Cuốc   2: Gieo hạt   3: Thu hoạch; chuột trái để dùng)" % controller.get_tool_name()
-
-
-## Chữ nằm trên nền cây rậm cần viền đen mới đọc được.
-func _style_hint(label: Label) -> void:
-	label.add_theme_color_override("font_outline_color", Color.BLACK)
-	label.add_theme_constant_override("outline_size", 5)
+	for tool: int in _tool_buttons:
+		(_tool_buttons[tool] as Button).set_pressed_no_signal(tool == controller.current_tool)
