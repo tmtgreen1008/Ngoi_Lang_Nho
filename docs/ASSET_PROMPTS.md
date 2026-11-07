@@ -1,6 +1,7 @@
 # Danh sách asset và prompt tạo ảnh (ChatGPT)
 
 > Đợt 2 (đồ lặt vặt ngoài sân, biển chỉ đường, nội thất trong nhà, ô nền bổ sung): xem [ASSET_PROMPTS_2.md](ASSET_PROMPTS_2.md).
+> Đợt 3 (chuồng trại, ao, phiên chợ, xóm làng, khu giải trí): xem [ASSET_PROMPTS_3.md](ASSET_PROMPTS_3.md).
 
 Tài liệu này liệt kê **20 nhóm ảnh** cần cho Hương Quê, mỗi nhóm có prompt hoàn chỉnh để dán thẳng vào ChatGPT.
 Mọi prompt dùng chung một khối **STYLE** và một **bảng 17 màu** để các ảnh đồng nhất về bối cảnh và màu sắc.
