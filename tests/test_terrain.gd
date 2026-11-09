@@ -44,7 +44,7 @@ func run() -> void:
 	var ground: TileMapLayer = view._ground
 	check("ô đã cuốc vẽ ô SOIL (3,0), ô chưa cuốc vẽ ô GRASS", ground.get_cell_atlas_coords(Vector2i(2, 2)) == terrain.atlas_coords(terrain.Tile.SOIL) and ground.get_cell_atlas_coords(Vector2i(5, 5)) == terrain.atlas_coords(terrain.Tile.GRASS))
 	var sprite: Sprite2D = view.get_crop_sprite(Vector2i(2, 2))
-	check("ô đã gieo có sprite cây ở đúng vị trí ô, ô chưa gieo thì không", sprite != null and sprite.position == Vector2(2 * 48, 2 * 48) and view.get_crop_sprite(Vector2i(3, 2)) == null)
+	check("ô đã gieo có sprite cây ở đúng vị trí ô (gốc ở chân cây), ô chưa gieo thì không", sprite != null and sprite.position == Vector2(2 * 48, 3 * 48) and sprite.offset == Vector2(0, -48) and view.get_crop_sprite(Vector2i(3, 2)) == null)
 	check("cây mới gieo hiện khung mầm (khung 0) của ảnh lúa", sprite.region_rect == Rect2(0, 0, 48, 48) and sprite.texture.resource_path.ends_with("rice_stages.png"))
 	await shot("terrain_home.png")
 

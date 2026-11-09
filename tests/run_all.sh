@@ -58,6 +58,7 @@ run_test test_shop_ui
 run_test test_game_flow
 run_test test_livestock
 run_test test_crops
+run_test test_layering
 run_test test_save_load
 run_test test_minigames
 run_test test_start_menu -- phase=A

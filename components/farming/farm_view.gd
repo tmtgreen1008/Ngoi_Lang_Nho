@@ -16,10 +16,13 @@ var _crop_sprites: Dictionary = {}  # Vector2i -> Sprite2D
 
 
 func _init() -> void:
+	# Cây xếp lớp cùng Player và đồ vật của map (y-sort lồng nhau được gộp chung). Nền đất và lưới nằm ở
+	# y của view (đỉnh vườn) nên luôn vẽ trước cây và Player, vốn đứng dưới đỉnh vườn.
+	y_sort_enabled = true
 	_ground = TileMapLayer.new()
 	_ground.tile_set = _build_tile_set()
 	add_child(_ground)
-	# Lưới vẽ sau cây để nằm trên cùng.
+	# Lưới mờ nằm trên nền đất, dưới cây (cùng y với nền, thứ tự trong cây node).
 	_grid = Node2D.new()
 	_grid.draw.connect(_draw_grid)
 
@@ -69,7 +72,9 @@ func _show_crop(cell: Vector2i, plot: FarmPlot) -> void:
 	if sprite == null:
 		sprite = Sprite2D.new()
 		sprite.centered = false
-		sprite.position = Vector2(cell * TILE_SIZE)
+		# Gốc toạ độ ở CHÂN cây (đáy ô) để y-sort so với Player đúng; ảnh vẽ phía trên chân.
+		sprite.position = Vector2(cell * TILE_SIZE) + Vector2(0, TILE_SIZE)
+		sprite.offset = Vector2(0, -TILE_SIZE)
 		add_child(sprite)
 		# Cây luôn nằm dưới lưới mờ.
 		if _grid.get_parent() == self:

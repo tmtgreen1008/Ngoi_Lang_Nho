@@ -61,13 +61,17 @@ func change_scene(scene_path: String, spawn_id: StringName = DEFAULT_SPAWN, capt
 		await _fade_to(1.0)
 		if capture_state:
 			EventBus.world_state_save_requested.emit(current_scene_path)
+		# Player sống qua các map: đưa về world trước khi dỡ map (không thì bị giải phóng cùng map).
+		_player.reparent(_world, true)
 		_world.remove_child(current_map)
 		current_map.queue_free()
 		current_map = null
 
 	var map: Node = packed.instantiate()
 	_world.add_child(map)
-	_world.move_child(map, 0)  # Map nằm dưới Player.
+	_world.move_child(map, 0)
+	# Player là con của map hiện tại để xếp lớp theo chiều sâu cùng đồ vật (đi sau nhà thì bị nhà che).
+	_player.reparent(map, true)
 	current_map = map
 	current_scene_path = scene_path
 	_place_player(map, spawn_id)

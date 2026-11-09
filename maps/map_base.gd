@@ -45,6 +45,9 @@ var _exit_rects: Array[Rect2] = []
 
 
 func _ready() -> void:
+	# Xếp lớp theo chiều sâu: đồ vật, cây, NPC và Player (được SceneManager đưa vào map) đứng thấp hơn
+	# (y lớn hơn) thì vẽ đè lên đồ đứng cao hơn. Nền map (_draw) luôn nằm dưới mọi node con.
+	y_sort_enabled = true
 	_build_walls()
 	_build()
 	if border_style == BorderStyle.TREES:
