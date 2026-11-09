@@ -14,4 +14,4 @@ display_name = "Trứng gà"
 description = "Trứng gà ta."
 icon = SubResource("AtlasTexture_04cbl")
 category = 2
-base_price = 7
+base_price = 12

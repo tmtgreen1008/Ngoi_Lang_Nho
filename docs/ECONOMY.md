@@ -1,0 +1,71 @@
+# Cân bằng kinh tế
+
+Mọi con số (giá, sản lượng, thưởng mini-game) nằm trong dữ liệu `.tres` và vài `@export` của mini-game, không nằm trong code logic. Công cụ và test dưới đây giữ cho chúng cân bằng khi chỉnh.
+
+| Việc | Lệnh / file |
+|---|---|
+| Xem báo cáo lãi của mọi cây, vật nuôi, mini-game | `godot --headless --path . -s tools/economy_report.gd` |
+| Sinh lại dữ liệu cây từ bảng giá | `bash tools/make_crop_data.sh` (sửa bảng `TABLE` ở đầu file) |
+| Kiểm tra các ngưỡng cân bằng | `tests/test_economy.gd` (ngưỡng ở `TARGETS` trong `tools/economy_report.gd`) |
+
+## Quy ước
+
+- Người chơi **mua hạt giống ở Tạp Hóa** (giá = `base_price` x 1,0) và **bán nông sản ở Chợ** (giá = `base_price` x 0,6, chỉ nhận nhóm Cây trồng và Thực phẩm, mở 5h-11h). Chợ bán cho người chơi với hệ số 1,2.
+- Vì giá thu mua (0,6) luôn thấp hơn giá bán ra (1,0 và 1,2), không có cách kiếm lời bằng mua đi bán lại.
+- **Lãi/ô/ngày** (PPD) = (số nông sản x giá bán - giá hạt) / số ngày lớn. Đây là thước đo chính để so sánh các loại cây. Vườn có 70 ô.
+- Vốn khởi đầu: 100 đ, 10 hạt lúa, 4 trứng gà.
+
+## Mục tiêu
+
+| Chỉ số | Mục tiêu |
+|---|---|
+| Lãi/ô/ngày của mỗi loại cây | 7 - 14 đ |
+| Loại lãi nhất / loại lãi ít nhất | tối đa 1,8 lần |
+| Gà giống hoàn vốn | tối đa 8 ngày |
+| Một lứa lợn (đã trừ giống và thức ăn) | lãi tối thiểu 40 đ |
+| Mini-game, chơi hoàn hảo | 8 - 45 đ/giờ trong game |
+| Mini-game cả ngày (16 giờ) | thấp hơn một vườn đầy 70 ô |
+
+## Giá hiện tại
+
+### Cây trồng (hạt mua ở Tạp Hóa, bán ra Chợ x0,6)
+
+| Cây | Mùa gieo | Ngày | SL | Giá hạt | Giá nông sản (base) | Bán ra | Lãi/ô/ngày |
+|---|---|---|---|---|---|---|---|
+| Rau muống | Xuân, Hạ, Thu | 3 | 4 | 8 | 14 | 8 | 8,0 |
+| Lúa | Xuân, Hạ | 4 | 3 | 10 | 24 | 14 | 8,0 |
+| Đậu | Xuân, Thu | 4 | 4 | 15 | 22 | 13 | 9,3 |
+| Dưa leo | Hạ | 4 | 3 | 18 | 34 | 20 | 10,5 |
+| Cà chua | Xuân, Hạ | 5 | 3 | 20 | 40 | 24 | 10,4 |
+| Cà rốt | Xuân, Thu, Đông | 5 | 3 | 15 | 37 | 22 | 10,2 |
+| Ớt | Hạ | 5 | 5 | 18 | 25 | 15 | 11,4 |
+| Bắp cải | Thu, Đông | 6 | 2 | 25 | 77 | 46 | 11,2 |
+| Ngô | Hạ, Thu | 6 | 3 | 22 | 50 | 30 | 11,3 |
+| Khoai lang | Thu, Đông | 6 | 3 | 20 | 49 | 29 | 11,2 |
+| Bí đỏ | Thu | 7 | 2 | 40 | 104 | 62 | 12,0 |
+| Dưa hấu | Hạ | 7 | 2 | 50 | 119 | 71 | 13,1 |
+
+Cây chậm lớn hoặc đắt hạt lãi nhỉnh hơn một chút để bù vốn và thời gian, nhưng không loại nào áp đảo; cây rẻ, nhanh (rau muống, lúa) là lựa chọn an toàn khi mới chơi.
+
+### Vật nuôi
+
+| | Giống | Thức ăn | Sản phẩm | Lãi |
+|---|---|---|---|---|
+| Gà | 40 đ | cám gà 12 đ/ngày (mua ở Tạp Hóa) | 3 trứng/ngày, trứng bán 7 đ | 9 đ/ngày, hoàn vốn 4,4 ngày |
+| Lợn | 120 đ | lúa x 5 ngày (tính 14 đ/lúa theo giá bán lại) | 4 thịt lợn, bán 65 đ | 70 đ mỗi lứa (14 đ/ngày) |
+
+Gà ăn cám gà (món có bán ở Tạp Hóa) nên mua đồ ở tiệm là một khoản chi thật; lợn ăn lúa tự trồng, nối chăn nuôi với trồng trọt.
+
+### Mini-game (lãi ròng sau phí, mỗi giờ trong game)
+
+| | Phí | Thời gian | Thưởng tối đa | Hoàn hảo | Trung bình |
+|---|---|---|---|---|---|
+| Quán Net | 5 đ | 60 phút | 30 đ (2 đ/lần trúng) | 25 đ/giờ | ~25 đ/giờ (chạm trần) |
+| Quán Bida | 15 đ | 45 phút | 45 đ (9 đ/bi, 5 cú) | 40 đ/giờ | ~4 đ/giờ (vào 2 bi) |
+
+Quán Net dễ kiếm đều nhưng có trần thấp; Quán Bida thưởng cao cho người canh lực giỏi, người chơi trung bình chỉ hòa vốn.
+
+## Hạn chế
+
+- Chưa có khoản chi lớn nào ngoài hạt giống, cám gà và con giống, nên khi vườn đầy tiền sẽ dư. Hướng phát triển: nâng cấp nhà, mở rộng vườn, dụng cụ, trang trí.
+- Chưa mô phỏng người chơi thật; các con số mới được kiểm bằng mô hình lãi/ô/ngày và so sánh tương đối, cần chơi thử để chỉnh tiếp.

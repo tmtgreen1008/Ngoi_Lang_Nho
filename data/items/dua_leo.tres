@@ -14,4 +14,4 @@ display_name = "Dưa leo"
 description = "Dưa leo giòn mát."
 icon = SubResource("AtlasTexture_2rpvf")
 category = 1
-base_price = 8
+base_price = 34

@@ -79,7 +79,7 @@ func run() -> void:
 	check("tab Bán có dòng Lúa", sell_button != null and not sell_button.disabled)
 	var money_before: int = economy.money
 	sell_button.pressed.emit()
-	check("bán 1 lúa +18 đ", economy.money == money_before + 18 and inv.count_of(db.get_item(&"lua")) == 11)
+	check("bán 1 lúa +14 đ", economy.money == money_before + 14 and inv.count_of(db.get_item(&"lua")) == 11)
 
 	tm.advance_minutes(5 * 60)  # 11:00: chợ đóng
 	await shot("shop_market_closed.png")

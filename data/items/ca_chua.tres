@@ -14,4 +14,4 @@ display_name = "Cà chua"
 description = "Cà chua chín đỏ."
 icon = SubResource("AtlasTexture_m081m")
 category = 1
-base_price = 9
+base_price = 40

@@ -14,6 +14,6 @@ display_name = "Lợn giống"
 description = "Lợn con, thả vào chuồng lợn và cho ăn vài ngày là xuất chuồng được."
 icon = SubResource("AtlasTexture_icon")
 category = 5
-base_price = 150
+base_price = 120
 is_stackable = true
 max_stack_size = 10

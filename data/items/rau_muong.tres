@@ -14,4 +14,4 @@ display_name = "Rau muống"
 description = "Bó rau muống tươi."
 icon = SubResource("AtlasTexture_qfetx")
 category = 1
-base_price = 6
+base_price = 14

@@ -14,4 +14,4 @@ display_name = "Bí đỏ"
 description = "Bí đỏ tươi vừa thu hoạch."
 icon = SubResource("AtlasTexture_icon")
 category = 1
-base_price = 45
+base_price = 104

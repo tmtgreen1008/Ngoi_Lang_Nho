@@ -14,4 +14,4 @@ display_name = "Dưa hấu"
 description = "Dưa hấu tươi vừa thu hoạch."
 icon = SubResource("AtlasTexture_icon")
 category = 1
-base_price = 60
+base_price = 119

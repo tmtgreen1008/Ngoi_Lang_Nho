@@ -112,8 +112,8 @@ func run() -> void:
 	check("cú 5 trúng", billiards.shoot())
 	await wait(0.3)
 	check("vòng tự kết thúc sau 5 cú", not host.is_active())
-	check("kết quả Bida: 36 đ, 45 phút, 3 bi", int(results[-1][1]["money"]) == 36 and int(results[-1][1]["minutes"]) == 45 and int(results[-1][1]["pocketed"]) == 3)
-	check("tiền: -15 phí +36 thưởng", economy.money == money1 - 15 + 36)
+	check("kết quả Bida: 27 đ, 45 phút, 3 bi", int(results[-1][1]["money"]) == 27 and int(results[-1][1]["minutes"]) == 45 and int(results[-1][1]["pocketed"]) == 3)
+	check("tiền: -15 phí +27 thưởng", economy.money == money1 - 15 + 27)
 
 	# --- thoát trước khi chơi: hoàn phí ---
 	var money2: int = economy.money

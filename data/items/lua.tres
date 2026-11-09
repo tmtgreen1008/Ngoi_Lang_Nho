@@ -14,4 +14,4 @@ display_name = "Lúa"
 description = "Lúa mới gặt, đem ra chợ bán hoặc xay thành gạo."
 icon = SubResource("AtlasTexture_i42tc")
 category = 1
-base_price = 30
+base_price = 24

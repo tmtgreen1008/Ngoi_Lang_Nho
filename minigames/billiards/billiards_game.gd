@@ -8,7 +8,7 @@ extends MinigameBase
 ## Tâm và nửa bề rộng của vùng xanh trên thanh lực (0..1).
 @export_range(0.0, 1.0, 0.01) var sweet_center: float = 0.75
 @export_range(0.01, 0.5, 0.01) var sweet_half_width: float = 0.12
-@export_range(0, 100, 1) var pay_per_ball: int = 12
+@export_range(0, 100, 1) var pay_per_ball: int = 9
 ## Số lần thanh lực chạy đi-về mỗi giây.
 @export_range(0.2, 5.0, 0.1) var meter_speed: float = 0.8
 

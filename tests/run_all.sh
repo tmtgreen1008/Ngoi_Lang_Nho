@@ -65,6 +65,7 @@ run_test test_music
 run_test test_settings
 run_test test_dialogue
 run_test test_villagers
+run_test test_economy
 run_test test_save_load
 run_test test_minigames
 run_test test_start_menu -- phase=A

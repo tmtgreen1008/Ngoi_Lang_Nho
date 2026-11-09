@@ -50,10 +50,11 @@ khi chuyển cảnh.
 | Cài đặt | Menu tạm dừng có thanh trượt âm lượng hiệu ứng và nhạc nền, công tắc Tắt tiếng (đồng bộ với phím `M`); lưu vào `user://settings.cfg` và nạp lại khi mở game. Nút "Về màn hình chính" (bấm hai lần để xác nhận) quay lại menu giữa ván, chơi lại bằng Ván mới / Tiếp tục |
 | Thoại NPC | Bấm `E` với bà Tư / chú Năm mở hộp thoại: **Mua bán** (E lần hai), **Trò chuyện**, **Tạm biệt**. Lời thoại là `DialogueData` (`data/dialogues/`, gắn vào `VendorData.dialogue`): câu chào lần đầu/các lần sau, câu chung, câu theo mùa, câu người quen. Trò chuyện mỗi ngày một lần được +1 điểm thân thiết (`RelationshipManager`: Người lạ, Quen biết, Thân, Thân thiết), đủ 3 điểm NPC tặng quà (hạt giống); lưu cùng ván chơi |
 | Dân làng | 5 NPC chỉ trò chuyện (`VillagerNPC`, ảnh `characters/villagers.png`): ông Bảy (người làm ruộng, mẹo trồng trọt) và bé Tí (chạy chơi trên bãi cỏ, dừng khi nói chuyện) ở sân nhà, chị Hạnh ở Tiệm Tạp Hóa, cô Lan ở Chợ, anh Hai chủ quán ở Khu Giải trí. Mỗi người một file `data/dialogues/<id>.tres` (chào, câu theo mùa, câu người quen, quà tặng riêng); thêm NPC mới chỉ cần ảnh, file thoại và một dòng `add_villager` trong map |
+| Cân bằng kinh tế | Giá cây trồng tính từ lãi mục tiêu mỗi ô mỗi ngày (7-14 đ, loại lãi nhất không quá 1,8 lần loại ít nhất); gà ăn cám gà (chi thật ở Tạp Hóa), lợn ăn lúa; mini-game có trần thưởng để không thành máy in tiền. `tools/economy_report.gd` in báo cáo, `tools/make_crop_data.sh` sinh dữ liệu từ bảng giá |
 | Nền đất theo mùa | Bốn sheet nền (Xuân, Hạ, Thu, Đông) cùng bố cục 8 ô; cỏ, đường, đất cuốc, nước đổi theo mùa của `TimeManager`, ô trong nhà giữ nguyên. Map vào đúng mùa đang chơi và vẽ lại khi sang mùa mới; vườn đổi tileset. Cây cối (chuối, tre, bụi hoa) được nhân màu theo mùa: Hạ đậm, Thu cam vàng, Đông xỉn lạnh. Sheet mùa ghép bằng `tools/compose_season_tiles.gd` |
 | Xếp lớp theo chiều sâu | Player là con của map hiện tại (SceneManager đưa Player về `world` trước khi dỡ map rồi vào map mới), map và view vườn bật y-sort: đi sau nhà, chuồng, cây thì bị che, đi trước thì đè lên. Gốc toạ độ của đồ vật và cây ở chân nên so sánh với chân Player |
 | Bản đồ | Sân nhà (viền rặng cây, đường đất bo góc, biển chỉ đường), trong nhà (giường), Tiệm Tạp Hóa, Chợ Quê, Khu Giải trí; chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
-| Chăn nuôi | Chuồng gà (đẻ trứng mỗi ngày) và chuồng lợn (nuôi 5 ngày rồi xuất chuồng); mua con giống ở Tạp Hóa, thả vào chuồng, cho ăn lúa, thu sản phẩm bằng phím `E`; chuồng được nhớ khi đổi map |
+| Chăn nuôi | Chuồng gà (đẻ trứng mỗi ngày) và chuồng lợn (nuôi 5 ngày rồi xuất chuồng); mua con giống ở Tạp Hóa, thả vào chuồng, cho ăn (gà ăn cám gà mua ở Tạp Hóa, lợn ăn lúa), thu sản phẩm bằng phím `E`; chuồng được nhớ khi đổi map |
 | Mini-game | Quán Net (bắn mục tiêu), Quán Bida (canh lực); trả kết quả (tiền, thời gian) về thế giới chính |
 | Lưu/nạp | File JSON, ghi an toàn, tự lưu khi sang ngày mới, màn hình chính "Ván mới / Tiếp tục" |
 
@@ -194,6 +195,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_settings` | Lưu/nạp âm lượng và tắt tiếng (file thiếu/hỏng không lỗi), thanh trượt và công tắc trong menu tạm dừng, Về màn hình chính hai bước, Esc không mở menu ở màn hình chính, chơi lại sau khi quay về |
 | `test_dialogue` | Dữ liệu và chọn câu thoại theo mùa/cấp, điểm thân thiết mỗi ngày, quà, lưu/nạp, hộp thoại trong game (E, Esc, Mua bán, Trò chuyện, Tạm biệt, túi đầy), ván mới xoá độ thân thiết |
 | `test_villagers` | Ảnh 6 khung, 5 lời thoại hợp lệ và id không trùng, vị trí và khung ảnh trong 4 map, nói chuyện bằng E (không có Mua bán), bé Tí đi dạo / dừng khi nói chuyện, quà gà giống của anh Hai |
+| `test_economy` | Lãi/ô/ngày của 12 cây trong khoảng mục tiêu và không ăn đứt, không chênh lệch giá để kiếm lời, gà/lợn hoàn vốn đủ nhanh, mini-game không vượt vườn đầy |
 | `test_save_load` | Lưu/nạp, file hỏng/sai phiên bản, tự lưu, menu Esc |
 | `test_minigames` | Thu phí, dừng đồng hồ, áp kết quả, hai mini-game, các trường hợp biên |
 | `test_start_menu` | Màn hình chính (3 pha, mô phỏng mở lại game) |
@@ -215,5 +217,5 @@ nên test không được nhắc tên class dùng autoload bằng `X.new()` hay 
 
 - Âm thanh và nhạc nền là âm tổng hợp bằng mã (thay bằng file thật: `assets/audio/sfx/<id>.ogg`, `assets/audio/music/<mùa>.ogg`), mini-game chưa có tiếng riêng. Art do AI tạo nên mỗi ảnh có mật độ pixel hơi khác nhau (nhà được phóng 2 lần cho cân với Player); nhân vật chỉ có hoạt ảnh đi bộ, chưa có hoạt ảnh cuốc/gieo/thu hoạch.
 - Chưa có: nấu ăn, giặt đồ, vịt/trâu/chó (đã có ảnh trong assets/art/animals/farm_b.png), nhiều sạp ở Chợ, NPC theo lịch sinh hoạt (đi lại giữa các nơi theo giờ), bà cụ (khung 4 trong `villagers.png`) chưa có vai.
-- Các con số (giá, thưởng mini-game, tốc độ) là số tạm, chưa cân bằng bằng chơi thử.
+- Giá, sản lượng và thưởng mini-game đã cân bằng theo mô hình lãi/ô/ngày (xem [docs/ECONOMY.md](docs/ECONOMY.md)), nhưng chưa được chỉnh bằng chơi thử thật; chưa có khoản chi lớn nào ngoài hạt giống, cám gà và con giống.
 - Chỉ có một slot lưu thủ công và một slot tự lưu; chưa có cơ chế nâng cấp định dạng file lưu giữa các phiên bản.

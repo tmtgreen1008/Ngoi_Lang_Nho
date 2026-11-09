@@ -56,7 +56,7 @@ func run() -> void:
 	check("hết tiền: từ chối, không đổi gì", grocery.buy(seed_item, 99, inv) == "Không đủ tiền." and economy.money == 84)
 	check("tạp hóa không thu mua", grocery.sell(noodles, 1, inv) == "Cửa hàng không thu mua món này.")
 	inv.add_item(lua, 10)
-	check("chợ thu mua lúa 10 x 18 = 180", market.sell(lua, 10, inv) == "" and economy.money == 264)
+	check("chợ thu mua lúa 10 x 14 = 140", market.sell(lua, 10, inv) == "" and economy.money == 224)
 	check("bán quá số đang có bị từ chối", market.sell(lua, 1, inv) == "Bạn không có đủ số lượng.")
 
 	var entry = market.stock[0]

@@ -28,7 +28,7 @@ func run() -> void:
 
 	var hen: Resource = load("res://data/animals/ga.tres")
 	var pig: Resource = load("res://data/animals/lon.tres")
-	var lua: ItemData = db.get_item(&"lua")
+	var lua: ItemData = db.get_item(&"cam_ga")  # thức ăn của gà là cám gà (biến giữ tên cũ)
 	var egg: ItemData = db.get_item(&"trung_ga")
 	var pork: ItemData = db.get_item(&"thit_lon")
 	var chick: ItemData = db.get_item(&"ga_giong")
@@ -104,7 +104,7 @@ func run() -> void:
 	# Có con chưa ăn và có thức ăn thì cho ăn trước khi thả thêm (dù túi còn gà giống).
 	check("ưu tiên cho ăn trước khi thả thêm", controller.interact(inv) and pen.get_count() == 1 and inv.count_of(lua) == 0 and pen.get_unfed_count() == 0 and inv.count_of(chick) == 1)
 	check("hết thức ăn, còn con giống thì thả tiếp", controller.interact(inv) and pen.get_count() == 2 and inv.count_of(chick) == 0)
-	check("hết việc: nhắc cần thức ăn", not controller.interact(inv) and "lúa" in messages.back()[0])
+	check("hết việc: nhắc cần thức ăn", not controller.interact(inv) and "cám gà" in messages.back()[0])
 	inv.add_item(lua, 5)
 	check("cho ăn trừ đúng số lúa theo số con chưa ăn", controller.interact(inv) and inv.count_of(lua) == 4)
 	tm.sleep_until_morning()

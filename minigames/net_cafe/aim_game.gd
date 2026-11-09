@@ -8,7 +8,7 @@ extends MinigameBase
 @export_range(0.2, 5.0, 0.1) var spawn_interval: float = 0.7
 @export_range(0.3, 5.0, 0.1) var target_lifetime: float = 1.2
 @export_range(0, 100, 1) var pay_per_hit: int = 2
-@export_range(0, 1000, 1) var max_payout: int = 40
+@export_range(0, 1000, 1) var max_payout: int = 30
 
 const TARGET_SIZE: Vector2 = Vector2(64, 64)
 const TARGET_TEXTURE: Texture2D = preload("res://assets/art/minigames/aim_target.png")

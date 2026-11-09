@@ -106,6 +106,6 @@ func run() -> void:
 						sell_button = candidate
 	check("có nút bán lúa", sell_button != null)
 	sell_button.pressed.emit()
-	check("bán 1 lúa +18 đ", economy.money == money + 18)
+	check("bán 1 lúa +14 đ", economy.money == money + 14)
 	await press_action("ui_cancel")
 	check("thứ tự scene_changed đúng", changes == ["home.tscn", "grocery_store.tscn", "home.tscn", "morning_market.tscn"])
