@@ -34,7 +34,7 @@ func run() -> void:
 	var lua: ItemData = db.get_item(&"lua")
 	var seed_item: ItemData = db.get_item(&"hat_giong_lua")
 
-	check("tạp hóa: 4 món cố định, không giới hạn", grocery.stock.size() == 4 and grocery.stock[0].is_unlimited())
+	check("tạp hóa: 6 món cố định (kèm gà giống, lợn giống), không giới hạn", grocery.stock.size() == 6 and grocery.stock[0].is_unlimited())
 	check("chợ: 3 món ngẫu nhiên", market.stock.size() == 3)
 	var amounts_ok: bool = true
 	for entry in market.stock:

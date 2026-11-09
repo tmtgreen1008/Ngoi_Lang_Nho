@@ -53,7 +53,7 @@ func run() -> void:
 	shop.open(grocery, inv)
 	await shot("shop_grocery.png")
 	check("tiêu đề theo VendorData tạp hóa", shop._title_label.text == "Tiệm Tạp Hóa bà Tư")
-	check("4 dòng hàng cố định", shop._buy_list.get_child_count() == 4)
+	check("6 dòng hàng cố định", shop._buy_list.get_child_count() == 6)
 	var buy_button: Button = _find_row_button(shop._buy_list, "Mì tôm", "Mua 1")
 	check("nút Mua 1 bật", buy_button != null and not buy_button.disabled)
 	buy_button.pressed.emit()

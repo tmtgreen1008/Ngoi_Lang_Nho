@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AnimalData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/animal_data.gd" id="1_animal"]
+
+[resource]
+script = ExtResource("1_animal")
+id = &"ga"
+display_name = "Gà"
+baby_item_id = &"ga_giong"
+feed_item_id = &"lua"
+fed_days_per_product = 1
+product_item_id = &"trung_ga"
+product_amount = 3
+keeps_producing = true
+sprite_frame = 0

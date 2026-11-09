@@ -33,6 +33,8 @@ const GATE_ROWS: Array[int] = [5, 8, 11]
 var field: FarmField
 var view: FarmView
 var controller: FarmToolController
+var coop: LivestockHouse
+var barn: LivestockHouse
 
 var _tool_buttons: Dictionary = {}  # FarmToolController.Tool -> Button
 var _feedback_panel: PanelContainer
@@ -64,6 +66,7 @@ func _build() -> void:
 	add_exit(Vector2(door_x, HOUSE_FEET.y + 24.0), Vector2(DOOR_RIGHT - DOOR_LEFT, 28), INTERIOR_MAP, &"from_home", "")
 
 	_build_garden()
+	_build_livestock()
 	_build_house()
 	_build_scenery()
 	_build_hud()
@@ -93,6 +96,22 @@ func _build_garden() -> void:
 	var fence_y: float = (FARM_CELL.y + field.field_area.size.y) * TerrainTiles.TILE_SIZE + 24.0
 	for i: int in int(field.field_area.size.x):
 		add_decor(Decor.FENCE, Vector2(FARM_CELL.x * TerrainTiles.TILE_SIZE + 24.0 + i * TerrainTiles.TILE_SIZE, fence_y), 38.0)
+
+
+## Chuồng gà và chuồng lợn ở bãi trống phía nam đường mòn, cạnh mảnh vườn.
+func _build_livestock() -> void:
+	coop = _add_livestock_house(Vector2(736, 560), LivestockHouse.Structure.COOP, "res://data/animals/ga.tres", &"coop")
+	barn = _add_livestock_house(Vector2(890, 572), LivestockHouse.Structure.BARN, "res://data/animals/lon.tres", &"barn")
+
+
+func _add_livestock_house(feet: Vector2, structure: LivestockHouse.Structure, species_path: String, key: StringName) -> LivestockHouse:
+	var house := LivestockHouse.new()
+	house.position = feet
+	house.structure = structure
+	house.species = load(species_path)
+	house.persistent_key = key
+	add_child(house)
+	return house
 
 
 ## Ngôi nhà: hai dải chặn hai bên cửa, chừa khe hở cho Player bước vào.

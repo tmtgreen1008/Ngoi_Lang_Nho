@@ -46,4 +46,15 @@ slice in=$SRC/18_start_background.png out=$OUT/ui/start_background.png cell=1280
 # Mini-game (không khử viền cho bi: có bi màu tím thật).
 slice in=$SRC/19_aim_target.png out=$OUT/minigames/aim_target.png anchor=feet px=19 cell=auto pad=0 key=magenta defringe=1
 slice in=$SRC/20_billiard_balls.png out=$OUT/minigames/billiard_balls.png cols=6 rows=1 split=auto anchor=feet px=12 cell=auto pad=1 key=magenta
+
+# --- Đợt 2: vật nuôi, chuồng trại, icon sản phẩm chăn nuôi (ảnh gốc ở source/batch2) ---
+B2=$SRC/batch2
+# Vật nuôi: hai hàng trong một ảnh nên cắt riêng từng hàng. farm_a: gà mái, gà trống, gà con, lợn.
+slice in=$B2/pixel_farm_animal_sprite_sheet.png out=$OUT/animals/farm_a.png crop=0,0,1774,440 cols=4 rows=1 split=auto anchor=feet px=12 cell=auto pad=1 key=magenta defringe=1
+# farm_b: vịt, chó, trâu.
+slice in=$B2/pixel_farm_animal_sprite_sheet.png out=$OUT/animals/farm_b.png crop=0,440,1774,447 cols=3 rows=1 split=auto anchor=feet px=12 cell=auto pad=1 key=magenta defringe=1
+# Chuồng gà, chuồng lợn, máng ăn + giỏ thóc.
+slice in=$B2/pixel_farm_structures_trio.png out=$OUT/props/farm_structures.png cols=3 rows=1 split=auto anchor=feet px=12 cell=auto pad=0 key=magenta defringe=1
+# Icon 4x3 (trứng, trứng vịt, trứng cút, sữa / thịt lợn, đùi gà, bò, mật ong / phân bón, lông vũ, cá, dưa muối).
+slice in=$B2/retro_farm_goods_pixel_icon_sheet.png out=$OUT/icons/farm_goods_icons.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
 echo "Xong."
