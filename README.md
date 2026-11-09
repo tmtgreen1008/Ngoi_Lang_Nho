@@ -10,7 +10,7 @@ khi chuyển cảnh.
 | Engine | Godot 4.7 (GL Compatibility) |
 | Ngôn ngữ | GDScript, dùng static typing |
 | Ngôn ngữ giao diện | Tiếng Việt |
-| Trạng thái | Bản chơi được ở mức cơ bản; có art pixel-art do AI tạo (xem mục Asset), chưa có âm thanh |
+| Trạng thái | Bản chơi được ở mức cơ bản; có art pixel-art do AI tạo (xem mục Asset), có hiệu ứng âm thanh sinh bằng mã (chưa có nhạc nền) |
 
 ## Chạy game
 
@@ -45,6 +45,7 @@ khi chuyển cảnh.
 | Nông trại | Cuốc, gieo, cây lớn theo ngày, héo khi sang mùa không hợp, thu hoạch vào kho |
 | Cây trồng | 12 loại cây (lúa, cà chua, bắp cải, dưa leo, rau muống, ngô, cà rốt, khoai lang, ớt, bí đỏ, dưa hấu, đậu), mỗi loại có mùa gieo, số ngày lớn và ảnh riêng; túi nhiều loại hạt thì tự chọn loại hợp mùa. Dữ liệu sinh từ bảng trong `tools/make_crop_data.sh` |
 | Giao thương | Một giao diện cửa hàng dùng cho mọi người bán; tiệm tạp hóa hàng cố định, chợ hàng ngẫu nhiên mỗi ngày; giờ mở cửa |
+| Âm thanh | `AudioManager` (autoload) nghe EventBus nên nhặt đồ, cuốc, gieo, thu hoạch, cho ăn, mua/bán, mở/đóng cửa hàng, sang ngày/mùa, lưu game, kết thúc mini-game, bước chân, bấm nút đều có tiếng. 22 âm tổng hợp trong `core/audio/sfx_synth.gd` (không cần file ngoài, thả file `.ogg`/`.wav` cùng tên vào `assets/audio/sfx/` để thay). Phím `M` bật/tắt tiếng |
 | Nền đất theo mùa | Bốn sheet nền (Xuân, Hạ, Thu, Đông) cùng bố cục 8 ô; cỏ, đường, đất cuốc, nước đổi theo mùa của `TimeManager`, ô trong nhà giữ nguyên. Map vào đúng mùa đang chơi và vẽ lại khi sang mùa mới; vườn đổi tileset. Cây cối (chuối, tre, bụi hoa) được nhân màu theo mùa: Hạ đậm, Thu cam vàng, Đông xỉn lạnh. Sheet mùa ghép bằng `tools/compose_season_tiles.gd` |
 | Xếp lớp theo chiều sâu | Player là con của map hiện tại (SceneManager đưa Player về `world` trước khi dỡ map rồi vào map mới), map và view vườn bật y-sort: đi sau nhà, chuồng, cây thì bị che, đi trước thì đè lên. Gốc toạ độ của đồ vật và cây ở chân nên so sánh với chân Player |
 | Bản đồ | Sân nhà (viền rặng cây, đường đất bo góc, biển chỉ đường), trong nhà (giường), Tiệm Tạp Hóa, Chợ Quê, Khu Giải trí; chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
@@ -184,6 +185,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_crops` | 11 loại cây mới: dữ liệu, ảnh, mùa gieo, lớn và thu hoạch từng loại, chọn hạt hợp mùa, tạp hóa bán đủ hạt |
 | `test_layering` | Cấu trúc xếp lớp (Player là con của map, sống qua đổi map) và so sánh ảnh chụp thật: bị nhà che, đè lên khi đứng trước, bị cây che phần đặc |
 | `test_seasons` | Bốn sheet cùng cỡ, màu lá cây theo mùa (cả rặng viền, cây trồng thêm; rào và chum không đổi), ô trong nhà giống hệt, ô ngoài trời khác Xuân, đổi mùa thì map và vườn vẽ lại (so ảnh chụp), vào map mới đúng mùa |
+| `test_audio` | 22 âm hợp lệ và không méo, nối sự kiện, chống phát dồn, thông báo không chồng tiếng, nút tự có click, tắt tiếng bằng M, bước chân khi đi bộ |
 | `test_save_load` | Lưu/nạp, file hỏng/sai phiên bản, tự lưu, menu Esc |
 | `test_minigames` | Thu phí, dừng đồng hồ, áp kết quả, hai mini-game, các trường hợp biên |
 | `test_start_menu` | Màn hình chính (3 pha, mô phỏng mở lại game) |
@@ -203,7 +205,7 @@ nên test không được nhắc tên class dùng autoload bằng `X.new()` hay 
 
 ## Hạn chế hiện tại và hướng phát triển
 
-- Chưa có âm thanh. Art do AI tạo nên mỗi ảnh có mật độ pixel hơi khác nhau (nhà được phóng 2 lần cho cân với Player); nhân vật chỉ có hoạt ảnh đi bộ, chưa có hoạt ảnh cuốc/gieo/thu hoạch.
+- Chưa có nhạc nền; hiệu ứng âm thanh là âm tổng hợp bằng mã (thay bằng file thật bằng cách thả `assets/audio/sfx/<id>.ogg`), tiếng tắt/bật bằng phím `M` nhưng chưa lưu lại giữa các lần chơi, mini-game chưa có tiếng riêng. Art do AI tạo nên mỗi ảnh có mật độ pixel hơi khác nhau (nhà được phóng 2 lần cho cân với Player); nhân vật chỉ có hoạt ảnh đi bộ, chưa có hoạt ảnh cuốc/gieo/thu hoạch.
 - Chưa có: nấu ăn, giặt đồ, vịt/trâu/chó (đã có ảnh trong assets/art/animals/farm_b.png), NPC có hội thoại, nhiều sạp ở Chợ.
 - Các con số (giá, thưởng mini-game, tốc độ) là số tạm, chưa cân bằng bằng chơi thử.
 - Chỉ có một slot lưu thủ công và một slot tự lưu; chưa có cơ chế nâng cấp định dạng file lưu giữa các phiên bản.

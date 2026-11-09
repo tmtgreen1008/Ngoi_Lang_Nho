@@ -27,6 +27,7 @@ var movement_locked: bool = false
 var facing: Facing = Facing.DOWN
 
 var _walk_time: float = 0.0
+var _last_step: int = -1
 
 var _in_transition: bool = false
 var _in_minigame: bool = false
@@ -105,6 +106,7 @@ func _update_target() -> void:
 func _animate(direction: Vector2, delta: float) -> void:
 	if direction == Vector2.ZERO:
 		_walk_time = 0.0
+		_last_step = -1
 		_sprite.frame_coords = Vector2i(IDLE_FRAME, facing)
 		return
 	if absf(direction.x) > absf(direction.y):
@@ -114,6 +116,10 @@ func _animate(direction: Vector2, delta: float) -> void:
 	_walk_time += delta
 	var step: int = int(_walk_time / WALK_FRAME_SECONDS) % WALK_CYCLE.size()
 	_sprite.frame_coords = Vector2i(WALK_CYCLE[step], facing)
+	# Chân chạm đất ở hai khung bước (0 và 2 của chu kỳ): phát tiếng một lần mỗi khi chuyển sang khung đó.
+	if step != _last_step and WALK_CYCLE[step] != 1:
+		EventBus.player_stepped.emit()
+	_last_step = step
 
 
 ## Toạ độ khung hình đang hiển thị (cột, hàng); dùng cho kiểm thử.

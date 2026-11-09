@@ -23,6 +23,7 @@ EconomyManager="*res://core/autoload/economy_manager.gd"
 WorldStateManager="*res://core/autoload/world_state_manager.gd"
 SceneManager="*res://core/autoload/scene_manager.gd"
 SaveManager="*res://core/autoload/save_manager.gd"
+AudioManager="*res://core/autoload/audio_manager.gd"
 
 [display]
 

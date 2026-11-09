@@ -67,6 +67,10 @@ signal crop_harvested(cell: Vector2i, crop: CropItemData)
 signal crop_withered(cell: Vector2i, crop: CropItemData)
 signal animal_fed(animal_id: StringName)
 
+# --- Nhân vật ---
+## Player đặt chân xuống một bước (khung hình chân chạm đất); AudioManager phát tiếng bước chân.
+signal player_stepped
+
 # --- Bản đồ & trạng thái thế giới -----------------------------------------------
 
 ## Yêu cầu chuyển map. [param spawn_id] chọn điểm xuất hiện ở map đích.
