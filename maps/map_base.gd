@@ -24,6 +24,15 @@ const DECOR_CELL: int = 48
 const DECOR_SHADOW_WIDTH: Dictionary = {
 	Decor.BANANA: 30.0, Decor.BAMBOO: 26.0, Decor.BUSH: 32.0, Decor.FENCE: 36.0, Decor.JAR: 28.0,
 }
+## Màu nhân vào lá cây theo mùa (Xuân, Hạ, Thu, Đông): Xuân giữ nguyên, Hạ xanh đậm hơn, Thu ngả vàng
+## cam, Đông xỉn và lạnh. Chỉ áp cho cây cối ([constant FOLIAGE]); hàng rào, chum không đổi.
+const FOLIAGE_TINTS: Array[Color] = [
+	Color(1.0, 1.0, 1.0),
+	Color(0.92, 1.06, 0.9),
+	Color(1.2, 0.92, 0.62),
+	Color(0.72, 0.84, 0.92),
+]
+const FOLIAGE: Array[Decor] = [Decor.BANANA, Decor.BAMBOO, Decor.BUSH]
 ## Bán kính bo góc đường đất (pixel).
 const PATH_CORNER_RADIUS: float = 16.0
 const PATCH_COUNT: int = 160
@@ -42,6 +51,7 @@ const VOID_COLOR := Color("#1B120D")
 @export var variation_seed: int = 7
 
 var _exit_rects: Array[Rect2] = []
+var _foliage_sprites: Array[Sprite2D] = []
 
 
 func _ready() -> void:
@@ -62,6 +72,19 @@ func _ready() -> void:
 func _on_season_changed(season: int, _year: int) -> void:
 	if TerrainTiles.set_season(season):
 		queue_redraw()
+	_tint_foliage()
+
+
+## Màu lá cây của mùa [param season] (giá trị của TimeManager.Season).
+static func foliage_tint(season: int) -> Color:
+	return FOLIAGE_TINTS[clampi(season, 0, FOLIAGE_TINTS.size() - 1)]
+
+
+## Áp màu mùa hiện tại lên mọi cây đã đặt (cả rặng cây viền map).
+func _tint_foliage() -> void:
+	var tint: Color = foliage_tint(TerrainTiles.get_season())
+	for sprite: Sprite2D in _foliage_sprites:
+		sprite.modulate = tint
 
 
 ## Map cụ thể ghi đè để đặt spawn, lối ra, NPC, vườn...
@@ -275,6 +298,9 @@ func add_decor(decor: Decor, feet: Vector2, blocker_width: float = 0.0) -> Sprit
 	sprite.offset = Vector2(-DECOR_CELL / 2.0, -DECOR_CELL)
 	sprite.position = feet
 	add_child(sprite)
+	if decor in FOLIAGE:
+		sprite.modulate = foliage_tint(TerrainTiles.get_season())
+		_foliage_sprites.append(sprite)
 	if blocker_width > 0.0:
 		_add_blocker(feet, blocker_width, 10.0)
 	return sprite

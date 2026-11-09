@@ -45,7 +45,7 @@ khi chuyển cảnh.
 | Nông trại | Cuốc, gieo, cây lớn theo ngày, héo khi sang mùa không hợp, thu hoạch vào kho |
 | Cây trồng | 12 loại cây (lúa, cà chua, bắp cải, dưa leo, rau muống, ngô, cà rốt, khoai lang, ớt, bí đỏ, dưa hấu, đậu), mỗi loại có mùa gieo, số ngày lớn và ảnh riêng; túi nhiều loại hạt thì tự chọn loại hợp mùa. Dữ liệu sinh từ bảng trong `tools/make_crop_data.sh` |
 | Giao thương | Một giao diện cửa hàng dùng cho mọi người bán; tiệm tạp hóa hàng cố định, chợ hàng ngẫu nhiên mỗi ngày; giờ mở cửa |
-| Nền đất theo mùa | Bốn sheet nền (Xuân, Hạ, Thu, Đông) cùng bố cục 8 ô; cỏ, đường, đất cuốc, nước đổi theo mùa của `TimeManager`, ô trong nhà giữ nguyên. Map vào đúng mùa đang chơi và vẽ lại khi sang mùa mới; vườn đổi tileset. Sheet mùa ghép bằng `tools/compose_season_tiles.gd` |
+| Nền đất theo mùa | Bốn sheet nền (Xuân, Hạ, Thu, Đông) cùng bố cục 8 ô; cỏ, đường, đất cuốc, nước đổi theo mùa của `TimeManager`, ô trong nhà giữ nguyên. Map vào đúng mùa đang chơi và vẽ lại khi sang mùa mới; vườn đổi tileset. Cây cối (chuối, tre, bụi hoa) được nhân màu theo mùa: Hạ đậm, Thu cam vàng, Đông xỉn lạnh. Sheet mùa ghép bằng `tools/compose_season_tiles.gd` |
 | Xếp lớp theo chiều sâu | Player là con của map hiện tại (SceneManager đưa Player về `world` trước khi dỡ map rồi vào map mới), map và view vườn bật y-sort: đi sau nhà, chuồng, cây thì bị che, đi trước thì đè lên. Gốc toạ độ của đồ vật và cây ở chân nên so sánh với chân Player |
 | Bản đồ | Sân nhà (viền rặng cây, đường đất bo góc, biển chỉ đường), trong nhà (giường), Tiệm Tạp Hóa, Chợ Quê, Khu Giải trí; chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
 | Chăn nuôi | Chuồng gà (đẻ trứng mỗi ngày) và chuồng lợn (nuôi 5 ngày rồi xuất chuồng); mua con giống ở Tạp Hóa, thả vào chuồng, cho ăn lúa, thu sản phẩm bằng phím `E`; chuồng được nhớ khi đổi map |
@@ -183,7 +183,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_livestock` | Dữ liệu loài, chuồng (thả, ăn, đếm ngày, thu, lưu/nạp), thứ tự ưu tiên khi bấm E, túi đầy/chuồng đầy, chuồng ở khu nhà được nhớ khi đổi map |
 | `test_crops` | 11 loại cây mới: dữ liệu, ảnh, mùa gieo, lớn và thu hoạch từng loại, chọn hạt hợp mùa, tạp hóa bán đủ hạt |
 | `test_layering` | Cấu trúc xếp lớp (Player là con của map, sống qua đổi map) và so sánh ảnh chụp thật: bị nhà che, đè lên khi đứng trước, bị cây che phần đặc |
-| `test_seasons` | Bốn sheet cùng cỡ, ô trong nhà giống hệt, ô ngoài trời khác Xuân, đổi mùa thì map và vườn vẽ lại (so ảnh chụp), vào map mới đúng mùa |
+| `test_seasons` | Bốn sheet cùng cỡ, màu lá cây theo mùa (cả rặng viền, cây trồng thêm; rào và chum không đổi), ô trong nhà giống hệt, ô ngoài trời khác Xuân, đổi mùa thì map và vườn vẽ lại (so ảnh chụp), vào map mới đúng mùa |
 | `test_save_load` | Lưu/nạp, file hỏng/sai phiên bản, tự lưu, menu Esc |
 | `test_minigames` | Thu phí, dừng đồng hồ, áp kết quả, hai mini-game, các trường hợp biên |
 | `test_start_menu` | Màn hình chính (3 pha, mô phỏng mở lại game) |

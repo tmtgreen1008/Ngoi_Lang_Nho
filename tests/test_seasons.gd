@@ -60,6 +60,42 @@ func run() -> void:
 		ground_ok = ground_ok and tiles.get_season() == season
 		atlas_ok = atlas_ok and (home.view._ground.tile_set.get_source(0) as TileSetAtlasSource).texture.resource_path == tiles.SEASON_SHEETS[season]
 	check("đổi mùa: nền và tileset vườn dùng đúng sheet của mùa", ground_ok and atlas_ok)
+	# --- màu lá cây theo mùa ---
+	var map_script: GDScript = load("res://maps/map_base.gd")
+	var tints: Array[Color] = []
+	for season: int in 4:
+		tints.append(map_script.foliage_tint(season))
+	check("Xuân giữ nguyên màu lá; Hạ, Thu, Đông mỗi mùa một màu khác", tints[0] == Color.WHITE and tints[1] != tints[2] and tints[2] != tints[3] and tints[1] != tints[3] and tints[1] != Color.WHITE)
+	var foliage: Array[Sprite2D] = []
+	var props_other: Array[Sprite2D] = []
+	for child: Node in home.get_children():
+		if child is Sprite2D and child.region_enabled and String(child.texture.resource_path).ends_with("decor_sheet.png"):
+			var frame: int = int(child.region_rect.position.x / 48)
+			if frame <= 2:  # chuối, tre, bụi hoa
+				foliage.append(child)
+			else:  # hàng rào, chum
+				props_other.append(child)
+	check("map nhà có nhiều cây (cả rặng cây viền) và có hàng rào/chum", foliage.size() > 50 and props_other.size() > 0)
+	var tint_ok: bool = true
+	var fence_ok: bool = true
+	for season: int in 4:
+		tm.season = season
+		bus.season_changed.emit(season, 1)
+		for sprite: Sprite2D in foliage:
+			tint_ok = tint_ok and sprite.modulate == tints[season]
+		for sprite: Sprite2D in props_other:
+			fence_ok = fence_ok and sprite.modulate == Color.WHITE
+	check("đổi mùa: mọi cây (cả rặng viền) đổi màu theo mùa", tint_ok)
+	check("hàng rào và chum không đổi màu", fence_ok)
+	# Cây mới trồng khi đang giữa mùa Thu cũng mang màu Thu.
+	tm.season = 2
+	bus.season_changed.emit(2, 1)
+	var fresh: Sprite2D = home.add_decor(0, Vector2(300, 300))
+	check("cây trồng thêm giữa mùa Thu mang ngay màu Thu", fresh.modulate == tints[2])
+	fresh.queue_free()
+	tm.season = 0
+	bus.season_changed.emit(0, 1)
+
 	var grass := Rect2i(300, 120, 200, 80)  # bãi cỏ phía bắc vườn
 	var all_distinct: bool = true
 	for a: int in 4:
