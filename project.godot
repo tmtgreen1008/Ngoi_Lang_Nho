@@ -25,6 +25,7 @@ SceneManager="*res://core/autoload/scene_manager.gd"
 SaveManager="*res://core/autoload/save_manager.gd"
 AudioManager="*res://core/autoload/audio_manager.gd"
 MusicManager="*res://core/autoload/music_manager.gd"
+RelationshipManager="*res://core/autoload/relationship_manager.gd"
 
 [display]
 

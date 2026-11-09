@@ -9,11 +9,14 @@
 [ext_resource type="Resource" path="res://data/items/dua_leo.tres" id="6_hed7f"]
 [ext_resource type="Script" path="res://core/resources/vendor_data.gd" id="7_7i6k7"]
 
+[ext_resource type="Resource" path="res://data/dialogues/chu_nam.tres" id="99_dialogue"]
+
 [resource]
 script = ExtResource("7_7i6k7")
 id = &"thuong_lai_rau"
 display_name = "Sạp rau chú Năm"
 npc_sheet = ExtResource("2_j0klp")
+dialogue = ExtResource("99_dialogue")
 open_hour = 5.0
 close_hour = 11.0
 random_pool = Array[ExtResource("1_hg7ru")]([ExtResource("2_hc2ld"), ExtResource("3_j0klp"), ExtResource("4_30g61"), ExtResource("5_vegqc"), ExtResource("6_hed7f")])

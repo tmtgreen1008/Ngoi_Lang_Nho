@@ -16,6 +16,7 @@ var shop_ui: ShopUI
 var hud: Hud
 var start_menu: StartMenu
 var pause_menu: PauseMenu
+var dialogue_box: DialogueBox
 
 
 func _ready() -> void:
@@ -33,6 +34,8 @@ func _ready() -> void:
 	pause_menu.main_menu_requested.connect(return_to_main_menu)
 	add_child(pause_menu)
 	add_child(MinigameHost.new())
+	dialogue_box = DialogueBox.new()
+	add_child(dialogue_box)
 	var ui_layer := CanvasLayer.new()
 	ui_layer.layer = 20
 	add_child(ui_layer)
@@ -61,6 +64,7 @@ func start_new_game() -> void:
 	TimeManager.load_save_data({})
 	EconomyManager.load_save_data({})
 	WorldStateManager.clear()
+	RelationshipManager.clear()
 	player.inventory.load_save_data([])
 	_give_starting_items()
 	_begin_playing()

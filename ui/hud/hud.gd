@@ -80,6 +80,8 @@ func _ready() -> void:
 	# Ẩn gợi ý khi đang mua bán để không chồng lên cửa hàng.
 	EventBus.shop_opened.connect(func(_vendor: Resource) -> void: _set_shop_open(true))
 	EventBus.shop_closed.connect(func(_vendor: Resource) -> void: _set_shop_open(false))
+	EventBus.dialogue_opened.connect(func(_speaker: StringName) -> void: _set_shop_open(true))
+	EventBus.dialogue_closed.connect(func(_speaker: StringName) -> void: _set_shop_open(false))
 	_update_time()
 	_update_money()
 

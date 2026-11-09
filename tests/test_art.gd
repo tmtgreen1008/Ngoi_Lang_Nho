@@ -100,6 +100,7 @@ func run() -> void:
 	check("quầy chặn Player: dừng trước quầy (y từ 378 đến 420)", player.position.y >= 378.0 and player.position.y < 420.0)
 	check("đứng trước quầy vẫn nhắm được bà Tư", player.get_target() != null)
 	await press_action("interact")
+	await press_action("interact")  # E lần hai: chọn "Mua bán" trong hộp thoại
 	await shot("art_shop.png")
 	check("cửa hàng hiện icon vật phẩm trên dòng hàng", _has_icon_row(main.shop_ui._buy_list))
 	await press_action("ui_cancel")

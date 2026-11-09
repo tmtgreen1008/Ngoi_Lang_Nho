@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/dialogue_data.gd" id="1_dialogue"]
+
+[resource]
+script = ExtResource("1_dialogue")
+speaker_id = &"tap_hoa"
+display_name = "Bà Tư"
+first_meeting = PackedStringArray("Ôi, cháu mới về làng hả? Bà là bà Tư, chủ tiệm tạp hóa này. Cần gì cứ ghé bà nhé!", "Chào cháu! Nhà mới dọn tới phải không? Có gì thiếu thì qua tiệm bà, giá hạt giống bà lấy rẻ cho.")
+greetings = PackedStringArray("Cháu lại ghé tiệm bà đó hả?", "Chào cháu, hôm nay cần mua gì?", "Ôi cháu đây rồi, vào đây vào đây.", "Bà đang xếp lại hàng, cháu cứ xem thoải mái nhé.")
+farewells = PackedStringArray("Đi cẩn thận nghe cháu!", "Lần sau ghé nữa nha.", "Ừ, về nhà nghỉ ngơi đi cháu.")
+lines_general = PackedStringArray("Hạt giống bà bán toàn loại tốt, gieo xuống là lên, cháu cứ yên tâm.", "Bà bán tạp hóa ba chục năm rồi, hồi đó cái chợ này còn nhỏ xíu à.", "Mì tôm với cám gà bà luôn để sẵn, gà ăn cám thì đẻ trứng sai lắm.", "Làm nông phải chịu khó, mà cũng phải biết nghỉ. Mệt thì cứ đi ngủ sớm.", "Cháu nhớ ra chợ sớm nhé, chợ chỉ họp buổi sáng thôi.")
+lines_spring = PackedStringArray("Xuân về rồi, gieo lúa với rau muống là hợp nhất đó cháu.", "Trời xuân mát mẻ, cây gì cũng dễ lên. Cháu mua thêm hạt giống đi.")
+lines_summer = PackedStringArray("Nắng này dưa hấu với ớt là thích lắm. Nhưng nhớ chăm cho đủ nước.", "Mùa hè nóng, trưa cháu nghỉ bóng cây chút cho đỡ mệt nhé.")
+lines_autumn = PackedStringArray("Thu rồi, bí đỏ với ngô đang vào mùa. Gieo sớm kẻo trễ vụ đông.", "Lá rụng đầy sân bà quét mãi không hết, mà thấy đẹp nên bà cũng không nỡ.")
+lines_winter = PackedStringArray("Đông lạnh quá, bắp cải với cà rốt chịu rét tốt, cháu thử gieo xem.", "Rét thế này cây héo hết, cháu đừng gieo loại sai mùa kẻo phí hạt.")
+friend_lines = PackedStringArray("Cháu chăm chỉ ghê, bà quý lắm. Hồi trẻ bà cũng siêng như cháu vậy.", "Bà kể cháu nghe, con gà mái mà được cho ăn đều thì đẻ hoài không nghỉ.", "Cháu có chuyện gì cứ nói với bà, đừng ngại.")
+close_lines = PackedStringArray("Bà coi cháu như cháu ruột trong nhà rồi đó. Tết này sang nhà bà ăn bánh chưng nha!", "Làng mình có cháu về, bà thấy vui hẳn ra.")
+gift_item_id = &"hat_giong_lua"
+gift_amount = 5
+gift_points = 3
+gift_text = "Thôi, bà tặng cháu ít hạt giống lúa, coi như quà làm quen. Gieo cho tốt nhé!"

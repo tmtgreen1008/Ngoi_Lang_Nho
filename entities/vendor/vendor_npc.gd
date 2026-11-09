@@ -35,6 +35,10 @@ func _ready() -> void:
 
 
 func _on_interacted(interactor: Node) -> void:
+	# Có lời thoại: mở hộp thoại (Mua bán / Trò chuyện / Tạm biệt); không thì mở thẳng cửa hàng.
+	if vendor_data != null and vendor_data.dialogue != null:
+		EventBus.npc_talk_requested.emit(self, interactor)
+		return
 	var buyer: Node = interactor.get("inventory")
 	if buyer != null:
 		EventBus.shop_open_requested.emit(vendor, buyer)

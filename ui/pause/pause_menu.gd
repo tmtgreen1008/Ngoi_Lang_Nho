@@ -79,6 +79,9 @@ func _ready() -> void:
 
 	EventBus.shop_opened.connect(func(_vendor: Resource) -> void: _shop_open = true)
 	EventBus.shop_closed.connect(func(_vendor: Resource) -> void: _shop_open = false)
+	# Hộp thoại tự xử lý Esc, nên menu tạm dừng không mở lúc đó.
+	EventBus.dialogue_opened.connect(func(_speaker: StringName) -> void: _shop_open = true)
+	EventBus.dialogue_closed.connect(func(_speaker: StringName) -> void: _shop_open = false)
 	# Mini-game có nút Thoát riêng, Esc không mở menu tạm dừng lúc đó.
 	EventBus.minigame_started.connect(func(_id: StringName) -> void: _minigame_open = true)
 	EventBus.minigame_finished.connect(func(_id: StringName, _result: Dictionary) -> void: _minigame_open = false)

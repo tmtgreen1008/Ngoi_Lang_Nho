@@ -97,6 +97,7 @@ func load_game(slot: StringName = DEFAULT_SLOT) -> String:
 	var player_data: Dictionary = data.get("player", {})
 	EconomyManager.load_save_data(data.get("economy", {}))
 	WorldStateManager.load_save_data(data.get("world", {}))
+	RelationshipManager.load_save_data(data.get("relationships", {}))  # bản lưu cũ chưa có mục này
 	if player != null:
 		player.inventory.load_save_data(player_data.get("inventory", []))
 	TimeManager.load_save_data(data.get("time", {}))
@@ -144,6 +145,7 @@ func _build_snapshot() -> Dictionary:
 		"time": TimeManager.get_save_data(),
 		"economy": EconomyManager.get_save_data(),
 		"world": WorldStateManager.get_save_data(),
+		"relationships": RelationshipManager.get_save_data(),
 		"player": {
 			"inventory": player.inventory.get_save_data(),
 			"position": [player.global_position.x, player.global_position.y],

@@ -51,6 +51,14 @@ signal transaction_completed(item: ItemData, amount: int, total_price: int, is_b
 signal interaction_started(interactable: Node)
 signal interaction_ended(interactable: Node)
 signal dialogue_requested(speaker_id: StringName, dialogue_id: StringName)
+## Người chơi muốn nói chuyện với [param npc] (VendorNPC phát; npc có thuộc tính dialogue và vendor);
+## [param interactor] là Player. DialogueBox nghe.
+signal npc_talk_requested(npc: Node, interactor: Node)
+## Hộp thoại mở/đóng ([param speaker_id] là id người nói). Player khoá di chuyển, menu tạm dừng nhường Esc.
+signal dialogue_opened(speaker_id: StringName)
+signal dialogue_closed(speaker_id: StringName)
+## Độ thân thiết với một NPC lên cấp ([param level]: 0-3, xem RelationshipManager).
+signal relationship_changed(speaker_id: StringName, level: int)
 ## Gợi ý tương tác thay đổi (Player phát). Chuỗi rỗng = ẩn gợi ý. HUD nghe.
 signal interaction_prompt_changed(text: String)
 ## Thông báo nhanh cho người chơi (HUD nghe và hiện vài giây).

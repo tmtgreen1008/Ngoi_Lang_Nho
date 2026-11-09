@@ -55,7 +55,9 @@ func run() -> void:
 	await wait(0.3)
 	check("nhắm được bà chủ tạp hóa", player.get_target() != null)
 	await press_action("interact")
-	check("phím E mở cửa hàng tạp hóa", main.shop_ui.visible and main.shop_ui._title_label.text == "Tiệm Tạp Hóa bà Tư")
+	check("phím E mở hộp thoại bà Tư (chưa mở cửa hàng)", main.dialogue_box.visible and not main.shop_ui.visible)
+	await press_action("interact")  # E lần hai chọn "Mua bán"
+	check("phím E mở cửa hàng tạp hóa",main.shop_ui.visible and main.shop_ui._title_label.text == "Tiệm Tạp Hóa bà Tư")
 	var x_before: float = player.position.x
 	Input.action_press("move_right")
 	await wait(0.3)
@@ -92,7 +94,8 @@ func run() -> void:
 	player.position = Vector2(760, 345)
 	await wait(0.3)
 	await press_action("interact")
-	check("mở sạp chợ, bán được lúa", main.shop_ui.visible and main.shop_ui._title_label.text == "Sạp rau chú Năm")
+	await press_action("interact")  # hộp thoại chú Năm, E lần hai chọn "Mua bán"
+	check("mở sạp chợ, bán được lúa",main.shop_ui.visible and main.shop_ui._title_label.text == "Sạp rau chú Năm")
 	var money: int = economy.money
 	var sell_button: Button = null
 	for row: Node in main.shop_ui._sell_list.get_children():

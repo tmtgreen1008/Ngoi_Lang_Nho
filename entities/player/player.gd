@@ -42,6 +42,8 @@ func _ready() -> void:
 	_interaction_area.area_exited.connect(_on_area_exited)
 	EventBus.shop_opened.connect(func(_vendor: Resource) -> void: movement_locked = true)
 	EventBus.shop_closed.connect(func(_vendor: Resource) -> void: movement_locked = false)
+	EventBus.dialogue_opened.connect(func(_speaker: StringName) -> void: movement_locked = true)
+	EventBus.dialogue_closed.connect(func(_speaker: StringName) -> void: movement_locked = false)
 	# Đứng yên trong lúc chuyển map.
 	EventBus.scene_change_requested.connect(func(_path: String, _spawn: StringName) -> void: _in_transition = true)
 	EventBus.scene_changed.connect(func(_path: String) -> void: _in_transition = false)

@@ -21,10 +21,13 @@
 [ext_resource type="Resource" path="res://data/crops/hat_giong_dau.tres" id="30_dau"]
 [ext_resource type="Script" path="res://core/resources/vendor_data.gd" id="6_vgpgk"]
 
+[ext_resource type="Resource" path="res://data/dialogues/ba_tu.tres" id="99_dialogue"]
+
 [resource]
 script = ExtResource("6_vgpgk")
 id = &"tap_hoa"
 display_name = "Tiệm Tạp Hóa bà Tư"
 npc_sheet = ExtResource("6_f7gat")
+dialogue = ExtResource("99_dialogue")
 fixed_items = Array[ExtResource("1_h7r1v")]([ExtResource("2_f7gat"), ExtResource("3_0j37l"), ExtResource("4_b3vlj"), ExtResource("5_7r3qq"), ExtResource("7_gagiong"), ExtResource("8_longiong"), ExtResource("20_ca_chua"), ExtResource("21_bap_cai"), ExtResource("22_dua_leo"), ExtResource("23_rau_muong"), ExtResource("24_ngo"), ExtResource("25_ca_rot"), ExtResource("26_khoai_lang"), ExtResource("27_ot"), ExtResource("28_bi_do"), ExtResource("29_dua_hau"), ExtResource("30_dau")])
 buys_from_player = false

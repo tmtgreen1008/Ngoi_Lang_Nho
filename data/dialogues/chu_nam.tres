@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/dialogue_data.gd" id="1_dialogue"]
+
+[resource]
+script = ExtResource("1_dialogue")
+speaker_id = &"thuong_lai_rau"
+display_name = "Chú Năm"
+first_meeting = PackedStringArray("Chào cậu! Tôi là Năm, buôn rau ở chợ này. Có rau ngon hay trứng gà tươi cứ mang qua, tôi thu hết.", "Ồ, người làng mới hả? Chợ họp sớm lắm, nhớ dậy sớm mà ra nghe!")
+greetings = PackedStringArray("Chào cậu, rau hôm nay tươi roi rói đây!", "Lại là cậu đó hả, vào xem hàng đi.", "Ê, đến đúng lúc lắm, vừa nhập rau mới.", "Sáng sớm đã thấy cậu rồi, siêng thiệt.")
+farewells = PackedStringArray("Đi nhé, mai ra chợ sớm nghe!", "Hẹn cậu phiên sau.", "Về nhớ tưới vườn đó!")
+lines_general = PackedStringArray("Chợ này họp từ năm giờ tới mười một giờ thôi. Trễ là hết hàng, hết người mua.", "Hàng của tôi mỗi ngày một khác, hôm nay có gì bán nấy, không có gì đâu mà than.", "Cậu muốn bán nông sản thì cứ mang ra, tôi trả giá phải chăng, không ép ai bao giờ.", "Làm ăn phải giữ chữ tín. Rau tươi thì mới có khách quay lại.", "Trứng gà ta tôi thu hoài, càng nhiều càng tốt.")
+lines_spring = PackedStringArray("Xuân rau muống mọc nhanh lắm, một mẻ thu được cả bó.", "Cậu trồng thử cà chua đi, mùa này lên đẹp lắm.")
+lines_summer = PackedStringArray("Hè rồi, dưa leo với dưa hấu bán chạy nhất. Ai cũng muốn giải khát.", "Nóng thế này nhớ ra chợ sớm kẻo rau héo hết trong rổ.")
+lines_autumn = PackedStringArray("Thu về, bí đỏ với khoai lang được giá lắm. Cậu để dành mà bán.", "Mùa thu hoạch mà, ai cũng bận rộn, chợ cũng đông hơn hẳn.")
+lines_winter = PackedStringArray("Đông ít rau lắm, cậu có bắp cải thì bán được giá cao đó.", "Trời rét, buôn bán chậm, mà tôi vẫn ra chợ đều. Quen rồi.")
+friend_lines = PackedStringArray("Tôi nói thật, cậu là người trồng rau có tâm nhất tôi gặp.", "Hồi xưa tôi cũng làm ruộng, sau mới chuyển qua buôn rau. Nhớ đồng lắm.", "Có gì cần cứ hỏi tôi, chuyện chợ búa tôi rành.")
+close_lines = PackedStringArray("Cậu là bạn của tôi rồi, ra chợ ngồi uống nước chè với tôi nhé.", "Tôi mà nghỉ hưu là giao lại sạp cho cậu đó, nói thiệt!")
+gift_item_id = &"hat_giong_bap_cai"
+gift_amount = 3
+gift_points = 3
+gift_text = "Cậu hợp tính tôi, tôi biếu cậu ít hạt giống bắp cải. Gieo mùa thu hay mùa đông đều tốt!"
