@@ -1,5 +1,6 @@
 # Danh sách asset và prompt tạo ảnh (ChatGPT)
 
+> **Danh mục tổng và các đợt 4-9 (giao diện, vật phẩm, ngoại cảnh, nội thất, nhân vật, hiệu ứng, mini-game): xem [ASSET_CATALOG.md](ASSET_CATALOG.md).**
 > Đợt 2 (đồ lặt vặt ngoài sân, biển chỉ đường, nội thất trong nhà, ô nền bổ sung): xem [ASSET_PROMPTS_2.md](ASSET_PROMPTS_2.md).
 > Đợt 3 (chuồng trại, ao, phiên chợ, xóm làng, khu giải trí): xem [ASSET_PROMPTS_3.md](ASSET_PROMPTS_3.md).
 
@@ -14,7 +15,7 @@ Mọi prompt dùng chung một khối **STYLE** và một **bảng 17 màu** đ�
 
 1. **Mở một cuộc trò chuyện mới** và dùng nó cho TOÀN BỘ asset, để ChatGPT "nhớ" phong cách.
 2. Làm theo thứ tự ưu tiên ở mục 1. Bắt đầu bằng ảnh số 1 (nền đất). Khi bạn **duyệt** ảnh đó, hãy **đính kèm nó** vào các prompt sau và thêm một câu:
-   *"Match the exact style, palette, outline and pixel density of the attached reference image."*
+   *"If a reference image is attached, match its exact style, palette, outline and pixel density."* (nếu không đính kèm được thì bỏ qua câu này)
 3. Mỗi prompt đã chứa khối STYLE đầy đủ, nên dán nguyên văn là được, không cần sửa.
 4. Nếu nền không phẳng màu hồng tím (#FF00FF) hoặc có bóng đổ ra nền, gõ: *"Regenerate with a perfectly flat pure magenta #FF00FF background, no shadow on the background, no gradient."*
 5. **Hậu kỳ (bắt buộc)**, vì AI không vẽ được pixel chuẩn tuyệt đối:
