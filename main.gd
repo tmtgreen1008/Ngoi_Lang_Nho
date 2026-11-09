@@ -15,6 +15,7 @@ var player: Player
 var shop_ui: ShopUI
 var hud: Hud
 var start_menu: StartMenu
+var pause_menu: PauseMenu
 
 
 func _ready() -> void:
@@ -27,7 +28,10 @@ func _ready() -> void:
 
 	hud = Hud.new()
 	add_child(hud)
-	add_child(PauseMenu.new())
+	pause_menu = PauseMenu.new()
+	pause_menu.in_main_menu = true
+	pause_menu.main_menu_requested.connect(return_to_main_menu)
+	add_child(pause_menu)
 	add_child(MinigameHost.new())
 	var ui_layer := CanvasLayer.new()
 	ui_layer.layer = 20
@@ -73,6 +77,16 @@ func continue_game(slot: StringName) -> void:
 		start_menu.open(error)
 
 
+## Về màn hình chính giữa ván (từ menu tạm dừng): dừng đồng hồ, khoá Player, ẩn HUD rồi hiện menu.
+## Ván hiện tại không tự lưu; chọn Ván mới hoặc Tiếp tục để chơi tiếp.
+func return_to_main_menu() -> void:
+	TimeManager.pause()
+	player.movement_locked = true
+	hud.hide()
+	pause_menu.in_main_menu = true
+	start_menu.open()
+
+
 ## Đồ khởi đầu của ván mới (tạm thời; sau này đọc từ dữ liệu).
 func _give_starting_items() -> void:
 	player.inventory.add_item(ItemDatabase.get_item(&"hat_giong_lua"), 10)
@@ -81,6 +95,7 @@ func _give_starting_items() -> void:
 
 func _begin_playing() -> void:
 	start_menu.hide()
+	pause_menu.in_main_menu = false
 	hud.show()
 	player.movement_locked = false
 	TimeManager.start()

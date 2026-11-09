@@ -9,8 +9,6 @@ extends Node
 
 const BUS_NAME: StringName = &"Music"
 const MUSIC_DIR: String = "res://assets/audio/music/"
-## Âm lượng bus nhạc (nhỏ hơn hiệu ứng để không át tiếng).
-const BUS_VOLUME_DB: float = -14.0
 const FADE_SECONDS: float = 1.5
 const SILENT_DB: float = -60.0
 
@@ -115,5 +113,5 @@ func _ensure_bus() -> void:
 		var index: int = AudioServer.bus_count - 1
 		AudioServer.set_bus_name(index, BUS_NAME)
 		AudioServer.set_bus_send(index, &"Master")
-		AudioServer.set_bus_volume_db(index, BUS_VOLUME_DB)
+	AudioManager.apply_bus_volumes()
 	AudioManager.apply_bus_mute()

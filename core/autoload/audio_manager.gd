@@ -7,6 +7,11 @@ extends Node
 ## - Phím M bật/tắt tiếng. Khi chạy bài test (-s) tiếng bị tắt ở loa nhưng vẫn đếm lượt phát.
 
 const BUS_NAME: StringName = &"SFX"
+## Mức gốc (dB) của bus hiệu ứng và bus nhạc; âm lượng người chơi chọn cộng vào đây.
+const SFX_BASE_DB: float = -4.0
+const MUSIC_BASE_DB: float = -14.0
+const SETTINGS_PATH: String = "user://settings.cfg"
+const TEST_SETTINGS_PATH: String = "user://settings_test.cfg"
 const SFX_DIR: String = "res://assets/audio/sfx/"
 const VOICES: int = 8
 ## Một âm phát lại trong khoảng này (ms) thì bỏ qua, để không chồng chéo khi sự kiện dồn dập.
@@ -16,6 +21,11 @@ const NOTICE_QUIET_MSEC: int = 200
 
 ## Tắt tiếng do người chơi (phím M).
 var muted: bool = false
+## Âm lượng hiệu ứng và nhạc nền người chơi chọn (0-1).
+var sfx_volume: float = 1.0
+var music_volume: float = 1.0
+## File lưu cài đặt (khi chạy test đổi sang file riêng).
+var settings_path: String = SETTINGS_PATH
 ## Số lượt phát từng âm kể từ lúc khởi động (id -> số lần); dùng cho kiểm thử.
 var play_counts: Dictionary = {}
 var last_played: StringName = &""
@@ -35,6 +45,10 @@ func _ready() -> void:
 	_rng.randomize()
 	# Chạy test (godot -s ...): không phát ra loa, chỉ đếm.
 	_silent_speakers = OS.get_cmdline_args().has("-s") or OS.get_cmdline_args().has("--script")
+	if _silent_speakers:
+		settings_path = TEST_SETTINGS_PATH  # test không đọc/ghi cài đặt thật của người chơi
+	else:
+		load_settings()
 	_ensure_bus()
 	for id: StringName in SfxSynth.SOUND_IDS:
 		_streams[id] = _load_stream(id)
@@ -82,6 +96,51 @@ func set_muted(value: bool) -> void:
 	if muted:
 		for voice: AudioStreamPlayer in _voices:
 			voice.stop()
+	save_settings()
+
+
+## Âm lượng hiệu ứng (0-1) và nhạc nền (0-1); lưu lại ngay.
+func set_sfx_volume(value: float) -> void:
+	sfx_volume = clampf(value, 0.0, 1.0)
+	apply_bus_volumes()
+	save_settings()
+
+
+func set_music_volume(value: float) -> void:
+	music_volume = clampf(value, 0.0, 1.0)
+	apply_bus_volumes()
+	save_settings()
+
+
+## Đặt âm lượng hai bus theo mức người chơi chọn (tuyến tính 0-1 đổi sang dB trên mức gốc của bus).
+func apply_bus_volumes() -> void:
+	var levels: Dictionary = {BUS_NAME: [SFX_BASE_DB, sfx_volume], &"Music": [MUSIC_BASE_DB, music_volume]}
+	for bus_name: StringName in levels:
+		var index: int = AudioServer.get_bus_index(bus_name)
+		if index != -1:
+			var base: float = levels[bus_name][0]
+			var volume: float = levels[bus_name][1]
+			AudioServer.set_bus_volume_db(index, base + (linear_to_db(volume) if volume > 0.001 else -80.0))
+
+
+## Lưu cài đặt âm thanh (tắt tiếng, âm lượng) vào [member settings_path].
+func save_settings() -> Error:
+	var config := ConfigFile.new()
+	config.set_value("audio", "muted", muted)
+	config.set_value("audio", "sfx", sfx_volume)
+	config.set_value("audio", "music", music_volume)
+	return config.save(settings_path)
+
+
+## Nạp cài đặt đã lưu (thiếu hoặc hỏng thì giữ mặc định). Trả về true nếu có nạp được.
+func load_settings() -> bool:
+	var config := ConfigFile.new()
+	if config.load(settings_path) != OK:
+		return false
+	muted = bool(config.get_value("audio", "muted", false))
+	sfx_volume = clampf(float(config.get_value("audio", "sfx", 1.0)), 0.0, 1.0)
+	music_volume = clampf(float(config.get_value("audio", "music", 1.0)), 0.0, 1.0)
+	return true
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -163,7 +222,7 @@ func _ensure_bus() -> void:
 		var index: int = AudioServer.bus_count - 1
 		AudioServer.set_bus_name(index, BUS_NAME)
 		AudioServer.set_bus_send(index, &"Master")
-		AudioServer.set_bus_volume_db(index, -4.0)
+	apply_bus_volumes()
 	apply_bus_mute()
 
 

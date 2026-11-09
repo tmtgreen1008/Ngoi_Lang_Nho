@@ -47,6 +47,7 @@ khi chuyển cảnh.
 | Giao thương | Một giao diện cửa hàng dùng cho mọi người bán; tiệm tạp hóa hàng cố định, chợ hàng ngẫu nhiên mỗi ngày; giờ mở cửa |
 | Âm thanh | `AudioManager` (autoload) nghe EventBus nên nhặt đồ, cuốc, gieo, thu hoạch, cho ăn, mua/bán, mở/đóng cửa hàng, sang ngày/mùa, lưu game, kết thúc mini-game, bước chân, bấm nút đều có tiếng. 22 âm tổng hợp trong `core/audio/sfx_synth.gd` (không cần file ngoài, thả file `.ogg`/`.wav` cùng tên vào `assets/audio/sfx/` để thay). Phím `M` bật/tắt tiếng |
 | Nhạc nền | `MusicManager` (autoload) phát bản nhạc theo mùa (spring, summer, autumn, winter) và bản `minigame` khi chơi mini-game, mờ dần chéo khi chuyển. Nhạc sinh bằng mã trong `core/audio/music_synth.gd` (vòng lặp 8 ô nhịp, ngũ cung, mỗi mùa một giọng và nhịp); thả `assets/audio/music/<id>.ogg` để thay bằng nhạc thật. Phím `M` tắt cả hiệu ứng và nhạc |
+| Cài đặt | Menu tạm dừng có thanh trượt âm lượng hiệu ứng và nhạc nền, công tắc Tắt tiếng (đồng bộ với phím `M`); lưu vào `user://settings.cfg` và nạp lại khi mở game. Nút "Về màn hình chính" (bấm hai lần để xác nhận) quay lại menu giữa ván, chơi lại bằng Ván mới / Tiếp tục |
 | Nền đất theo mùa | Bốn sheet nền (Xuân, Hạ, Thu, Đông) cùng bố cục 8 ô; cỏ, đường, đất cuốc, nước đổi theo mùa của `TimeManager`, ô trong nhà giữ nguyên. Map vào đúng mùa đang chơi và vẽ lại khi sang mùa mới; vườn đổi tileset. Cây cối (chuối, tre, bụi hoa) được nhân màu theo mùa: Hạ đậm, Thu cam vàng, Đông xỉn lạnh. Sheet mùa ghép bằng `tools/compose_season_tiles.gd` |
 | Xếp lớp theo chiều sâu | Player là con của map hiện tại (SceneManager đưa Player về `world` trước khi dỡ map rồi vào map mới), map và view vườn bật y-sort: đi sau nhà, chuồng, cây thì bị che, đi trước thì đè lên. Gốc toạ độ của đồ vật và cây ở chân nên so sánh với chân Player |
 | Bản đồ | Sân nhà (viền rặng cây, đường đất bo góc, biển chỉ đường), trong nhà (giường), Tiệm Tạp Hóa, Chợ Quê, Khu Giải trí; chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
@@ -188,6 +189,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_seasons` | Bốn sheet cùng cỡ, màu lá cây theo mùa (cả rặng viền, cây trồng thêm; rào và chum không đổi), ô trong nhà giống hệt, ô ngoài trời khác Xuân, đổi mùa thì map và vườn vẽ lại (so ảnh chụp), vào map mới đúng mùa |
 | `test_audio` | 22 âm hợp lệ và không méo, nối sự kiện, chống phát dồn, thông báo không chồng tiếng, nút tự có click, tắt tiếng bằng M, bước chân khi đi bộ |
 | `test_music` | Bản nhạc hợp lệ, không méo, nối vòng liền mạch, mỗi mùa một bản; nhạc đổi theo mùa và mini-game, M tắt cả nhạc |
+| `test_settings` | Lưu/nạp âm lượng và tắt tiếng (file thiếu/hỏng không lỗi), thanh trượt và công tắc trong menu tạm dừng, Về màn hình chính hai bước, Esc không mở menu ở màn hình chính, chơi lại sau khi quay về |
 | `test_save_load` | Lưu/nạp, file hỏng/sai phiên bản, tự lưu, menu Esc |
 | `test_minigames` | Thu phí, dừng đồng hồ, áp kết quả, hai mini-game, các trường hợp biên |
 | `test_start_menu` | Màn hình chính (3 pha, mô phỏng mở lại game) |
@@ -207,8 +209,7 @@ nên test không được nhắc tên class dùng autoload bằng `X.new()` hay 
 
 ## Hạn chế hiện tại và hướng phát triển
 
-- Âm thanh và nhạc nền là âm tổng hợp bằng mã (thay bằng file thật: `assets/audio/sfx/<id>.ogg`, `assets/audio/music/<mùa>.ogg`), tiếng tắt/bật bằng phím `M` nhưng chưa lưu lại giữa các lần chơi, mini-game chưa có tiếng riêng. Art do AI tạo nên mỗi ảnh có mật độ pixel hơi khác nhau (nhà được phóng 2 lần cho cân với Player); nhân vật chỉ có hoạt ảnh đi bộ, chưa có hoạt ảnh cuốc/gieo/thu hoạch.
+- Âm thanh và nhạc nền là âm tổng hợp bằng mã (thay bằng file thật: `assets/audio/sfx/<id>.ogg`, `assets/audio/music/<mùa>.ogg`), mini-game chưa có tiếng riêng. Art do AI tạo nên mỗi ảnh có mật độ pixel hơi khác nhau (nhà được phóng 2 lần cho cân với Player); nhân vật chỉ có hoạt ảnh đi bộ, chưa có hoạt ảnh cuốc/gieo/thu hoạch.
 - Chưa có: nấu ăn, giặt đồ, vịt/trâu/chó (đã có ảnh trong assets/art/animals/farm_b.png), NPC có hội thoại, nhiều sạp ở Chợ.
 - Các con số (giá, thưởng mini-game, tốc độ) là số tạm, chưa cân bằng bằng chơi thử.
 - Chỉ có một slot lưu thủ công và một slot tự lưu; chưa có cơ chế nâng cấp định dạng file lưu giữa các phiên bản.
-- Chưa có menu "Về màn hình chính" trong lúc chơi.

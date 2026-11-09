@@ -62,6 +62,7 @@ run_test test_layering
 run_test test_seasons
 run_test test_audio
 run_test test_music
+run_test test_settings
 run_test test_save_load
 run_test test_minigames
 run_test test_start_menu -- phase=A
