@@ -78,7 +78,7 @@ func play(id: StringName, volume_db: float = 0.0, pitch_spread: float = 0.0) -> 
 ## Bật/tắt tiếng.
 func set_muted(value: bool) -> void:
 	muted = value
-	_apply_bus_mute()
+	apply_bus_mute()
 	if muted:
 		for voice: AudioStreamPlayer in _voices:
 			voice.stop()
@@ -164,8 +164,12 @@ func _ensure_bus() -> void:
 		AudioServer.set_bus_name(index, BUS_NAME)
 		AudioServer.set_bus_send(index, &"Master")
 		AudioServer.set_bus_volume_db(index, -4.0)
-	_apply_bus_mute()
+	apply_bus_mute()
 
 
-func _apply_bus_mute() -> void:
-	AudioServer.set_bus_mute(AudioServer.get_bus_index(BUS_NAME), muted or _silent_speakers)
+## Áp trạng thái tắt tiếng (do người chơi hoặc khi chạy test) lên bus hiệu ứng và bus nhạc nền.
+func apply_bus_mute() -> void:
+	for bus_name: StringName in [BUS_NAME, &"Music"]:
+		var index: int = AudioServer.get_bus_index(bus_name)
+		if index != -1:
+			AudioServer.set_bus_mute(index, muted or _silent_speakers)
