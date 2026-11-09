@@ -9,7 +9,16 @@ extends RefCounted
 ## Cạnh ô vuông (pixel). Mọi bản đồ và vườn lát theo lưới này.
 const TILE_SIZE: int = 48
 const COLUMNS: int = 4
+## Sheet mùa Xuân (gốc). Các mùa khác ghép từ sheet này bằng tools/compose_season_tiles.gd.
 const TEXTURE_PATH: String = "res://assets/art/tiles/terrain_tiles.png"
+## Sheet theo mùa (giá trị của TimeManager.Season: Xuân, Hạ, Thu, Đông). Cùng bố cục 8 ô; chỉ các ô
+## ngoài trời (cỏ, cỏ điểm hoa, đường, đất cuốc, mặt nước) đổi theo mùa, ô trong nhà giữ nguyên.
+const SEASON_SHEETS: Array[String] = [
+	TEXTURE_PATH,
+	"res://assets/art/tiles/terrain_summer.png",
+	"res://assets/art/tiles/terrain_autumn.png",
+	"res://assets/art/tiles/terrain_winter.png",
+]
 
 enum Tile {
 	GRASS,
@@ -22,14 +31,29 @@ enum Tile {
 	WATER,
 }
 
-static var _texture: Texture2D
+static var _season: int = 0
+static var _textures: Dictionary = {}  # mùa -> Texture2D (nạp một lần)
 
 
-## Ảnh sheet (nạp một lần).
+## Mùa đang dùng cho nền (giá trị của TimeManager.Season).
+static func get_season() -> int:
+	return _season
+
+
+## Đổi mùa của nền đất. Trả về true nếu mùa thực sự đổi (bên gọi cần vẽ lại).
+static func set_season(season: int) -> bool:
+	season = clampi(season, 0, SEASON_SHEETS.size() - 1)
+	if season == _season:
+		return false
+	_season = season
+	return true
+
+
+## Ảnh sheet của mùa hiện tại (nạp một lần cho mỗi mùa).
 static func get_texture() -> Texture2D:
-	if _texture == null:
-		_texture = load(TEXTURE_PATH) as Texture2D
-	return _texture
+	if not _textures.has(_season):
+		_textures[_season] = load(SEASON_SHEETS[_season]) as Texture2D
+	return _textures[_season]
 
 
 ## Toạ độ (cột, hàng) của [param tile] trong sheet.

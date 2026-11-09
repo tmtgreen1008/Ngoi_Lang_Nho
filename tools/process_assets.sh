@@ -68,4 +68,10 @@ crop $B khoai_lang 0 250; crop $B ot 265 215; crop $B bi_do 500 240; crop $B dua
 slice in=$B2/pixel_art_seed_packet_grid.png out=$OUT/icons/seed_icons.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
 slice in=$B2/pixel_art_harvest_vegetable_sprite_sheet.png out=$OUT/icons/veg_icons.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
 # Sau đó: bash tools/make_crop_data.sh để sinh dữ liệu .tres từ bảng cây.
+
+# Nền đất theo mùa: cắt ba sheet 4x2 (Hạ, Thu, Đông) về ô 48x48 rồi ghép với sheet Xuân gốc.
+for pair in "summer:vibrant_pixel-art_terrain_tileset-1" "autumn:autumn_pixel_terrain_tileset-2" "winter:frostbound_countryside_terrain_tileset-3"; do
+	slice in=$B2/${pair#*:}.png out=$OUT/tiles/raw/${pair%%:*}.png cols=4 rows=2 cell=48,48 sample=lanczos
+done
+"$GODOT" --headless --path . -s tools/compose_season_tiles.gd | grep -E "COMPOSE"
 echo "Xong."

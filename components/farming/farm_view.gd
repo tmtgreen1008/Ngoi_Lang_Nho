@@ -27,6 +27,17 @@ func _init() -> void:
 	_grid.draw.connect(_draw_grid)
 
 
+func _ready() -> void:
+	EventBus.season_changed.connect(_on_season_changed)
+
+
+## Đổi mùa thì đổi ảnh nền đất của vườn (cỏ, đất cuốc) sang sheet của mùa mới.
+func _on_season_changed(season: int, _year: int) -> void:
+	TerrainTiles.set_season(season)
+	var source := _ground.tile_set.get_source(0) as TileSetAtlasSource
+	source.texture = TerrainTiles.get_texture()
+
+
 ## Gắn view với [param farm_field] và vẽ toàn bộ vườn.
 func setup(farm_field: FarmField) -> void:
 	field = farm_field

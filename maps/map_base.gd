@@ -48,12 +48,20 @@ func _ready() -> void:
 	# Xếp lớp theo chiều sâu: đồ vật, cây, NPC và Player (được SceneManager đưa vào map) đứng thấp hơn
 	# (y lớn hơn) thì vẽ đè lên đồ đứng cao hơn. Nền map (_draw) luôn nằm dưới mọi node con.
 	y_sort_enabled = true
+	# Nền đất theo mùa hiện tại; đổi mùa khi đang ở trong map thì vẽ lại.
+	TerrainTiles.set_season(TimeManager.season)
+	EventBus.season_changed.connect(_on_season_changed)
 	_build_walls()
 	_build()
 	if border_style == BorderStyle.TREES:
 		_build_tree_belt()
 	if not map_title.is_empty():
 		EventBus.toast_requested.emit(map_title)
+
+
+func _on_season_changed(season: int, _year: int) -> void:
+	if TerrainTiles.set_season(season):
+		queue_redraw()
 
 
 ## Map cụ thể ghi đè để đặt spawn, lối ra, NPC, vườn...
