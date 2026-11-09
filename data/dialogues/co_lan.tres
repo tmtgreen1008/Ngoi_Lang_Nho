@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/dialogue_data.gd" id="1_dialogue"]
+
+[resource]
+script = ExtResource("1_dialogue")
+speaker_id = &"co_lan"
+display_name = "Cô Lan"
+first_meeting = PackedStringArray("Ôi chào bạn, mình là Lan. Mình hay ra chợ sớm mua rau cho cả nhà. Bạn mới về làng hả?", "À, bạn là người ở nhà mới đó hả? Cả làng đang nhắc bạn đó.")
+greetings = PackedStringArray("Chào bạn, lại gặp nhau ở chợ rồi.", "Bạn ra chợ sớm nhỉ, mình cũng vậy.", "Ơ, bạn đây rồi, mình đang định tìm bạn nè.", "Hôm nay chợ có vẻ đông ha.")
+farewells = PackedStringArray("Mình đi mua rau đây, hẹn bạn nha.", "Bạn bán hàng may mắn nhé!", "Gặp lại bạn phiên chợ sau!")
+lines_general = PackedStringArray("Chợ này họp có mỗi buổi sáng nên mình phải dậy sớm lắm. Mà quen rồi.", "Mình thích cà chua với dưa leo nhất, chị bán rau nào cũng phải có.", "Bạn nhớ so giá trước khi bán nhé, mỗi sạp trả một giá khác nhau.", "Nghe nói tiệm tạp hóa bà Tư có bán hạt giống đủ thứ, bạn ghé xem chưa?", "Mình thấy đời sống ở làng quê thế này là yên bình nhất.")
+lines_spring = PackedStringArray("Xuân đến, mình thấy mấy bạn nhỏ đi hái hoa ngoài đồng, vui lắm.", "Mùa xuân rau xanh mơn mởn, mua về nấu canh là nhất.")
+lines_summer = PackedStringArray("Trời hè oi quá, mình hay mua dưa hấu về ướp lạnh cho cả nhà.", "Nắng nóng thế này, bạn nhớ che nón khi ra đồng nhé.")
+lines_autumn = PackedStringArray("Thu về, mình thích nhất là mùa này. Trời mát, lá vàng rơi, đi chợ cũng vui.", "Bí đỏ nấu canh với tôm thì ngon hết sảy.")
+lines_winter = PackedStringArray("Đông rét, rau ít lắm, bắp cải với cà rốt giờ quý hơn vàng.", "Mình mặc ba lớp áo mà vẫn lạnh. Bạn cũng nhớ giữ ấm nhé.")
+friend_lines = PackedStringArray("Mình kể bạn nghe, hồi nhỏ mình cũng muốn làm nông giống bạn.", "Bạn tốt bụng thật, ai cũng khen bạn.", "Có dịp mình mời bạn qua nhà ăn cơm nha, mẹ mình nấu ngon lắm.")
+close_lines = PackedStringArray("Mình coi bạn như người nhà rồi đó. Cảm ơn bạn đã luôn lắng nghe mình.", "Có bạn ở làng, mình thấy vui hơn nhiều.")
+gift_item_id = &"hat_giong_ca_chua"
+gift_amount = 3
+gift_points = 3
+gift_text = "Mình tặng bạn ít hạt giống cà chua, mình tự giữ lại từ vụ trước đó. Bạn trồng thử nha!"

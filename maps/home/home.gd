@@ -35,6 +35,8 @@ var view: FarmView
 var controller: FarmToolController
 var coop: LivestockHouse
 var barn: LivestockHouse
+var ong_bay: VillagerNPC
+var be_ti: VillagerNPC
 
 var _tool_buttons: Dictionary = {}  # FarmToolController.Tool -> Button
 var _feedback_panel: PanelContainer
@@ -67,6 +69,7 @@ func _build() -> void:
 
 	_build_garden()
 	_build_livestock()
+	_build_villagers()
 	_build_house()
 	_build_scenery()
 	_build_hud()
@@ -112,6 +115,12 @@ func _add_livestock_house(feet: Vector2, structure: LivestockHouse.Structure, sp
 	house.persistent_key = key
 	add_child(house)
 	return house
+
+
+## Dân làng ở sân nhà: ông Bảy đứng cạnh lối mòn, bé Tí chạy chơi trên bãi cỏ phía bắc đường mòn.
+func _build_villagers() -> void:
+	ong_bay = add_villager("res://data/dialogues/ong_bay.tres", 1, Vector2(860, 330))
+	be_ti = add_villager("res://data/dialogues/be_ti.tres", 5, Vector2(760, 330), Rect2(700, 290, 160, 80))
 
 
 ## Ngôi nhà: hai dải chặn hai bên cửa, chừa khe hở cho Player bước vào.

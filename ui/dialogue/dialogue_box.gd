@@ -93,16 +93,17 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
-## Mở hộp thoại với [param npc] (cần thuộc tính vendor_data.dialogue và vendor), người chơi là [param interactor].
+## Mở hộp thoại với [param npc] (cần thuộc tính dialogue, và vendor nếu có bán hàng; VendorNPC hoặc
+## VillagerNPC), người chơi là [param interactor].
 func open(npc: Node, interactor: Node) -> void:
 	if visible or npc == null:
 		return
-	var vendor_data: VendorData = npc.get("vendor_data") as VendorData
-	if vendor_data == null or vendor_data.dialogue == null:
+	var dialogue: DialogueData = npc.get("dialogue") as DialogueData
+	if dialogue == null:
 		return
 	_npc = npc
 	_player = interactor
-	_data = vendor_data.dialogue
+	_data = dialogue
 	_salt = TimeManager.day * 13
 	_name_label.text = _data.display_name
 	var greeting: String

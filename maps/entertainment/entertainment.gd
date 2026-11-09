@@ -17,6 +17,8 @@ func _build() -> void:
 
 	_add_station(AIM_GAME, "Quán Net", NET_PC_TEXTURE, Vector2(480, 400))
 	_add_station(BILLIARDS_GAME, "Quán Bida", BILLIARDS_TEXTURE, Vector2(900, 390))
+	# Anh Hai (chủ quán) đứng giữa hai quán.
+	add_villager("res://data/dialogues/anh_hai.tres", 3, Vector2(690, 340))
 	add_decor(Decor.BUSH, Vector2(300, 200))
 	add_decor(Decor.BUSH, Vector2(1040, 220))
 

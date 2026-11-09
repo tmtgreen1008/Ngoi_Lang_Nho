@@ -334,6 +334,18 @@ func add_signpost(feet: Vector2, entries: Array[String], points_right: bool = tr
 	return signpost
 
 
+## Đặt một dân làng (NPC chỉ trò chuyện) tại [param pos]. [param frame] là khung trong villagers.png;
+## [param wander] khác rỗng thì NPC đi dạo trong khung đó.
+func add_villager(dialogue_path: String, frame: int, pos: Vector2, wander: Rect2 = Rect2()) -> VillagerNPC:
+	var villager := VillagerNPC.new()
+	villager.dialogue = load(dialogue_path) as DialogueData
+	villager.frame = frame
+	villager.position = pos
+	villager.wander_rect = wander
+	add_child(villager)
+	return villager
+
+
 ## Đặt một điểm xuất hiện của Player.
 func add_spawn(id: StringName, pos: Vector2) -> SpawnPoint:
 	var spawn := SpawnPoint.new()

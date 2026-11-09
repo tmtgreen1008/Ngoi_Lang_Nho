@@ -8,6 +8,10 @@ extends Node2D
 ## (dữ liệu, ảnh và tên đều lấy từ đó).
 
 @export var vendor_data: VendorData
+## Lời thoại của người bán (lấy từ dữ liệu cửa hàng); DialogueBox đọc thuộc tính này.
+var dialogue: DialogueData:
+	get:
+		return vendor_data.dialogue if vendor_data != null else null
 
 @onready var vendor: VendorComponent = $Vendor
 @onready var interactable: InteractableComponent = $Interactable

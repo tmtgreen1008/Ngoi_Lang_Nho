@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/dialogue_data.gd" id="1_dialogue"]
+
+[resource]
+script = ExtResource("1_dialogue")
+speaker_id = &"anh_hai"
+display_name = "Anh Hai"
+first_meeting = PackedStringArray("Ha ha, chào bạn! Anh là Hai, chủ quán net với quán bida ở đây. Rảnh thì ghé chơi cho vui!", "Ồ, người mới hả? Cứ tự nhiên, quán anh ai cũng chơi được, giá hữu nghị!")
+greetings = PackedStringArray("Ê, bạn ghé chơi hả?", "Ha ha, lại gặp bạn rồi.", "Vào đi vào đi, hôm nay quán vắng.", "Anh vừa lau bàn bida xong, bạn chơi ván nào không?")
+farewells = PackedStringArray("Chơi vui nhé!", "Hẹn bạn ván sau, anh đợi!", "Nhớ ghé quán anh nghe!")
+lines_general = PackedStringArray("Quán net thì bắn mục tiêu, trúng nhiều thì thưởng tiền. Bida thì canh lực cho chuẩn là ăn.", "Chơi game cũng phải biết dừng, đừng quên ra đồng chăm cây nghe.", "Anh làm chủ quán mười năm rồi, mà vẫn mê bida hơn cả khách.", "Thắng thì được thưởng, thua thì mất phí vào cửa. Cân nhắc nghen bạn.", "Mỗi lần chơi là tốn chút thời gian trong ngày đó, tính trước mà đi.")
+lines_spring = PackedStringArray("Xuân đông khách lắm, mấy bạn trẻ rủ nhau ra quán chơi.", "Mùa xuân anh sơn lại cái bàn bida, trông mới toanh.")
+lines_summer = PackedStringArray("Hè nóng, quán anh có quạt, ai cũng chui vào ngồi cho mát.", "Trưa hè quán đông, bạn chơi sớm sớm là vắng nhất.")
+lines_autumn = PackedStringArray("Thu mát trời, anh mở cửa sổ quán cho gió vào. Chơi thích hơn hẳn.", "Cuối vụ nông dân nghỉ ngơi, ra quán chơi đông lắm.")
+lines_winter = PackedStringArray("Đông lạnh, anh nấu nước chè nóng cho khách, bạn ghé uống nha.", "Trời rét ít người ra quán, anh buồn thiu.")
+friend_lines = PackedStringArray("Anh nói thiệt, bạn chơi bida có tiến bộ rồi đó, anh thấy rõ.", "Bạn là khách quen nhất quán anh, anh quý lắm.", "Có lần anh thua bạn ba ván liền mà không dám nói ha ha.")
+close_lines = PackedStringArray("Anh xem bạn như em trai ruột rồi. Quán anh lúc nào cũng có chỗ cho bạn.", "Bạn muốn chơi lúc nào cứ ghé, anh không lấy tiền ván nào cũng được!")
+gift_item_id = &"ga_giong"
+gift_amount = 1
+gift_points = 3
+gift_text = "Anh có đứa bạn cho con gà giống, anh nuôi không xuể. Tặng bạn một con, nuôi lấy trứng nhé!"

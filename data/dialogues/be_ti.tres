@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/dialogue_data.gd" id="1_dialogue"]
+
+[resource]
+script = ExtResource("1_dialogue")
+speaker_id = &"be_ti"
+display_name = "Bé Tí"
+first_meeting = PackedStringArray("Anh chị là người mới hả? Em là Tí! Em chạy nhanh nhất xóm luôn đó!", "Oa, có người lạ! Anh chị ở nhà mới phải không? Cho em coi gà nha!")
+greetings = PackedStringArray("Anh chị ơi, chơi với em đi!", "Hôm nay em bắt được con dế to lắm!", "A, anh chị đây rồi! Em chờ nãy giờ.", "Em đang chơi đuổi bắt, anh chị chơi không?")
+farewells = PackedStringArray("Bye bye anh chị!", "Mai chơi tiếp nha!", "Em đi chạy tiếp đây, vụt!")
+lines_general = PackedStringArray("Anh chị có nuôi gà không? Em thích gà con lắm, nó kêu chíp chíp dễ thương.", "Bà nói con nít không được ra đồng trưa nắng, mà em lén ra hoài.", "Em lớn lên em sẽ làm nông dân giống ông Bảy!", "Anh chị biết không, trâu to lắm, to bằng cái nhà luôn!", "Em đố anh chị: con gì đẻ trứng mà không biết bay? Là con gà đó!")
+lines_spring = PackedStringArray("Xuân có bướm bay đầy đồng, em đuổi hoài không được con nào.", "Mẹ nói xuân là mùa vui nhất, vì có nhiều hoa.")
+lines_summer = PackedStringArray("Hè nóng quá, em ra sông tắm với bọn nhỏ. Mát lắm!", "Mùa hè có dưa hấu! Em ăn hết cả quả luôn!")
+lines_autumn = PackedStringArray("Thu có lá vàng rơi, em nhặt lá làm diều, bay cao lắm!", "Trăng thu sáng ghê, tối nào em cũng ngồi ngắm.")
+lines_winter = PackedStringArray("Đông lạnh, em mặc hai cái áo mà vẫn run. Anh chị có lạnh không?", "Mùa đông ông Bảy đốt bếp, em ra sưởi ké được.")
+friend_lines = PackedStringArray("Em kể anh chị nghe nè, em giấu một bí mật ở gốc chuối!", "Anh chị là bạn của em rồi đó, không được bỏ em nha.", "Em thích anh chị hơn mấy anh lớp trên!")
+close_lines = PackedStringArray("Anh chị là người bạn thân nhất của em luôn! Em không đùa đâu!", "Lớn lên em sẽ giúp anh chị làm ruộng, em hứa!")
+gift_item_id = &"rau_muong"
+gift_amount = 2
+gift_points = 3
+gift_text = "Em hái cho anh chị ít rau muống ngoài bờ ruộng nè! Em tặng đó, không lấy tiền đâu!"

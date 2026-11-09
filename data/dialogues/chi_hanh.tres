@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/dialogue_data.gd" id="1_dialogue"]
+
+[resource]
+script = ExtResource("1_dialogue")
+speaker_id = &"chi_hanh"
+display_name = "Chị Hạnh"
+first_meeting = PackedStringArray("Chào em, chị là Hạnh. Chị hay ghé tiệm bà Tư mua đồ lặt vặt. Em là người mới hả?", "Ồ, người mới về làng hả em? Chị Hạnh đây, ở nhà cuối xóm.")
+greetings = PackedStringArray("Chào em, đi mua đồ hả?", "Lại gặp em ở tiệm bà Tư rồi.", "Chị đang chọn mì tôm, em có thấy loại nào ngon không?", "Em ơi, đợi chị chút nhé.")
+farewells = PackedStringArray("Chị về trước nha em.", "Hẹn em lần sau.", "Em giữ gìn sức khỏe nhé!")
+lines_general = PackedStringArray("Chị trồng ớt với đậu sau nhà, mà năm nào cũng ăn không hết.", "Bà Tư hiền lắm, mua đồ ở đây yên tâm. Hàng lúc nào cũng đầy đủ.", "Chị thích đội nón lá, vừa mát vừa đẹp. Em cũng có một cái đúng không?", "Làng mình nhỏ mà ai cũng thân thiết, em ở một thời gian là quen hết thôi.", "Tiệm bà Tư mở từ sáng tới tối, đừng lo hết giờ mua đồ.")
+lines_spring = PackedStringArray("Xuân chị gieo đậu ngoài bờ rào, nó leo xanh um cả hàng.", "Trời xuân dễ chịu, chị hay đi bộ dọc con đường làng buổi sáng.")
+lines_summer = PackedStringArray("Hè nắng quá, chị đội nón lá cả ngày. Em nhớ mang theo nón nhé.", "Ớt hè lên đỏ au, chị phơi khô để dành cho cả năm.")
+lines_autumn = PackedStringArray("Thu chị đan khăn len, trời vừa chớm lạnh là đủ dùng.", "Mùa thu hoạch, nhà nào cũng bận, chị cũng đi phụ giúp xóm giềng.")
+lines_winter = PackedStringArray("Đông chị quàng khăn này suốt, ấm lắm. Em cũng nên có một cái.", "Trời rét, chị chỉ ra tiệm bà Tư mua đồ cần thiết rồi về liền.")
+friend_lines = PackedStringArray("Em dễ mến thật, chị nói chuyện với em thấy thoải mái ghê.", "Chị kể em nghe, hồi mới về làm dâu chị cũng bỡ ngỡ như em vậy.", "Có gì khó khăn cứ hỏi chị, đừng ngại.")
+close_lines = PackedStringArray("Chị coi em như em gái ruột rồi đó. Cuối tuần sang nhà chị ăn cơm nhé.", "Cảm ơn em đã luôn lắng nghe chị.")
+gift_item_id = &"hat_giong_ot"
+gift_amount = 3
+gift_points = 3
+gift_text = "Chị tặng em ít hạt giống ớt, chị tự giữ lại từ vụ trước. Ớt hè lên đẹp lắm, em trồng thử nha!"

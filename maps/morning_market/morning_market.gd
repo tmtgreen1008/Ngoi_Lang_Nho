@@ -18,6 +18,9 @@ func _build() -> void:
 	add_child(npc)
 	add_prop("res://assets/art/props/market_stall.png", Vector2(800, 380), 1, 20.0)
 
+	# Cô Lan đi chợ, đứng gần lối vào.
+	add_villager("res://data/dialogues/co_lan.tres", 2, Vector2(470, 320))
+
 	add_decor(Decor.JAR, Vector2(300, 200))
 	add_decor(Decor.BUSH, Vector2(980, 230))
 	add_decor(Decor.BAMBOO, Vector2(1120, 200))

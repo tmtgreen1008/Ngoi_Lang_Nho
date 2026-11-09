@@ -74,4 +74,7 @@ for pair in "summer:vibrant_pixel-art_terrain_tileset-1" "autumn:autumn_pixel_te
 	slice in=$B2/${pair#*:}.png out=$OUT/tiles/raw/${pair%%:*}.png cols=4 rows=2 cell=48,48 sample=lanczos
 done
 "$GODOT" --headless --path . -s tools/compose_season_tiles.gd | grep -E "COMPOSE"
+
+# Dân làng: 6 nhân vật một hàng, mỗi người một khung 32x48 (nón lá, ông cụ, cô tóc bím, chú thợ, bà cụ, cậu bé).
+slice in=$B2/pixel-art_vietnamese_villager_lineup.png out=$OUT/characters/villagers.png cols=6 rows=1 split=auto anchor=feet px=12 cell=32,48 pad=1 key=magenta defringe=1
 echo "Xong."
