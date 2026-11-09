@@ -43,6 +43,7 @@ khi chuyển cảnh.
 | Thời gian và lịch | Đồng hồ chạy bằng `Timer`, 1 giây thật = 10 phút game; 4 mùa, mỗi mùa 28 ngày; phát tín hiệu cho hệ thống khác |
 | Vật phẩm và kho đồ | Vật phẩm là `Resource`; kho theo ô; cộng dồn, tràn kho, kéo/thả trong một kho và giữa hai kho |
 | Nông trại | Cuốc, gieo, cây lớn theo ngày, héo khi sang mùa không hợp, thu hoạch vào kho |
+| Cây trồng | 12 loại cây (lúa, cà chua, bắp cải, dưa leo, rau muống, ngô, cà rốt, khoai lang, ớt, bí đỏ, dưa hấu, đậu), mỗi loại có mùa gieo, số ngày lớn và ảnh riêng; túi nhiều loại hạt thì tự chọn loại hợp mùa. Dữ liệu sinh từ bảng trong `tools/make_crop_data.sh` |
 | Giao thương | Một giao diện cửa hàng dùng cho mọi người bán; tiệm tạp hóa hàng cố định, chợ hàng ngẫu nhiên mỗi ngày; giờ mở cửa |
 | Bản đồ | Sân nhà (viền rặng cây, đường đất bo góc, biển chỉ đường), trong nhà (giường), Tiệm Tạp Hóa, Chợ Quê, Khu Giải trí; chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
 | Chăn nuôi | Chuồng gà (đẻ trứng mỗi ngày) và chuồng lợn (nuôi 5 ngày rồi xuất chuồng); mua con giống ở Tạp Hóa, thả vào chuồng, cho ăn lúa, thu sản phẩm bằng phím `E`; chuồng được nhớ khi đổi map |
@@ -178,6 +179,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_shop_ui` | Giao diện cửa hàng dùng chung, nút mua/bán, khoá khi đóng cửa |
 | `test_game_flow` | Luồng chơi trọn vẹn qua các map, vườn được nhớ và tự bù ngày |
 | `test_livestock` | Dữ liệu loài, chuồng (thả, ăn, đếm ngày, thu, lưu/nạp), thứ tự ưu tiên khi bấm E, túi đầy/chuồng đầy, chuồng ở khu nhà được nhớ khi đổi map |
+| `test_crops` | 11 loại cây mới: dữ liệu, ảnh, mùa gieo, lớn và thu hoạch từng loại, chọn hạt hợp mùa, tạp hóa bán đủ hạt |
 | `test_save_load` | Lưu/nạp, file hỏng/sai phiên bản, tự lưu, menu Esc |
 | `test_minigames` | Thu phí, dừng đồng hồ, áp kết quả, hai mini-game, các trường hợp biên |
 | `test_start_menu` | Màn hình chính (3 pha, mô phỏng mở lại game) |

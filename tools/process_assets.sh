@@ -57,4 +57,15 @@ slice in=$B2/pixel_farm_animal_sprite_sheet.png out=$OUT/animals/farm_b.png crop
 slice in=$B2/pixel_farm_structures_trio.png out=$OUT/props/farm_structures.png cols=3 rows=1 split=auto anchor=feet px=12 cell=auto pad=0 key=magenta defringe=1
 # Icon 4x3 (trứng, trứng vịt, trứng cút, sữa / thịt lợn, đùi gà, bò, mật ong / phân bón, lông vũ, cá, dưa muối).
 slice in=$B2/retro_farm_goods_pixel_icon_sheet.png out=$OUT/icons/farm_goods_icons.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
+
+# Cây trồng: mỗi cây một dải 3 khung 48x48 (mầm, đang lớn, chín). Hai ảnh gốc xếp 3 cột x 6 hàng
+# nên cắt theo từng hàng (toạ độ y, chiều cao đo từ ảnh; có hàng lệch khỏi lưới đều).
+crop() { slice in=$B2/$1 out=$OUT/crops/$2.png crop=0,$3,1024,$4 cols=3 rows=1 anchor=feet px=7 cell=48,48 pad=0 key=magenta defringe=1; }
+A=pixel_art_crop_growth_sprite_sheet.png; B=pixel_crop_growth_sprite_sheet.png
+crop $A ca_chua 0 256; crop $A bap_cai 290 210; crop $A dua_leo 510 260; crop $A rau_muong 780 205; crop $A ngo 990 270; crop $A ca_rot 1280 220
+crop $B khoai_lang 0 250; crop $B ot 265 215; crop $B bi_do 500 240; crop $B dua_hau 770 200; crop $B dau 990 240
+# Icon hạt giống và nông sản: lưới 4x3 (lúa, cà chua, bắp cải, dưa leo / rau muống, ngô, cà rốt, khoai lang / ớt, bí đỏ, dưa hấu, đậu).
+slice in=$B2/pixel_art_seed_packet_grid.png out=$OUT/icons/seed_icons.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
+slice in=$B2/pixel_art_harvest_vegetable_sprite_sheet.png out=$OUT/icons/veg_icons.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
+# Sau đó: bash tools/make_crop_data.sh để sinh dữ liệu .tres từ bảng cây.
 echo "Xong."

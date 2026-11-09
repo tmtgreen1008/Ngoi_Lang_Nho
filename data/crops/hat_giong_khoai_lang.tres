@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropItemData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/crop_item_data.gd" id="1_crop"]
+[ext_resource type="Texture2D" path="res://assets/art/crops/khoai_lang.png" id="2_growth"]
+[ext_resource type="Texture2D" path="res://assets/art/icons/seed_icons.png" id="3_icons"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_icon"]
+atlas = ExtResource("3_icons")
+region = Rect2(96, 32, 32, 32)
+
+[resource]
+script = ExtResource("1_crop")
+grow_days = 6
+harvest_item_id = &"khoai_lang"
+harvest_amount = 3
+allowed_seasons = Array[int]([2, 3])
+growth_sheet = ExtResource("2_growth")
+id = &"hat_giong_khoai_lang"
+display_name = "Hạt giống khoai lang"
+description = "Gieo vào đất đã cuốc, thu hoạch sau 6 ngày."
+icon = SubResource("AtlasTexture_icon")
+category = 0
+base_price = 20

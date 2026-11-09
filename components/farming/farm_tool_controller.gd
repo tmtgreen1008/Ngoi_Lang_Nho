@@ -88,9 +88,17 @@ func _use_harvest(cell: Vector2i) -> bool:
 	return true
 
 
-## Hạt giống đầu tiên tìm thấy trong kho (ô đầu tiên chứa CropItemData).
+## Hạt giống để gieo: ưu tiên loại đầu tiên trong kho gieo được vào mùa hiện tại (để có nhiều loại
+## hạt trong túi mà không bị kẹt ở loại sai mùa). Không loại nào hợp mùa thì trả về hạt đầu tiên
+## để FarmField báo đúng lý do.
 func _find_seed() -> CropItemData:
+	var first: CropItemData = null
 	for slot: InventorySlot in inventory.slots:
-		if not slot.is_empty() and slot.item is CropItemData:
-			return slot.item as CropItemData
-	return null
+		if slot.is_empty() or not slot.item is CropItemData:
+			continue
+		var crop: CropItemData = slot.item as CropItemData
+		if crop.can_plant_in(TimeManager.season):
+			return crop
+		if first == null:
+			first = crop
+	return first

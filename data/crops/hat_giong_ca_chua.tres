@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropItemData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/crop_item_data.gd" id="1_crop"]
+[ext_resource type="Texture2D" path="res://assets/art/crops/ca_chua.png" id="2_growth"]
+[ext_resource type="Texture2D" path="res://assets/art/icons/seed_icons.png" id="3_icons"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_icon"]
+atlas = ExtResource("3_icons")
+region = Rect2(32, 0, 32, 32)
+
+[resource]
+script = ExtResource("1_crop")
+grow_days = 5
+harvest_item_id = &"ca_chua"
+harvest_amount = 3
+allowed_seasons = Array[int]([0, 1])
+growth_sheet = ExtResource("2_growth")
+id = &"hat_giong_ca_chua"
+display_name = "Hạt giống cà chua"
+description = "Gieo vào đất đã cuốc, thu hoạch sau 5 ngày."
+icon = SubResource("AtlasTexture_icon")
+category = 0
+base_price = 20

@@ -8,6 +8,17 @@
 [ext_resource type="Resource" path="res://data/items/ga_giong.tres" id="7_gagiong"]
 [ext_resource type="Resource" path="res://data/items/lon_giong.tres" id="8_longiong"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/npc_ba_tu.png" id="6_f7gat"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_ca_chua.tres" id="20_ca_chua"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_bap_cai.tres" id="21_bap_cai"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_dua_leo.tres" id="22_dua_leo"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_rau_muong.tres" id="23_rau_muong"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_ngo.tres" id="24_ngo"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_ca_rot.tres" id="25_ca_rot"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_khoai_lang.tres" id="26_khoai_lang"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_ot.tres" id="27_ot"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_bi_do.tres" id="28_bi_do"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_dua_hau.tres" id="29_dua_hau"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_dau.tres" id="30_dau"]
 [ext_resource type="Script" path="res://core/resources/vendor_data.gd" id="6_vgpgk"]
 
 [resource]
@@ -15,5 +26,5 @@ script = ExtResource("6_vgpgk")
 id = &"tap_hoa"
 display_name = "Tiệm Tạp Hóa bà Tư"
 npc_sheet = ExtResource("6_f7gat")
-fixed_items = Array[ExtResource("1_h7r1v")]([ExtResource("2_f7gat"), ExtResource("3_0j37l"), ExtResource("4_b3vlj"), ExtResource("5_7r3qq"), ExtResource("7_gagiong"), ExtResource("8_longiong")])
+fixed_items = Array[ExtResource("1_h7r1v")]([ExtResource("2_f7gat"), ExtResource("3_0j37l"), ExtResource("4_b3vlj"), ExtResource("5_7r3qq"), ExtResource("7_gagiong"), ExtResource("8_longiong"), ExtResource("20_ca_chua"), ExtResource("21_bap_cai"), ExtResource("22_dua_leo"), ExtResource("23_rau_muong"), ExtResource("24_ngo"), ExtResource("25_ca_rot"), ExtResource("26_khoai_lang"), ExtResource("27_ot"), ExtResource("28_bi_do"), ExtResource("29_dua_hau"), ExtResource("30_dau")])
 buys_from_player = false
