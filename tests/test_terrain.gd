@@ -42,7 +42,9 @@ func run() -> void:
 	home.controller.use_tool_at(Vector2i(2, 2))
 	await wait(0.3)
 	var ground: TileMapLayer = view._ground
-	check("ô đã cuốc vẽ ô SOIL (3,0), ô chưa cuốc vẽ ô GRASS", ground.get_cell_atlas_coords(Vector2i(2, 2)) == terrain.atlas_coords(terrain.Tile.SOIL) and ground.get_cell_atlas_coords(Vector2i(5, 5)) == terrain.atlas_coords(terrain.Tile.GRASS))
+	check("ô đã cuốc vẽ luống từ farmland.png (nguồn 1, ô (0,0))", ground.get_cell_source_id(Vector2i(3, 2)) == 1 and ground.get_cell_atlas_coords(Vector2i(3, 2)) == Vector2i(0, 0))
+	check("ô vừa gieo vẽ đất có hốc hạt (nguồn 1, ô (0,1))", ground.get_cell_source_id(Vector2i(2, 2)) == 1 and ground.get_cell_atlas_coords(Vector2i(2, 2)) == Vector2i(0, 1))
+	check("ô chưa cuốc vẽ ô GRASS của nền theo mùa (nguồn 0)", ground.get_cell_source_id(Vector2i(5, 5)) == 0 and ground.get_cell_atlas_coords(Vector2i(5, 5)) == terrain.atlas_coords(terrain.Tile.GRASS))
 	var sprite: Sprite2D = view.get_crop_sprite(Vector2i(2, 2))
 	check("ô đã gieo có sprite cây ở đúng vị trí ô (gốc ở chân cây), ô chưa gieo thì không", sprite != null and sprite.position == Vector2(2 * 48, 3 * 48) and sprite.offset == Vector2(0, -48) and view.get_crop_sprite(Vector2i(3, 2)) == null)
 	check("cây mới gieo hiện khung mầm (khung 0) của ảnh lúa", sprite.region_rect == Rect2(0, 0, 48, 48) and sprite.texture.resource_path.ends_with("rice_stages.png"))

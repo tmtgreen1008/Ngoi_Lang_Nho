@@ -1,12 +1,20 @@
 class_name FarmView
 extends Node2D
-## Vẽ FarmField: lớp đất (TileMapLayer, ô cỏ/đất cuốc từ TerrainTiles), cây (mỗi cây một
+## Vẽ FarmField: lớp đất (TileMapLayer, ô cỏ từ TerrainTiles, đất cuốc từ farmland.png), cây (mỗi cây một
 ## Sprite2D lấy ảnh từ CropItemData.growth_sheet) và một lưới mờ đánh dấu vùng canh tác.
 ##
 ## Chỉ đọc dữ liệu từ FarmField và nghe plot_changed; không sửa trạng thái vườn.
 ## Ảnh cây nằm trong dữ liệu của từng loại cây nên thêm cây mới không cần sửa code.
 
 const TILE_SIZE: int = TerrainTiles.TILE_SIZE
+## Sheet đất canh tác (lưới 4x2, ô 48x48): hàng trên là luống khô/ướt, hàng dưới là đất có hốc gieo hạt.
+const FARMLAND_PATH: String = "res://assets/art/tiles/farmland.png"
+## Số nguồn trong TileSet: 0 là nền theo mùa (cỏ), 1 là đất canh tác.
+const SOURCE_TERRAIN: int = 0
+const SOURCE_FARMLAND: int = 1
+## Ô trong sheet đất canh tác: luống đã cuốc, và đất có hốc vừa gieo hạt.
+const FARMLAND_FURROWS := Vector2i(0, 0)
+const FARMLAND_SEEDED := Vector2i(0, 1)
 
 var field: FarmField
 
@@ -64,9 +72,13 @@ func _refresh_cell(cell: Vector2i) -> void:
 	if not field.is_farmable(cell):
 		return
 	var plot: FarmPlot = field.get_plot(cell)
-	var tilled: bool = plot != null and plot.is_tilled
-	var tile: TerrainTiles.Tile = TerrainTiles.Tile.SOIL if tilled else TerrainTiles.Tile.GRASS
-	_ground.set_cell(cell, 0, TerrainTiles.atlas_coords(tile))
+	if plot == null or not plot.is_tilled:
+		_ground.set_cell(cell, SOURCE_TERRAIN, TerrainTiles.atlas_coords(TerrainTiles.Tile.GRASS))
+	elif plot.is_planted() and plot.days_grown == 0:
+		# Ngày gieo: đất có hốc hạt; từ hôm sau cây mọc trên luống.
+		_ground.set_cell(cell, SOURCE_FARMLAND, FARMLAND_SEEDED)
+	else:
+		_ground.set_cell(cell, SOURCE_FARMLAND, FARMLAND_FURROWS)
 	if plot != null and plot.is_planted():
 		_show_crop(cell, plot)
 	else:
@@ -119,5 +131,11 @@ func _draw_grid() -> void:
 static func _build_tile_set() -> TileSet:
 	var tile_set := TileSet.new()
 	tile_set.tile_size = Vector2i(TILE_SIZE, TILE_SIZE)
-	tile_set.add_source(TerrainTiles.create_atlas_source(), 0)
+	tile_set.add_source(TerrainTiles.create_atlas_source(), SOURCE_TERRAIN)
+	var farmland := TileSetAtlasSource.new()
+	farmland.texture = load(FARMLAND_PATH)
+	farmland.texture_region_size = Vector2i(TILE_SIZE, TILE_SIZE)
+	for coords: Vector2i in [FARMLAND_FURROWS, FARMLAND_SEEDED]:
+		farmland.create_tile(coords)
+	tile_set.add_source(farmland, SOURCE_FARMLAND)
 	return tile_set
