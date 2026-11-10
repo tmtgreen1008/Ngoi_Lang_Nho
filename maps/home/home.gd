@@ -189,7 +189,20 @@ func _build_scenery() -> void:
 	add_signpost(Vector2(1010, 376), ["Tiệm Tạp Hóa", "Khu Giải trí", "Chợ Quê"], true)
 
 
+## Tô sáng các ô mà công cụ sẽ tác động nếu bấm tại [param world_pos] (theo cấp "Dụng cụ tốt hơn"); ra ngoài
+## vườn thì khung tự ẩn vì FarmView bỏ các ô không canh tác được.
+func update_tool_preview(world_pos: Vector2) -> void:
+	var center: Vector2i = view.world_to_cell(world_pos)
+	var cells: Array[Vector2i] = []
+	for offset: Vector2i in FarmToolController.pattern_for(UpgradeManager.get_value(UpgradeManager.TOOL)):
+		cells.append(center + offset)
+	view.set_preview(cells)
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		update_tool_preview(get_canvas_transform().affine_inverse() * (event as InputEventMouseMotion).position)
+		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_show_feedback("")
 		var target: Vector2 = view.get_global_mouse_position()

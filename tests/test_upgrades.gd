@@ -126,12 +126,16 @@ func run() -> void:
 	inv.add_item(seed_item, 3)
 	tm.season = 0
 	controller.set_tool(1)
-	check("gieo 3 ô tốn đúng 3 hạt, dừng khi hết hạt", controller.use_tool_area_at(Vector2i(5, 3), controller_script.pattern_for(3)) == 1 or true)
-	# Gieo đủ rồi thu hoạch cả hàng.
-	for cell: Vector2i in [Vector2i(4, 3), Vector2i(5, 3), Vector2i(6, 3)]:
-		if field.get_plot(cell) != null and field.get_plot(cell).crop == null:
-			inv.add_item(seed_item, 1)
-			field.plant(cell, seed_item)
+	var row_cells: Array[Vector2i] = [Vector2i(4, 3), Vector2i(5, 3), Vector2i(6, 3)]
+	var planted: int = controller.use_tool_area_at(Vector2i(5, 3), controller_script.pattern_for(3))
+	var all_planted: bool = true
+	for cell: Vector2i in row_cells:
+		all_planted = all_planted and field.get_plot(cell).crop == seed_item
+	check("gieo 3 ô liền: cả 3 ô có cây, tốn đúng 3 hạt", planted == 3 and all_planted and inv.count_of(seed_item) == 0)
+	inv.add_item(seed_item, 2)
+	check("chỉ còn 2 hạt: gieo được 2 ô, ô thứ ba vẫn trống", controller.use_tool_area_at(Vector2i(5, 5), controller_script.pattern_for(3)) == 2 and inv.count_of(seed_item) == 0 and field.get_plot(Vector2i(4, 5)).crop == seed_item and field.get_plot(Vector2i(5, 5)).crop == seed_item and field.get_plot(Vector2i(6, 5)).crop == null)
+	feedback.clear()
+	check("hết hạt: không gieo được ô nào, báo lý do đúng một lần", controller.use_tool_area_at(Vector2i(5, 6), controller_script.pattern_for(3)) == 0 and feedback == ["Không có hạt giống."])
 	for day: int in 4:
 		tm.sleep_until_morning()
 		tm.season = 0
@@ -207,12 +211,29 @@ func run() -> void:
 	check("hàng rào phía nam vẫn ở chỗ cũ", home.get_children().filter(func(n: Node) -> bool: return n is Sprite2D and n.position.y > 560.0 and n.position.y < 620.0 and n.position.x >= 192.0 and n.position.x < 700.0).size() == int(fence_y_before))
 
 	# Dụng cụ: bấm chuột trái cuốc nhiều ô
+	# Khung xem trước ô: chưa nâng cấp thì 1 ô (ô (5,2) của vườn nằm ở toạ độ thế giới (456, 360)).
+	home.update_tool_preview(Vector2(456, 360))
+	check("xem trước, dụng cụ cấp 0: tô sáng đúng 1 ô dưới chuột", home.view.get_preview_cells() == [Vector2i(5, 2)])
 	um.buy(&"tool")
 	um.buy(&"tool")
 	check("dụng cụ cấp 2: 3 ô mỗi lần", um.get_value(&"tool") == 3)
 	home.controller.set_tool(0)
 	var area_cells: int = home.controller.use_tool_area_at(Vector2i(5, 0), controller_script.pattern_for(um.get_value(&"tool")))
 	check("cuốc 3 ô trên vườn thật", area_cells == 3 and home.field.get_plot(Vector2i(4, 0)) != null and home.field.get_plot(Vector2i(6, 0)) != null)
+	home.update_tool_preview(Vector2(456, 360))
+	check("xem trước, dụng cụ cấp 2: tô sáng 3 ô liền ngang", home.view.get_preview_cells() == [Vector2i(4, 2), Vector2i(5, 2), Vector2i(6, 2)])
+	home.update_tool_preview(Vector2(192 + 10, 360))
+	check("xem trước ở mép trái vườn: chỉ tô 2 ô trong vườn", home.view.get_preview_cells() == [Vector2i(0, 2), Vector2i(1, 2)])
+	home.update_tool_preview(Vector2(456, 96 + 10))
+	check("xem trước ở hàng mới khai hoang (hàng -3)", home.view.get_preview_cells() == [Vector2i(4, -3), Vector2i(5, -3), Vector2i(6, -3)])
+	home.update_tool_preview(Vector2(900, 300))
+	check("chuột ra ngoài vườn: khung xem trước ẩn", home.view.get_preview_cells().is_empty())
+	var motion := InputEventMouseMotion.new()
+	motion.position = Vector2(456, 360)
+	home._unhandled_input(motion)
+	check("rê chuột (sự kiện thật) cập nhật khung xem trước", home.view.get_preview_cells().size() == 3 and home.view.get_preview_cells()[1] == Vector2i(5, 2))
+	check("các ô xem trước trùng đúng các ô sẽ bị cuốc", home.controller.use_tool_area_at(Vector2i(5, 2), controller_script.pattern_for(um.get_value(&"tool"))) == 3 and home.field.get_plot(Vector2i(4, 2)) != null and home.field.get_plot(Vector2i(6, 2)) != null and home.field.get_plot(Vector2i(7, 2)) == null)
+	await shot("upgrade_tool_preview.png")
 
 	# --- ông Bảy, hộp thoại và bảng nâng cấp ---
 	player.position = home.ong_bay.position + Vector2(0, 38)

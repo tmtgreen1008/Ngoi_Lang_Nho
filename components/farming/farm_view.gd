@@ -15,11 +15,16 @@ const SOURCE_FARMLAND: int = 1
 ## Ô trong sheet đất canh tác: luống đã cuốc, và đất có hốc vừa gieo hạt.
 const FARMLAND_FURROWS := Vector2i(0, 0)
 const FARMLAND_SEEDED := Vector2i(0, 1)
+## Màu khung xem trước ô sẽ bị công cụ tác động.
+const PREVIEW_FILL := Color(1.0, 0.95, 0.6, 0.22)
+const PREVIEW_BORDER := Color(1.0, 0.92, 0.5, 0.85)
 
 var field: FarmField
 
 var _ground: TileMapLayer
 var _grid: Node2D
+var _preview: Node2D
+var _preview_cells: Array[Vector2i] = []
 var _crop_sprites: Dictionary = {}  # Vector2i -> Sprite2D
 
 
@@ -33,6 +38,10 @@ func _init() -> void:
 	# Lưới mờ nằm trên nền đất, dưới cây (cùng y với nền, thứ tự trong cây node).
 	_grid = Node2D.new()
 	_grid.draw.connect(_draw_grid)
+	# Khung xem trước ô sẽ bị công cụ tác động: trên nền đất và lưới, dưới cây (cùng y với nền).
+	_preview = Node2D.new()
+	_preview.name = "ToolPreview"
+	_preview.draw.connect(_draw_preview)
 
 
 func _ready() -> void:
@@ -54,7 +63,32 @@ func setup(farm_field: FarmField) -> void:
 	_refresh_all()
 	if _grid.get_parent() == null:
 		add_child(_grid)
+		add_child(_preview)
 	_grid.queue_redraw()
+
+
+## Tô sáng các ô sẽ bị công cụ tác động ([param cells], toạ độ ô). Ô ngoài vùng canh tác bị bỏ; mảng rỗng thì ẩn.
+func set_preview(cells: Array[Vector2i]) -> void:
+	var visible_cells: Array[Vector2i] = []
+	for cell: Vector2i in cells:
+		if field != null and field.is_farmable(cell):
+			visible_cells.append(cell)
+	if visible_cells == _preview_cells:
+		return
+	_preview_cells = visible_cells
+	_preview.queue_redraw()
+
+
+## Các ô đang được tô sáng (dùng cho kiểm thử).
+func get_preview_cells() -> Array[Vector2i]:
+	return _preview_cells
+
+
+func _draw_preview() -> void:
+	for cell: Vector2i in _preview_cells:
+		var rect := Rect2(Vector2(cell * TILE_SIZE), Vector2(TILE_SIZE, TILE_SIZE))
+		_preview.draw_rect(rect, PREVIEW_FILL)
+		_preview.draw_rect(rect.grow(-1.0), PREVIEW_BORDER, false, 2.0)
 
 
 ## Vẽ lại mọi ô của vùng canh tác hiện tại (gọi khi vườn được mở rộng) và vẽ lại lưới.
