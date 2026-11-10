@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RecipeData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/recipe_data.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"chao_thit"
+output_item_id = &"chao_thit"
+output_amount = 1
+ingredient_ids = Array[StringName]([&"lua", &"thit_lon"])
+ingredient_amounts = PackedInt32Array(2, 1)
+cook_minutes = 40

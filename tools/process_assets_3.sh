@@ -73,6 +73,14 @@ group_market() {
 	slice in=$SRC/030_market_stalls.png out=$OUT/props/stall_goods.png crop=1024,512,512,512 anchor=feet px=3.4 cell=auto pad=0 key=magenta defringe=1
 }
 
-if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2 market; fi
+group_food() {
+	# Món ăn: hai sheet 4x3, ô 32x32 (dữ liệu món và công thức sinh bằng tools/make_food_data.sh).
+	slice in=$SRC/069_food_a.png out=$OUT/icons/food_a.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
+	slice in=$SRC/070_food_b.png out=$OUT/icons/food_b.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
+	# Bếp lò (món đầu tiên của ảnh đồ bếp), cắt sát.
+	slice in=$SRC/098_interior_kitchen.png out=$OUT/props/stove.png crop=0,0,443,443 anchor=feet px=6.5 cell=auto pad=0 key=magenta defringe=1
+}
+
+if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2 market food; fi
 for g in "$@"; do "group_$g"; done
 echo "Xong."

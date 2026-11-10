@@ -14,6 +14,9 @@ const SIDE_WALL := Color("#C9A66B")
 const GLASS := Color("#5FA8A8")
 const MAT := Color("#B5472F")
 
+## Vùng tương tác của bếp lò.
+var stove: InteractableComponent
+
 
 func _init() -> void:
 	playable_rect = ROOM
@@ -36,6 +39,16 @@ func _build() -> void:
 	bed.interact_radius = 56.0
 	bed.interacted.connect(_on_bed_used)
 	add_child(bed)
+
+	# Bếp lò sát tường sau, giữa phòng; lại gần bấm E để nấu ăn (CookingUI nghe EventBus.cooking_requested).
+	var stove_feet := Vector2(640, 336)
+	add_prop("res://assets/art/props/stove.png", stove_feet, 1, 14.0)
+	stove = InteractableComponent.new()
+	stove.position = stove_feet + Vector2(0, -20)
+	stove.prompt_text = "Nấu ăn"
+	stove.interact_radius = 52.0
+	stove.interacted.connect(func(interactor: Node) -> void: EventBus.cooking_requested.emit(interactor))
+	add_child(stove)
 
 	# Chum nước và chậu cây ở góc phải.
 	add_decor(Decor.JAR, Vector2(912, 330))

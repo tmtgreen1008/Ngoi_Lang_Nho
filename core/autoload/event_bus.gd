@@ -82,6 +82,8 @@ signal upgrade_purchased(upgrade_id: StringName, level: int)
 signal upgrades_reloaded
 ## Người chơi muốn xem bảng nâng cấp (DialogueBox phát khi chọn "Nhờ làm giúp"); UpgradeUI nghe.
 signal upgrade_menu_requested
+## Người chơi muốn nấu ăn ở bếp ([param cook] là Player); CookingUI nghe.
+signal cooking_requested(cook: Node)
 
 # --- Nhân vật ---
 ## Player đặt chân xuống một bước (khung hình chân chạm đất); AudioManager phát tiếng bước chân.
