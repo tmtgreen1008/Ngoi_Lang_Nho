@@ -40,6 +40,11 @@ const FOLIAGE: Array[Decor] = [Decor.BANANA, Decor.BAMBOO, Decor.BUSH]
 ## Bán kính bo góc đường đất (pixel).
 const PATH_CORNER_RADIUS: float = 16.0
 const PATCH_COUNT: int = 160
+## Nhà vào được (add_building): phóng 2 lần như nhà của người chơi; thềm nhà cao BUILDING_FRONT px tính từ chân ảnh,
+## thân nhà chặn một dải dày BUILDING_DEPTH px phía sau thềm.
+const BUILDING_SCALE: int = 2
+const BUILDING_FRONT: float = 14.0
+const BUILDING_DEPTH: float = 28.0
 const VOID_COLOR := Color("#1B120D")
 
 @export var map_title: String = ""
@@ -47,6 +52,8 @@ const VOID_COLOR := Color("#1B120D")
 ## Loại nền lát khắp map (xem TerrainTiles.Tile).
 @export var floor_tile: TerrainTiles.Tile = TerrainTiles.Tile.GRASS
 ## Vùng Player đi lại được (toạ độ thế giới). Mặc định cả màn hình.
+## Kích thước thế giới của map (pixel). Lớn hơn màn hình thì camera của Player cuộn theo (xem SceneManager).
+@export var world_size: Vector2 = WORLD_SIZE
 @export var playable_rect: Rect2 = Rect2(Vector2.ZERO, WORLD_SIZE)
 @export var border_style: BorderStyle = BorderStyle.NONE
 ## Rải đốm cỏ úa, cỏ rậm và vệt đất lên bãi cỏ cho đỡ lặp.
@@ -117,7 +124,7 @@ func _tile_for_cell(_cell: Vector2i) -> TerrainTiles.Tile:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, WORLD_SIZE), background_color)
+	draw_rect(Rect2(Vector2.ZERO, world_size), background_color)
 	var texture: Texture2D = TerrainTiles.get_texture()
 	if texture == null:
 		return
@@ -131,9 +138,9 @@ func _draw() -> void:
 ## Lát từng ô nền (ô cuối hàng/cột bị cắt cho vừa màn hình).
 func _draw_floor(texture: Texture2D) -> void:
 	var size: int = TerrainTiles.TILE_SIZE
-	var world_rect := Rect2(Vector2.ZERO, WORLD_SIZE)
-	for cell_y: int in ceili(WORLD_SIZE.y / size):
-		for cell_x: int in ceili(WORLD_SIZE.x / size):
+	var world_rect := Rect2(Vector2.ZERO, world_size)
+	for cell_y: int in ceili(world_size.y / size):
+		for cell_x: int in ceili(world_size.x / size):
 			var destination: Rect2 = Rect2(cell_x * size, cell_y * size, size, size).intersection(world_rect)
 			var source: Rect2 = TerrainTiles.source_rect(_tile_for_cell(Vector2i(cell_x, cell_y)))
 			source.size = destination.size
@@ -146,9 +153,10 @@ func _draw_ground_patches(texture: Texture2D) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = variation_seed
 	var size: int = TerrainTiles.TILE_SIZE
-	var cols: int = floori(WORLD_SIZE.x / size)
-	var rows: int = floori(WORLD_SIZE.y / size)
-	for i: int in PATCH_COUNT:
+	var cols: int = floori(world_size.x / size)
+	var rows: int = floori(world_size.y / size)
+	# Số đốm tỉ lệ với diện tích map (PATCH_COUNT ứng với một màn hình).
+	for i: int in int(PATCH_COUNT * world_size.x * world_size.y / (WORLD_SIZE.x * WORLD_SIZE.y)):
 		var cell := Vector2i(rng.randi_range(0, cols - 1), rng.randi_range(0, rows - 1))
 		var kind: int = rng.randi_range(0, 2)
 		var radius: float = rng.randf_range(8.0, 20.0)
@@ -178,8 +186,8 @@ func _draw_ground_patches(texture: Texture2D) -> void:
 func _draw_path_blend(texture: Texture2D) -> void:
 	var size: int = TerrainTiles.TILE_SIZE
 	var directions: Array[Vector2i] = [Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(1, 1)]
-	for cell_y: int in ceili(WORLD_SIZE.y / size):
-		for cell_x: int in ceili(WORLD_SIZE.x / size):
+	for cell_y: int in ceili(world_size.y / size):
+		for cell_x: int in ceili(world_size.x / size):
 			var cell := Vector2i(cell_x, cell_y)
 			if not _is_path(cell):
 				continue
@@ -217,7 +225,7 @@ func path_corner_kind(cell: Vector2i, direction: Vector2i) -> int:
 
 func _is_path(cell: Vector2i) -> bool:
 	var size: int = TerrainTiles.TILE_SIZE
-	if cell.x < 0 or cell.y < 0 or cell.x >= ceili(WORLD_SIZE.x / size) or cell.y >= ceili(WORLD_SIZE.y / size):
+	if cell.x < 0 or cell.y < 0 or cell.x >= ceili(world_size.x / size) or cell.y >= ceili(world_size.y / size):
 		return true
 	return _tile_for_cell(cell) == TerrainTiles.Tile.PATH
 
@@ -274,10 +282,10 @@ func _draw_border_overlay() -> void:
 		return
 	var color: Color = VOID_COLOR if border_style == BorderStyle.VOID else Color(0.0, 0.1, 0.0, 0.32)
 	var rect: Rect2 = playable_rect
-	draw_rect(Rect2(0, 0, WORLD_SIZE.x, rect.position.y), color)
-	draw_rect(Rect2(0, rect.end.y, WORLD_SIZE.x, WORLD_SIZE.y - rect.end.y), color)
+	draw_rect(Rect2(0, 0, world_size.x, rect.position.y), color)
+	draw_rect(Rect2(0, rect.end.y, world_size.x, world_size.y - rect.end.y), color)
 	draw_rect(Rect2(0, rect.position.y, rect.position.x, rect.size.y), color)
-	draw_rect(Rect2(rect.end.x, rect.position.y, WORLD_SIZE.x - rect.end.x, rect.size.y), color)
+	draw_rect(Rect2(rect.end.x, rect.position.y, world_size.x - rect.end.x, rect.size.y), color)
 
 
 # --- Đặt đồ vật ---------------------------------------------------------------------------
@@ -299,6 +307,55 @@ func add_prop(texture_path: String, feet: Vector2, scale_factor: int = 1, blocke
 	if blocker_height > 0.0:
 		_add_blocker(feet, texture.get_width() * scale_factor * 0.9, blocker_height)
 	return sprite
+
+
+## Đặt một khung của sheet ngang [param texture_path] (có [param frames] khung bằng nhau), chân ở [param feet].
+## Dùng cho sheet nhiều món (vd. props/village_houses.png). Các tham số còn lại như [method add_prop].
+func add_prop_frame(texture_path: String, frame: int, frames: int, feet: Vector2, scale_factor: int = 1, blocker_height: float = 0.0) -> Sprite2D:
+	var texture: Texture2D = load(texture_path)
+	var cell := Vector2(texture.get_width() / float(frames), texture.get_height())
+	_add_shadow(feet, cell.x * scale_factor * 0.8)
+	var sprite := Sprite2D.new()
+	sprite.texture = texture
+	sprite.region_enabled = true
+	sprite.region_rect = Rect2(frame * cell.x, 0, cell.x, cell.y)
+	sprite.centered = false
+	sprite.offset = Vector2(-cell.x / 2.0, -cell.y)
+	sprite.position = feet
+	sprite.scale = Vector2(scale_factor, scale_factor)
+	add_child(sprite)
+	if blocker_height > 0.0:
+		_add_blocker(feet, cell.x * scale_factor * 0.9, blocker_height)
+	return sprite
+
+
+## Dựng một ngôi nhà vào được: ảnh mặt tiền [param texture_path] (phóng 2 lần), chân ở [param feet]; thân nhà chặn
+## Player trừ khe cửa. Cửa nằm ở [param door_ratio] bề ngang nhà (0 = mép trái, 1 = mép phải), rộng
+## [param door_width] pixel; bước vào cửa thì sang [param target_scene] tại spawn [param target_spawn].
+## [param sign_text] được vẽ lên tấm biển của nhà, tâm biển ở [param sign_ratio] (tỉ lệ theo bề ngang và chiều cao ảnh).
+## Trả về toạ độ thế giới của điểm đứng ngay trước cửa (để đặt spawn).
+func add_building(texture_path: String, feet: Vector2, door_ratio: float, door_width: float, target_scene: String, target_spawn: StringName, sign_text: String = "", sign_ratio: Vector2 = Vector2(0.5, 0.3)) -> Vector2:
+	var sprite: Sprite2D = add_prop(texture_path, feet, BUILDING_SCALE)
+	var width: float = sprite.texture.get_width() * BUILDING_SCALE
+	var height: float = sprite.texture.get_height() * BUILDING_SCALE
+	var left: float = feet.x - width / 2.0
+	var door_x: float = left + width * door_ratio
+	# Thân nhà chặn từ chân lên một dải; chừa khe cửa.
+	_add_blocker_span(left + 6.0, door_x - door_width / 2.0, feet.y - BUILDING_FRONT, BUILDING_DEPTH)
+	_add_blocker_span(door_x + door_width / 2.0, left + width - 6.0, feet.y - BUILDING_FRONT, BUILDING_DEPTH)
+	if not target_scene.is_empty():
+		add_exit(Vector2(door_x, feet.y - BUILDING_FRONT - BUILDING_DEPTH / 2.0), Vector2(door_width, BUILDING_DEPTH), target_scene, target_spawn, "")
+	if not sign_text.is_empty():
+		var label := Label.new()
+		label.text = sign_text
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.size = Vector2(140, 20)
+		label.position = Vector2(left + width * sign_ratio.x - 70.0, feet.y - height + height * sign_ratio.y - 10.0)
+		label.add_theme_font_size_override("font_size", 13)
+		label.add_theme_color_override("font_color", Color("#4E3320"))
+		label.z_index = 5
+		add_child(label)
+	return Vector2(door_x, feet.y + 14.0)
 
 
 ## Đặt một món trang trí (cây, hàng rào, chum) với chân ở [param feet], kèm bóng đổ.
@@ -477,7 +534,7 @@ func add_exit(center: Vector2, size: Vector2, target_scene: String, target_spawn
 	add_child(exit)
 	_exit_rects.append(Rect2(center - size / 2.0, size))
 	if not label.is_empty():
-		var points_right: bool = center.x > WORLD_SIZE.x / 2.0
+		var points_right: bool = center.x > world_size.x / 2.0
 		var inward: float = -64.0 if points_right else 64.0
 		add_signpost(Vector2(center.x + inward, center.y - size.y / 2.0 + 20.0), [label], points_right)
 	return exit
@@ -566,7 +623,7 @@ func _build_tree_belt() -> void:
 	spots.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a["pos"].y < b["pos"].y)
 	for spot: Dictionary in spots:
 		var pos: Vector2 = spot["pos"]
-		if pos.x < -20.0 or pos.x > WORLD_SIZE.x + 20.0 or pos.y < 24.0 or pos.y > WORLD_SIZE.y + 60.0:
+		if pos.x < -20.0 or pos.x > world_size.x + 20.0 or pos.y < 24.0 or pos.y > world_size.y + 60.0:
 			continue
 		if _near_exit(pos):
 			continue

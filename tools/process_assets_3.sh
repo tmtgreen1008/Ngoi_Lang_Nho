@@ -95,6 +95,21 @@ group_oanquan() {
 	slice in=$SRC/141_o_an_quan_board.png out=$OUT/props/o_an_quan_mat.png cell=96,48
 }
 
-if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2 market food laundry oanquan; fi
+group_village() {
+	# Mặt tiền Tiệm Tạp Hóa, Quán Net, Quán Bida (trong game phóng 2 lần, bước vào cửa để vào trong).
+	slice in=$SRC/036_grocery_facade.png out=$OUT/props/facade_grocery.png anchor=feet px=12.5 cell=auto pad=0 key=magenta defringe=1
+	slice in=$SRC/039_entertainment_facades.png out=$OUT/props/facade_net.png crop=0,0,872,887 anchor=feet px=8.5 cell=auto pad=0 key=magenta defringe=1
+	slice in=$SRC/039_entertainment_facades.png out=$OUT/props/facade_bida.png crop=872,0,902,887 anchor=feet px=8.5 cell=auto pad=0 key=magenta defringe=1
+	# Ba kiểu nhà dân (nhà ngói, nhà tranh, nhà tầng) trong một sheet ngang.
+	slice in=$SRC/035_village_houses.png out=$OUT/props/village_houses.png cols=3 rows=1 split=auto anchor=feet px=7.2 cell=auto pad=0 key=magenta defringe=1
+	# Cổng chợ, dãy lán tranh, chòi nghỉ (ba món dính sát nhau nên cắt theo vùng).
+	slice in=$SRC/032_market_gate.png out=$OUT/props/market_gate.png crop=0,0,652,724 anchor=feet px=7.2 cell=auto pad=0 key=magenta defringe=1
+	slice in=$SRC/032_market_gate.png out=$OUT/props/market_shelter.png crop=653,0,958,724 anchor=feet px=7.2 cell=auto pad=0 key=magenta defringe=1
+	slice in=$SRC/032_market_gate.png out=$OUT/props/rest_shelter.png crop=1614,0,558,724 anchor=feet px=7.2 cell=auto pad=0 key=magenta defringe=1
+	# Ao làng (nửa trái của ảnh ao).
+	slice in=$SRC/027_pond.png out=$OUT/props/pond_large.png crop=0,0,1300,793 anchor=feet px=9 cell=auto pad=0 key=magenta defringe=1
+}
+
+if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2 market food laundry oanquan village; fi
 for g in "$@"; do "group_$g"; done
 echo "Xong."

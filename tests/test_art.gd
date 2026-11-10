@@ -84,7 +84,7 @@ func run() -> void:
 	check("nhà chặn Player: không đi xuyên qua thân nhà (dừng ở y >= 228)", player.position.y >= 228.0 and player.position.y < 330.0)
 
 	# --- Tạp hóa: quầy chặn, NPC dùng ảnh từ dữ liệu ---
-	player.position = home.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")
 	await wait(1.0)
 	check("sang Tạp hóa", sm.current_scene_path.ends_with("grocery_store.tscn"))
 	var npc: Node = find_by_class(sm.current_map, &"VendorNPC")
@@ -106,9 +106,9 @@ func run() -> void:
 	await press_action("ui_cancel")
 
 	# --- Khu giải trí: trạm có ảnh, mini-game dùng ảnh ---
-	player.position = Vector2(30, 360)
+	travel("home", &"from_village")
 	await wait(1.0)
-	player.position = sm.current_map.get_exit_position("entertainment.tscn")
+	travel("entertainment")
 	await wait(1.0)
 	check("sang Khu giải trí", sm.current_scene_path.ends_with("entertainment.tscn"))
 	var station: Node = find_by_class(sm.current_map, &"ArcadeStation")

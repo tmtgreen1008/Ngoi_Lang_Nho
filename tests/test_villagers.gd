@@ -97,13 +97,13 @@ func run() -> void:
 
 	# Các NPC ở map khác.
 	var expectations: Array = [
-		["grocery_store.tscn", &"chi_hanh", "Chị Hạnh", 0],
-		["morning_market.tscn", &"co_lan", "Cô Lan", 2],
-		["entertainment.tscn", &"anh_hai", "Anh Hai", 3],
+		["grocery_store", &"chi_hanh", "Chị Hạnh", 0],
+		["village", &"co_lan", "Cô Lan", 2],
+		["entertainment", &"anh_hai", "Anh Hai", 3],
 	]
 	for entry: Array in expectations:
-		var map: Node = sm.current_map
-		player.position = map.get_exit_position(entry[0])
+
+		travel(entry[0])
 		await wait(1.0)
 		var here: Node = sm.current_map
 		var villager: Node = _find_villager(here, entry[1])
@@ -119,7 +119,7 @@ func run() -> void:
 			await press_action("interact")
 			check("đủ 3 điểm: anh Hai tặng gà giống", rm.get_points(&"anh_hai") == 3 and player.inventory.count_of(chick) == chicks + 1 and box._text_label.text == villager.dialogue.gift_text)
 			box.close()
-		player.position = Vector2(30, 360)
+		travel("home", &"from_village")
 		await wait(1.0)
 		check("về lại sân nhà", sm.current_scene_path.ends_with("home.tscn"))
 

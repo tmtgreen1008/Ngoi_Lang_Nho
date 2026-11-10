@@ -173,7 +173,7 @@ func run() -> void:
 	# --- trạm chơi ở Khu Giải trí ---
 	var main: Node = await start_game()
 	tm.pause()
-	main.player.position = sm.current_map.get_exit_position("entertainment.tscn")
+	travel("entertainment")
 	await wait(1.0)
 	var stations: Array = []
 	for child: Node in sm.current_map.get_children():

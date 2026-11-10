@@ -104,3 +104,12 @@ func start_game() -> Node:
 
 func _script_name() -> String:
 	return String(get_script().resource_path).get_file()
+
+
+## Đi thẳng tới map [param file] (tên file scene không đuôi: "home", "village", "grocery_store", "entertainment",
+## "house_interior") qua SceneManager, xuất hiện ở [param spawn], rồi chờ chuyển cảnh xong. Trả về map mới.
+func travel(file: String, spawn: StringName = &"default") -> Node:
+	var folder: String = file
+	root.get_node("EventBus").scene_change_requested.emit("res://maps/%s/%s.tscn" % [folder, file], spawn)
+	await wait(1.0)
+	return root.get_node("SceneManager").current_map

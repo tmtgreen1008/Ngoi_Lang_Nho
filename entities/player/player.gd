@@ -33,6 +33,7 @@ const ACTION_SPRITE_OFFSET: Vector2 = Vector2(0, -16)
 
 ## Bị khoá khi cửa hàng đang mở.
 var movement_locked: bool = false
+var camera: Camera2D
 ## Hướng đang nhìn (giữ nguyên khi đứng yên).
 var facing: Facing = Facing.DOWN
 
@@ -51,6 +52,11 @@ var _target: InteractableComponent = null
 
 func _ready() -> void:
 	add_to_group(&"player")
+	# Camera theo Player; map lớn hơn màn hình thì cuộn, map vừa màn hình thì đứng yên (giới hạn do SceneManager đặt).
+	camera = Camera2D.new()
+	camera.name = "Camera"
+	add_child(camera)
+	set_camera_limits(Rect2(0, 0, 1280, 720))
 	_add_shadow()
 	_interaction_area.area_entered.connect(_on_area_entered)
 	_interaction_area.area_exited.connect(_on_area_exited)
@@ -86,6 +92,15 @@ func _physics_process(delta: float) -> void:
 ## Đang chạy hoạt ảnh dùng công cụ (đứng yên cho tới khi xong).
 func is_acting() -> bool:
 	return _action_time >= 0.0
+
+
+## Giới hạn vùng camera được nhìn thấy (toạ độ thế giới), thường là cả map.
+func set_camera_limits(world: Rect2) -> void:
+	camera.limit_left = int(world.position.x)
+	camera.limit_top = int(world.position.y)
+	camera.limit_right = int(world.end.x)
+	camera.limit_bottom = int(world.end.y)
+	camera.reset_smoothing()
 
 
 ## Đặt số ô túi đồ theo cấp nâng cấp túi (bỏ qua nếu [param id] không phải nâng cấp túi hoặc thiếu dữ liệu).

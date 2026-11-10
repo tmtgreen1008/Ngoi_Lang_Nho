@@ -103,10 +103,10 @@ func run() -> void:
 	var main: Node = await start_game()
 	tm.pause()
 	var player: Node = main.player
-	player.position = sm.current_map.get_exit_position("morning_market.tscn")
+	travel("village", &"from_home")
 	await wait(1.0)
 	var market_map: Node = sm.current_map
-	check("vào Chợ: có đủ 3 sạp", sm.current_scene_path.ends_with("morning_market.tscn") and market_map.vendors.size() == 3 and market_map.vendors.has(&"quan_co_ba") and market_map.vendors.has(&"hang_co_ut"))
+	check("ra Làng: sân chợ có đủ 3 sạp", sm.current_scene_path.ends_with("village.tscn") and market_map.vendors.size() == 3 and market_map.vendors.has(&"quan_co_ba") and market_map.vendors.has(&"hang_co_ut"))
 	var positions: Array = []
 	for id: StringName in market_map.vendors:
 		positions.append(market_map.vendors[id].position)

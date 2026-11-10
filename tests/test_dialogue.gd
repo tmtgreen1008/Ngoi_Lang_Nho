@@ -85,7 +85,7 @@ func run() -> void:
 	rm.clear()
 	var lua: ItemData = db.get_item(&"lua")
 	var seed_item: ItemData = db.get_item(ba_tu.gift_item_id)
-	player.position = sm.current_map.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")
 	await wait(1.0)
 	check("sang Tiệm Tạp Hóa", sm.current_scene_path.ends_with("grocery_store.tscn"))
 	player.position = Vector2(640, 345)

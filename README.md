@@ -33,7 +33,7 @@ khi chuyển cảnh.
 1. **Ván mới**, bạn đứng ở khu nhà với 10 hạt giống lúa và 100 đ.
 2. Bấm `1`, cuốc một ô đất; bấm `2`, gieo hạt; đi đến giường (phía trên) bấm `E` để ngủ.
 3. Lúa chín sau 4 ngày; bấm `3` để thu hoạch.
-4. Ra lối phải: **Tiệm Tạp Hóa** (mở 6h-21h), **Chợ Quê** (mở 5h-11h, hàng ngẫu nhiên mỗi ngày),
+4. Ra cổng phía đông là tới **Làng**: bước vào cửa **Tiệm Tạp Hóa** (mở 6h-21h) để mua hạt giống, vào **Chợ Quê** (mở 5h-11h, ba sạp) để bán nông sản, xuống ngõ phía nam vào **Quán Net / Quán Bida** chơi mini-game kiếm tiền.
    **Khu Giải trí** (Quán Net, Quán Bida) để mua bán và chơi mini-game kiếm tiền.
 
 ## Tính năng đã có
@@ -188,6 +188,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_farm_field` | Cuốc, gieo, lớn theo ngày, héo khi đổi mùa, thu hoạch, công cụ nối kho đồ |
 | `test_shop_logic` | Kho hàng theo ngày (xác định), mua/bán, giờ mở cửa, các lỗi |
 | `test_home` | Bố cục sân nhà (vùng chơi, rặng cây, cụm cây, bóng đổ, biển chỉ đường, bo góc đường), vào nhà, ngủ trong nhà |
+| `test_village` | Camera cuộn và giới hạn theo map, đi bộ thật giữa sân nhà và làng, vào / ra Tiệm Tạp Hóa và Khu Giải trí qua cửa, tường nhà / rào chợ / ao chặn đường, cổng chợ đi qua được, ba sạp trong sân chợ, lưu và nạp ở làng |
 | `test_art` | Icon vật phẩm, ảnh cây theo giai đoạn, ảnh người bán, hoạt ảnh Player, đồ vật chặn đường, giao diện giấy |
 | `test_terrain` | Sheet nền đất 48x48, lát nền bốn map, đổi toạ độ chuột sang ô vườn |
 | `test_inventory_ui` | Giao diện kho, kéo/thả giữa hai kho |

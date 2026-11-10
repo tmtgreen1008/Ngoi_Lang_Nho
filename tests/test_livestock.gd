@@ -172,11 +172,11 @@ func run() -> void:
 	player.inventory.add_item(lua, 1)
 	await press_action("interact")
 	check("bấm E cho gà ăn", player.inventory.count_of(lua) == 0 and home.coop.pen.get_unfed_count() == 0)
-	player.position = home.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")
 	await wait(1.0)
 	check("sang Tiệm Tạp Hóa", sm.current_scene_path.ends_with("grocery_store.tscn"))
 	tm.sleep_until_morning()
-	player.position = Vector2(30, 360)
+	travel("home", &"from_village")
 	await wait(1.0)
 	var home2: Node = sm.current_map
 	check("về nhà: chuồng gà vẫn còn con vật", sm.current_scene_path.ends_with("home.tscn") and home2.coop.pen.get_count() == 1)

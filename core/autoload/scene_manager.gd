@@ -75,6 +75,10 @@ func change_scene(scene_path: String, spawn_id: StringName = DEFAULT_SPAWN, capt
 	current_map = map
 	current_scene_path = scene_path
 	_place_player(map, spawn_id)
+	# Camera của Player chỉ nhìn trong phạm vi map (map lớn thì cuộn theo Player).
+	if _player.has_method("set_camera_limits"):
+		var size: Variant = map.get("world_size")
+		_player.call("set_camera_limits", Rect2(Vector2.ZERO, size if size is Vector2 else Vector2(1280, 720)))
 	EventBus.scene_changed.emit(scene_path)
 
 	await _fade_to(0.0)

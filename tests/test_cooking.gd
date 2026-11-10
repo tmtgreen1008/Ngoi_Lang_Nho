@@ -101,7 +101,7 @@ func run() -> void:
 	var player: Node = main.player
 	var ui: Node = main.cooking_ui
 	check("bảng nấu ăn nạp đủ 10 công thức", ui.get_recipes().size() == 10 and not ui.visible)
-	player.position = sm.current_map.get_exit_position("house_interior.tscn")
+	travel("house_interior")
 	await wait(1.0)
 	var house: Node = sm.current_map
 	check("vào trong nhà: có bếp lò", sm.current_scene_path.ends_with("house_interior.tscn") and house.stove != null and house.stove.prompt_text == "Nấu ăn")

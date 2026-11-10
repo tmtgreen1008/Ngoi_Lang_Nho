@@ -8,4 +8,4 @@ script = ExtResource("1_schedule")
 dialogue = ExtResource("2_dialogue")
 frame = 2
 offers_upgrades = false
-stops = Array[Dictionary]([{"map": "morning_market", "from": 5, "to": 11, "x": 470, "y": 320}, {"map": "grocery_store", "from": 13, "to": 18, "x": 820, "y": 340}])
+stops = Array[Dictionary]([{"map": "village", "place": "Chợ Quê", "from": 5, "to": 11, "x": 1700, "y": 440}, {"map": "grocery_store", "from": 13, "to": 18, "x": 820, "y": 340}])

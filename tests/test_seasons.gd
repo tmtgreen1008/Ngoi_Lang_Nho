@@ -128,4 +128,4 @@ func _capture_home(_main: Node) -> Image:
 
 
 func player_to_grocery(main: Node, sm: Node) -> void:
-	main.player.position = sm.current_map.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")

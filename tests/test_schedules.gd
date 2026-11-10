@@ -2,7 +2,7 @@ extends "res://tests/test_base.gd"
 ## Lịch sinh hoạt của dân làng: dữ liệu (5 lịch hợp lệ, không chồng giờ), đến / đi theo giờ khi đang ở trong map,
 ## có mặt đúng nơi khi vào map, người đang được trò chuyện thì ở lại tới khi nói xong, sang ngày mới thì về chỗ cũ.
 
-const MAPS: Array[String] = ["home", "grocery_store", "morning_market", "entertainment"]
+const MAPS: Array[String] = ["home", "village", "grocery_store", "entertainment"]
 
 
 func run() -> void:
@@ -28,16 +28,16 @@ func run() -> void:
 					active += 1
 			no_overlap = no_overlap and active <= 1
 		for stop: Dictionary in schedule.stops:
-			maps_ok = maps_ok and MAPS.has(String(stop["map"])) and int(stop["from"]) >= 0 and int(stop["to"]) <= 24 and float(stop["x"]) > 0.0 and float(stop["x"]) < 1280.0 and float(stop["y"]) > 0.0 and float(stop["y"]) < 720.0
+			maps_ok = maps_ok and MAPS.has(String(stop["map"])) and int(stop["from"]) >= 0 and int(stop["to"]) <= 24 and float(stop["x"]) > 0.0 and float(stop["x"]) < 2304.0 and float(stop["y"]) > 0.0 and float(stop["y"]) < 1296.0
 	check("có 5 lịch hợp lệ (ông Bảy, bé Tí, chị Hạnh, cô Lan, anh Hai)", schedules.size() == 5 and valid and by_id.has(&"ong_bay") and by_id.has(&"be_ti") and by_id.has(&"chi_hanh") and by_id.has(&"co_lan") and by_id.has(&"anh_hai"))
 	check("mỗi người mỗi giờ chỉ ở một nơi", no_overlap)
-	check("mọi chặng nằm ở map có thật, giờ trong 0-24, vị trí trong màn hình", maps_ok)
+	check("mọi chặng nằm ở map có thật, giờ trong 0-24, vị trí trong map", maps_ok)
 	var ong_bay: Variant = by_id[&"ong_bay"]
 	check("ông Bảy: 17 giờ ở sân nhà, 18 giờ ở Khu Giải trí, 3 giờ sáng ở nhà riêng", String(ong_bay.get_stop_at(17)["map"]) == "home" and String(ong_bay.get_stop_at(18)["map"]) == "entertainment" and ong_bay.get_stop_at(3).is_empty())
 	check("get_stop chỉ trả chặng của đúng map", not ong_bay.get_stop("home", 10).is_empty() and ong_bay.get_stop("entertainment", 10).is_empty())
 	check("câu báo lúc rời đi", ong_bay.describe_departure(18) == "Ông Bảy đi ra Khu Giải trí." and by_id[&"be_ti"].describe_departure(20) == "Bé Tí về nhà nghỉ.")
 	check("ông Bảy nhận làm giúp ở mọi nơi ông có mặt", ong_bay.offers_upgrades)
-	var morning: Dictionary = {&"ong_bay": "home", &"be_ti": "home", &"chi_hanh": "grocery_store", &"co_lan": "morning_market", &"anh_hai": "entertainment"}
+	var morning: Dictionary = {&"ong_bay": "home", &"be_ti": "home", &"chi_hanh": "grocery_store", &"co_lan": "village", &"anh_hai": "entertainment"}
 	var morning_ok: bool = true
 	for id: StringName in morning:
 		morning_ok = morning_ok and String(by_id[id].get_stop_at(6).get("map", "")) == morning[id]
@@ -81,14 +81,14 @@ func run() -> void:
 	check("19 giờ: bé Tí về nhà nghỉ, sân vắng", home.be_ti == null and notices.has("Bé Tí về nhà nghỉ.") and home.get_villager_ids().is_empty())
 
 	# --- vào map khác đúng giờ ---
-	player.position = home.get_exit_position("entertainment.tscn")
+	travel("entertainment")
 	await wait(1.0)
 	var leisure: Node = sm.current_map
 	check("19 giờ ở Khu Giải trí: có anh Hai và ông Bảy, không có chị Hạnh", sm.current_scene_path.ends_with("entertainment.tscn") and leisure.get_villager(&"anh_hai") != null and leisure.get_villager(&"ong_bay") != null and leisure.get_villager(&"chi_hanh") == null)
 	check("ông Bảy ở Khu Giải trí vẫn nhận làm giúp", leisure.get_villager(&"ong_bay").offers_upgrades and not leisure.get_villager(&"anh_hai").offers_upgrades)
 	check("không báo đến/đi khi vừa vào map", not notices.has("Ông Bảy vừa tới.") and not notices.has("Anh Hai vừa tới."))
 	await shot("schedule_evening.png")
-	player.position = Vector2(30, 360)
+	travel("home", &"from_village")
 	await wait(1.0)
 
 	# Sang ngày mới: mọi người về chỗ buổi sáng.
@@ -99,7 +99,7 @@ func run() -> void:
 
 	# Buổi chiều: cô Lan ở Tạp Hóa, chị Hạnh đã rời Tạp Hóa.
 	tm.advance_minutes(7 * 60)  # 13:00
-	player.position = home2.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")
 	await wait(1.0)
 	var grocery: Node = sm.current_map
 	check("13 giờ ở Tạp Hóa: có cô Lan, không còn chị Hạnh", grocery.get_villager(&"co_lan") != null and grocery.get_villager(&"chi_hanh") == null)

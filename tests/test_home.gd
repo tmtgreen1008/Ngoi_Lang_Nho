@@ -202,12 +202,12 @@ func run() -> void:
 	check("ngủ trong nhà: cây ngoài vườn đã lớn đủ 4 ngày và chín", plot != null and plot.is_planted() and plot.days_grown == 4 and plot.is_ripe())
 
 	# --- quay về từ các nơi khác: đứng ngay trong cổng, trong vùng chơi ---
-	player.position = home2.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")
 	await wait(1.0)
-	check("sang Tạp hóa: có biển 'Về nhà' chỉ sang trái", _has_sign(sm.current_map, "Về nhà", false))
-	player.position = sm.current_map.get_exit_position("home.tscn")
+	check("trong Tạp hóa: có cửa ra làng", sm.current_map.get_exit_position("village.tscn") != Vector2.ZERO)
+	travel("home", &"from_village")
 	await wait(1.0)
-	check("từ Tạp hóa về: đứng trong cổng, trong vùng chơi", sm.current_map.playable_rect.has_point(player.position) and player.position.distance_to(sm.current_map.get_spawn_position(&"from_grocery")) < 5)
+	check("từ Tạp hóa về: đứng trong cổng, trong vùng chơi", sm.current_map.playable_rect.has_point(player.position) and player.position.distance_to(sm.current_map.get_spawn_position(&"from_village")) < 5)
 
 
 ## Vị trí cụm chuối cạnh nhà (xấp xỉ), dùng để tìm bóng của một cây chuối thật sự có trên map.

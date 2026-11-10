@@ -63,10 +63,10 @@ func run() -> void:
 	check("bấm lại khi đồ còn ướt: không đổi gì, không tốn xà phòng", not line.use(player.inventory) and player.inventory.count_of(soap) == 1 and "còn ướt" in notices.back()[0])
 
 	# Đi vắng một ngày: dây phơi được nhớ, đồ khô.
-	player.position = home.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")
 	await wait(1.0)
 	tm.sleep_until_morning()
-	player.position = Vector2(30, 360)
+	travel("home", &"from_village")
 	await wait(1.0)
 	var line2: Node = sm.current_map.clothes_line
 	check("về nhà hôm sau: đồ vẫn trên dây và đã khô", line2.has_laundry() and line2.is_dry() and line2.interactable.prompt_text == "Thu đồ đã khô")

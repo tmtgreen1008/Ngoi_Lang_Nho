@@ -4,14 +4,15 @@ extends Resource
 ## đứng ở đâu. MapBase đọc các lịch này để đặt / cất dân làng khi vào map và mỗi khi đồng hồ sang giờ mới.
 ##
 ## Mỗi chặng trong [member stops] là một Dictionary:
-##   {"map": "home", "from": 5, "to": 18, "x": 860, "y": 330, "wander": [x, y, rộng, cao] (tuỳ chọn)}
+##   {"map": "home", "from": 5, "to": 18, "x": 860, "y": 330, "wander": [x, y, rộng, cao] (tuỳ chọn),
+##    "place": "Chợ Quê" (tuỳ chọn: tên nơi đến dùng trong thông báo, mặc định là tên map)}
 ## "map" là tên file scene của map (không đuôi), có mặt từ giờ "from" tới trước giờ "to". Ngoài mọi chặng thì
 ## người đó ở nhà riêng (không xuất hiện trên map nào).
 
 const DATA_DIR: String = "res://data/schedules"
 ## Tên hiển thị của từng map, dùng trong thông báo "đi ra ...".
 const MAP_NAMES: Dictionary = {
-	"home": "Khu nhà", "grocery_store": "Tiệm Tạp Hóa", "morning_market": "Chợ Quê", "entertainment": "Khu Giải trí",
+	"home": "Khu nhà", "village": "làng", "grocery_store": "Tiệm Tạp Hóa", "entertainment": "Khu Giải trí",
 }
 
 @export var dialogue: DialogueData
@@ -70,7 +71,7 @@ func describe_departure(hour: int) -> String:
 	var next: Dictionary = get_stop_at(hour)
 	if next.is_empty():
 		return "%s về nhà nghỉ." % dialogue.display_name
-	return "%s đi ra %s." % [dialogue.display_name, MAP_NAMES.get(String(next["map"]), String(next["map"]))]
+	return "%s đi ra %s." % [dialogue.display_name, String(next.get("place", MAP_NAMES.get(String(next["map"]), String(next["map"]))))]
 
 
 ## Mọi lịch trong data/schedules (nạp một lần), sắp theo id.

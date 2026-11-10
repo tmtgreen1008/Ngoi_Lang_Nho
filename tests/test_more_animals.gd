@@ -194,9 +194,9 @@ func run() -> void:
 	check("bấm E vuốt ve: nhận quà", dog.has_fetched_today())
 	# Nhớ qua đổi map.
 	var gift_day: int = dog.last_gift_day
-	player.position = home.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")
 	await wait(1.0)
-	player.position = Vector2(30, 360)
+	travel("home", &"from_village")
 	await wait(1.0)
 	check("về lại nhà: chó nhớ hôm nay đã tha quà", sm.current_scene_path.ends_with("home.tscn") and sm.current_map.dog.last_gift_day == gift_day and sm.current_map.dog.has_fetched_today())
 	check("ao vịt và trâu được nhớ qua đổi map", sm.current_map.duck_pond.pen.get_count() == 1 and sm.current_map.buffalo_post.pen.get_count() == 1)

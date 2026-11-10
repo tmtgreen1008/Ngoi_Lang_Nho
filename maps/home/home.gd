@@ -11,9 +11,8 @@ extends MapBase
 ## đi vắng; quay về cây vẫn còn và đã lớn thêm đúng số ngày vắng mặt.
 ## Điều khiển vườn: chuột trái dùng công cụ; phím 1/2/3 đổi Cuốc / Gieo hạt / Thu hoạch.
 
-const GROCERY_MAP: String = "res://maps/grocery_store/grocery_store.tscn"
-const MARKET_MAP: String = "res://maps/morning_market/morning_market.tscn"
-const ENTERTAINMENT_MAP: String = "res://maps/entertainment/entertainment.tscn"
+## Cả ba cổng phía đông đều dẫn ra làng (Tiệm Tạp Hóa, Chợ Quê, Khu Giải trí nằm trong làng).
+const VILLAGE_MAP: String = "res://maps/village/village.tscn"
 const INTERIOR_MAP: String = "res://maps/house_interior/house_interior.tscn"
 
 ## Chân ngôi nhà (giữa đáy ảnh), nhà phóng 2 lần.
@@ -75,12 +74,13 @@ func _build() -> void:
 	var gate_x: float = playable_rect.end.x - cell_size
 	add_spawn(&"from_grocery", Vector2(gate_x, (GATE_ROWS[0] + 0.5) * cell_size))
 	add_spawn(&"from_entertainment", Vector2(gate_x, (GATE_ROWS[1] + 0.5) * cell_size))
+	add_spawn(&"from_village", Vector2(gate_x, (GATE_ROWS[1] + 0.5) * cell_size))
 	add_spawn(&"from_market", Vector2(gate_x, (GATE_ROWS[2] + 0.5) * cell_size))
 
 	var edge_x: float = playable_rect.end.x - 6.0
-	add_exit(Vector2(edge_x, (GATE_ROWS[0] + 0.5) * cell_size), Vector2(24, 70), GROCERY_MAP, &"from_home", "")
-	add_exit(Vector2(edge_x, (GATE_ROWS[1] + 0.5) * cell_size), Vector2(24, 70), ENTERTAINMENT_MAP, &"from_home", "")
-	add_exit(Vector2(edge_x, (GATE_ROWS[2] + 0.5) * cell_size), Vector2(24, 70), MARKET_MAP, &"from_home", "")
+	add_exit(Vector2(edge_x, (GATE_ROWS[0] + 0.5) * cell_size), Vector2(24, 70), VILLAGE_MAP, &"from_home", "")
+	add_exit(Vector2(edge_x, (GATE_ROWS[1] + 0.5) * cell_size), Vector2(24, 70), VILLAGE_MAP, &"from_home", "")
+	add_exit(Vector2(edge_x, (GATE_ROWS[2] + 0.5) * cell_size), Vector2(24, 70), VILLAGE_MAP, &"from_home", "")
 	# Bước vào cửa nhà (khe hở giữa hai dải chặn) thì vào trong nhà.
 	add_exit(Vector2(door_x, HOUSE_FEET.y + 24.0), Vector2(DOOR_RIGHT - DOOR_LEFT, 28), INTERIOR_MAP, &"from_home", "")
 

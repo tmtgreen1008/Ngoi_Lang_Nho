@@ -43,10 +43,10 @@ func run() -> void:
 	await shot("flow_home_planted.png")
 
 	# --- đi Tạp hóa ---
-	player.position = home.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")
 	await wait(1.0)
 	check("sang Tiệm Tạp Hóa", sm.current_scene_path.ends_with("grocery_store.tscn"))
-	check("Player ở spawn của map Tạp hóa", player.position.distance_to(Vector2(160, 360)) < 5)
+	check("Player đứng ngay trong cửa Tiệm Tạp Hóa", player.position.distance_to(Vector2(640, 488)) < 5)
 	check("map nhà cũ đã được giải phóng", not is_instance_valid(home))
 	check("kho đồ Player được giữ qua map", player.inventory.count_of(seed_item) == 9)
 	check("trạng thái map nhà đã được ghi nhớ", wsm.has_state("res://maps/home/home.tscn"))
@@ -72,10 +72,10 @@ func run() -> void:
 	check("4 ngày đã trôi", tm.day == 5)
 
 	# --- về nhà ---
-	player.position = Vector2(30, 360)
+	travel("home", &"from_village")
 	await wait(1.0)
 	check("về lại map nhà", sm.current_scene_path.ends_with("home.tscn"))
-	check("Player ở spawn from_grocery", player.position.distance_to(sm.current_map.get_spawn_position(&"from_grocery")) < 5)
+	check("Player ở spawn from_village", player.position.distance_to(sm.current_map.get_spawn_position(&"from_village")) < 5)
 	var home2: Node = sm.current_map
 	var plot: Variant = home2.field.get_plot(Vector2i(1, 1))
 	check("cây vẫn còn sau chuyến đi", plot != null and plot.is_planted())
@@ -86,12 +86,12 @@ func run() -> void:
 	check("thu hoạch được 3 lúa", home2.controller.use_tool_at(Vector2i(1, 1)) and player.inventory.count_of(lua) == 3)
 
 	# --- sang Chợ, yêu cầu chuyển map thứ hai khi đang chuyển bị bỏ qua ---
-	player.position = home2.get_exit_position("morning_market.tscn")
+	travel("village", &"from_home")
 	await wait(0.2)
 	bus.scene_change_requested.emit("res://maps/grocery_store/grocery_store.tscn", &"default")
 	await wait(1.0)
-	check("sang Chợ (yêu cầu thứ hai bị bỏ qua)", sm.current_scene_path.ends_with("morning_market.tscn"))
-	player.position = Vector2(760, 345)
+	check("ra Làng (yêu cầu thứ hai bị bỏ qua)", sm.current_scene_path.ends_with("village.tscn"))
+	player.position = Vector2(1860, 296)  # giữa chú Năm và sạp rau trong sân chợ
 	await wait(0.3)
 	await press_action("interact")
 	await press_action("interact")  # hộp thoại chú Năm, E lần hai chọn "Mua bán"
@@ -108,4 +108,4 @@ func run() -> void:
 	sell_button.pressed.emit()
 	check("bán 1 lúa +14 đ", economy.money == money + 14)
 	await press_action("ui_cancel")
-	check("thứ tự scene_changed đúng", changes == ["home.tscn", "grocery_store.tscn", "home.tscn", "morning_market.tscn"])
+	check("thứ tự scene_changed đúng", changes == ["home.tscn", "grocery_store.tscn", "home.tscn", "village.tscn"])

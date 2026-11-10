@@ -102,7 +102,7 @@ func run() -> void:
 	await shot("layering_behind_house.png")
 
 	# --- đổi map: Player sống sót và vào map mới ---
-	player.position = home.get_exit_position("grocery_store.tscn")
+	travel("grocery_store")
 	await wait(1.0)
 	check("sang Tiệm Tạp Hóa: Player còn sống và là con của map mới", is_instance_valid(player) and sm.current_scene_path.ends_with("grocery_store.tscn") and player.get_parent() == sm.current_map)
 	check("map cũ đã được giải phóng", not is_instance_valid(home))
