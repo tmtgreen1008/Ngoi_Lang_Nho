@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/dialogue_data.gd" id="1_dialogue"]
+
+[resource]
+script = ExtResource("1_dialogue")
+speaker_id = &"hang_co_ut"
+display_name = "Cô Út"
+first_meeting = PackedStringArray("Chào anh chị! Em là Út, bán hàng xén ở chợ. Hôm nào em cũng có vài loại hạt giống rẻ hơn tiệm bà Tư, mà mỗi ngày một khác nha.")
+greetings = PackedStringArray("Anh chị xem hạt giống hôm nay đi, rẻ lắm.", "Chào anh chị, hôm nay em có hàng mới.", "Ghé sạp em chút đã rồi hãy về.")
+farewells = PackedStringArray("Mai em có loại khác, anh chị nhớ ghé!", "Cảm ơn anh chị nha.")
+lines_general = PackedStringArray("Hạt giống của em rẻ hơn tiệm bà Tư một chút, nhưng mỗi ngày chỉ có ba loại, hết là thôi.", "Em chỉ bán chứ không thu mua đâu, có nông sản thì anh chị bán cho chú Năm với cô Ba.", "Nhớ xem hạt hợp mùa nào rồi hãy mua, gieo sai mùa là uổng tiền.", "Em lấy hàng từ trên huyện về, sáng nào cũng phải đi sớm.")
+lines_spring = PackedStringArray("Xuân ai cũng mua hạt lúa với cà chua, em bán chạy lắm.")
+lines_summer = PackedStringArray("Hè thì hạt dưa hấu, dưa leo đắt hàng, hôm nào có là hết ngay.")
+lines_autumn = PackedStringArray("Thu em hay có hạt bí đỏ với khoai lang, anh chị để ý nha.")
+lines_winter = PackedStringArray("Đông ít loại gieo được lắm, bắp cải với cà rốt là chắc ăn nhất.")
+friend_lines = PackedStringArray("Khách quen như anh chị, hôm nào có hạt tốt em để dành cho.", "Em mê nghe nhạc lắm, bán hàng xong là ra quán anh Hai chơi.")
+close_lines = PackedStringArray("Anh chị là khách quý nhất của em, nói thiệt đó!")
+gift_item_id = &"hat_giong_dua_leo"
+gift_amount = 3
+gift_points = 3
+gift_text = "Em biếu anh chị ít hạt dưa leo, coi như cảm ơn khách quen. Gieo mùa hè nha!"

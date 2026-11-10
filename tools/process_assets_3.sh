@@ -64,6 +64,15 @@ group_animals2() {
 	slice in=$SRC/027_pond.png out=$OUT/props/pond_small.png crop=1320,150,663,560 anchor=feet px=9 cell=auto pad=0 key=magenta defringe=1
 }
 
-if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2; fi
+group_market() {
+	# Người bán ở chợ: mỗi hàng của ảnh là một người, 2 khung đứng yên 32x48 (hàng 2: cô Ba, hàng 3: cô Út).
+	slice in=$SRC/122_shopkeepers.png out=$OUT/characters/npc_co_ba.png crop=0,256,1024,256 cols=2 rows=1 anchor=feet px=6 cell=32,48 key=magenta defringe=1
+	slice in=$SRC/122_shopkeepers.png out=$OUT/characters/npc_co_ut.png crop=0,512,1024,256 cols=2 rows=1 anchor=feet px=6 cell=32,48 key=magenta defringe=1
+	# Sạp chợ: ảnh 3x2 sạp, cắt riêng sạp trứng gà (giữa, hàng dưới) và sạp hàng xén (phải, hàng dưới).
+	slice in=$SRC/030_market_stalls.png out=$OUT/props/stall_eggs.png crop=512,512,512,512 anchor=feet px=3.4 cell=auto pad=0 key=magenta defringe=1
+	slice in=$SRC/030_market_stalls.png out=$OUT/props/stall_goods.png crop=1024,512,512,512 anchor=feet px=3.4 cell=auto pad=0 key=magenta defringe=1
+}
+
+if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2 market; fi
 for g in "$@"; do "group_$g"; done
 echo "Xong."

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VendorData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/vendor_data.gd" id="1_vendor"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/npc_co_ba.png" id="2_sheet"]
+[ext_resource type="Resource" path="res://data/dialogues/co_ba.tres" id="3_dialogue"]
+
+[resource]
+script = ExtResource("1_vendor")
+id = &"quan_co_ba"
+display_name = "Sạp trứng thịt cô Ba"
+npc_sheet = ExtResource("2_sheet")
+dialogue = ExtResource("3_dialogue")
+open_hour = 5.0
+close_hour = 11.0
+sell_multiplier = 0.7
+buyable_categories = Array[int]([2])

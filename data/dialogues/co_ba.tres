@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/dialogue_data.gd" id="1_dialogue"]
+
+[resource]
+script = ExtResource("1_dialogue")
+speaker_id = &"quan_co_ba"
+display_name = "Cô Ba"
+first_meeting = PackedStringArray("Chào em! Cô là cô Ba, chuyên thu trứng, thịt với đồ ăn nấu sẵn. Có gì ngon cứ mang ra, cô trả giá cao hơn sạp rau đó.")
+greetings = PackedStringArray("Em ra chợ đó hả, hôm nay có trứng không?", "Lại đây em, cô đang cần thịt tươi.", "Chào em, món nấu sẵn cô mua hết nghe.")
+farewells = PackedStringArray("Mai có hàng lại ghé cô nha!", "Đi nhé em, giữ sức khỏe.")
+lines_general = PackedStringArray("Trứng với thịt mang ra đây, cô mua giá hơn chú Năm một chút. Còn rau củ thì em bán cho chú ấy.", "Em biết nấu ăn không? Món nấu sẵn bán được giá hơn hẳn nguyên liệu sống.", "Trứng vịt to, người ta chuộng lắm, giá hơn trứng gà.", "Chợ tan lúc mười một giờ, em nhớ ra sớm.")
+lines_spring = PackedStringArray("Xuân này gà đẻ sai, trứng về nhiều, cô bán không kịp.")
+lines_summer = PackedStringArray("Trời nóng, thịt phải bán nhanh trong buổi sáng kẻo hỏng.")
+lines_autumn = PackedStringArray("Thu mát, người ta thích ăn thịt kho, em có thịt lợn thì mang ra nhé.")
+lines_winter = PackedStringArray("Đông lạnh ai cũng thèm đồ nóng, món nấu sẵn đắt hàng lắm.")
+friend_lines = PackedStringArray("Hàng của em lúc nào cũng tươi, cô yên tâm lắm.", "Cô để dành chỗ đẹp nhất trên sạp cho trứng của em đó.")
+close_lines = PackedStringArray("Cô coi em như con cháu trong nhà rồi, hôm nào ghé nhà cô ăn cơm.")
+gift_item_id = &"cam_ga"
+gift_amount = 5
+gift_points = 3
+gift_text = "Cô tặng em ít cám gà, nuôi gà cho khỏe rồi mang trứng ra bán cho cô nha!"

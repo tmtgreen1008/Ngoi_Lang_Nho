@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="VendorData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/vendor_data.gd" id="1_vendor"]
+[ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_item"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/npc_co_ut.png" id="2_sheet"]
+[ext_resource type="Resource" path="res://data/dialogues/co_ut.tres" id="3_dialogue"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_bap_cai.tres" id="10_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_bi_do.tres" id="11_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_ca_chua.tres" id="12_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_ca_rot.tres" id="13_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_dau.tres" id="14_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_dua_hau.tres" id="15_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_dua_leo.tres" id="16_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_khoai_lang.tres" id="17_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_lua.tres" id="18_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_ngo.tres" id="19_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_ot.tres" id="20_seed"]
+[ext_resource type="Resource" path="res://data/crops/hat_giong_rau_muong.tres" id="21_seed"]
+
+[resource]
+script = ExtResource("1_vendor")
+id = &"hang_co_ut"
+display_name = "Hàng xén cô Út"
+npc_sheet = ExtResource("2_sheet")
+dialogue = ExtResource("3_dialogue")
+open_hour = 5.0
+close_hour = 11.0
+random_pool = Array[ExtResource("1_item")]([ExtResource("10_seed"), ExtResource("11_seed"), ExtResource("12_seed"), ExtResource("13_seed"), ExtResource("14_seed"), ExtResource("15_seed"), ExtResource("16_seed"), ExtResource("17_seed"), ExtResource("18_seed"), ExtResource("19_seed"), ExtResource("20_seed"), ExtResource("21_seed")])
+daily_random_count = 3
+daily_amount_min = 3
+daily_amount_max = 8
+buy_multiplier = 0.9
+buys_from_player = false
