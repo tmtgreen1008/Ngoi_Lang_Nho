@@ -144,6 +144,7 @@ func _on_target_pressed(target: Button) -> void:
 	if not is_playing:
 		return
 	hits += 1
+	EventBus.sfx_requested.emit(&"hit")
 	target.queue_free()
 	_update_status()
 
@@ -151,6 +152,7 @@ func _on_target_pressed(target: Button) -> void:
 func _on_target_expired(target: Button) -> void:
 	if is_instance_valid(target) and not target.is_queued_for_deletion():
 		misses += 1
+		EventBus.sfx_requested.emit(&"miss")
 		target.queue_free()
 		_update_status()
 

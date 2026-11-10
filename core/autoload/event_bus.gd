@@ -87,6 +87,11 @@ signal upgrade_menu_requested
 ## Player đặt chân xuống một bước (khung hình chân chạm đất); AudioManager phát tiếng bước chân.
 signal player_stepped
 
+# --- Âm thanh ---
+## Yêu cầu phát một hiệu ứng âm thanh theo id (xem SfxSynth.SOUND_IDS); dùng cho âm không gắn với sự kiện game
+## sẵn có, vd. tiếng trong mini-game. AudioManager nghe.
+signal sfx_requested(id: StringName)
+
 # --- Bản đồ & trạng thái thế giới -----------------------------------------------
 
 ## Yêu cầu chuyển map. [param spawn_id] chọn điểm xuất hiện ở map đích.

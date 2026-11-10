@@ -29,7 +29,7 @@ func run() -> void:
 		no_clip = no_clip and peak <= 1.0
 		audible = audible and peak >= 0.05
 		short = short and buffer.size() < synth.RATE  # dưới 1 giây
-	check("22 âm đều có công thức", synth.SOUND_IDS.size() == 22 and all_valid)
+	check("29 âm đều có công thức", synth.SOUND_IDS.size() == 29 and all_valid)
 	check("không âm nào bị méo (đỉnh <= 1.0)", no_clip)
 	check("không âm nào quá nhỏ (đỉnh >= 0.05)", audible)
 	check("mọi âm ngắn hơn 1 giây", short)
@@ -149,3 +149,33 @@ func run() -> void:
 	var idle_before: int = _count(am, &"step")
 	await wait(0.5)
 	check("đứng yên: không có tiếng bước", _count(am, &"step") == idle_before)
+
+	# --- tiếng riêng trong mini-game (qua EventBus.sfx_requested) ---
+	await wait(0.2)
+	var generic: int = _count(am, &"stone")
+	bus.sfx_requested.emit(&"stone")
+	check("sfx_requested phát âm theo id", _count(am, &"stone") == generic + 1)
+	var aim: Variant = load("res://minigames/net_cafe/aim_game.tscn").instantiate()
+	root.add_child(aim)
+	await wait(0.1)
+	aim.start_round()
+	var target: Button = aim.spawn_target()
+	var hit_before: int = _count(am, &"hit")
+	target.pressed.emit()
+	check("Quán Net: bắn trúng có tiếng 'hit'", _count(am, &"hit") == hit_before + 1 and aim.hits == 1)
+	var miss_before: int = _count(am, &"miss")
+	var late: Button = aim.spawn_target()
+	aim._on_target_expired(late)
+	check("Quán Net: mục tiêu biến mất có tiếng 'miss'", _count(am, &"miss") == miss_before + 1 and aim.misses == 1)
+	aim.queue_free()
+	var pool: Variant = load("res://minigames/billiards/billiards_game.tscn").instantiate()
+	root.add_child(pool)
+	await wait(0.1)
+	pool.start_round()
+	pool._power = pool.sweet_center
+	var pocket_before: int = _count(am, &"pocket")
+	check("Quán Bida: bi vào lỗ có tiếng 'pocket'", pool.shoot() and _count(am, &"pocket") == pocket_before + 1)
+	pool._power = 0.0
+	var cue_before: int = _count(am, &"cue")
+	check("Quán Bida: đánh trượt có tiếng 'cue'", not pool.shoot() and _count(am, &"cue") == cue_before + 1)
+	pool.queue_free()

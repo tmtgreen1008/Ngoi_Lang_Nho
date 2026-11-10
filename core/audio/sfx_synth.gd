@@ -16,6 +16,7 @@ const SOUND_IDS: Array[StringName] = [
 	&"click", &"tick", &"step", &"pickup", &"dig", &"plant", &"harvest", &"feed", &"wither",
 	&"coin", &"sell", &"error", &"success", &"day", &"season", &"bell", &"shop_close",
 	&"save", &"win", &"lose", &"minigame_start", &"whoosh",
+	&"hit", &"miss", &"cue", &"pocket", &"stone", &"splash", &"sizzle",
 ]
 
 
@@ -156,6 +157,20 @@ static func render(id: StringName) -> PackedFloat32Array:
 			return mix([[0.0, tone(440.0, 440.0, 0.08, Wave.SQUARE, 0.14, 0.003, 4.0)], [0.09, tone(880.0, 880.0, 0.16, Wave.SQUARE, 0.14, 0.003, 4.0)]])
 		&"whoosh":
 			return noise(0.3, 0.3, 0.35, 3.0, 11, 0.35)
+		&"hit":
+			return mix([[0.0, tone(1400.0, 900.0, 0.06, Wave.SQUARE, 0.14, 0.002, 5.0)], [0.0, noise(0.05, 0.2, 0.6, 7.0, 21)]])
+		&"miss":
+			return tone(300.0, 180.0, 0.12, Wave.TRIANGLE, 0.2, 0.004, 4.0)
+		&"cue":
+			return mix([[0.0, noise(0.03, 0.2, 0.7, 8.0, 23)], [0.0, tone(520.0, 380.0, 0.08, Wave.SINE, 0.35, 0.001, 6.0, 0.4)]])
+		&"pocket":
+			return mix([[0.0, tone(240.0, 120.0, 0.14, Wave.SINE, 0.4, 0.003, 4.0)], [0.12, tone(660.0, 880.0, 0.18, Wave.TRIANGLE, 0.25, 0.004, 4.0, 0.3)]])
+		&"stone":
+			return mix([[0.0, noise(0.025, 0.18, 0.8, 8.0, 27)], [0.0, tone(760.0, 620.0, 0.05, Wave.SINE, 0.3, 0.001, 7.0, 0.5)]])
+		&"splash":
+			return mix([[0.0, noise(0.28, 0.22, 0.5, 4.0, 29, 0.2)], [0.03, tone(500.0, 260.0, 0.12, Wave.SINE, 0.18, 0.004, 5.0)]])
+		&"sizzle":
+			return noise(0.5, 0.22, 0.85, 2.5, 31, 0.15)
 	return PackedFloat32Array()
 
 

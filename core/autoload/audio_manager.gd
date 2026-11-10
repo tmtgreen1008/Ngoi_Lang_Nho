@@ -173,6 +173,7 @@ func _connect_events() -> void:
 	EventBus.game_saved.connect(func() -> void: play(&"save"))
 	EventBus.game_loaded.connect(func() -> void: play(&"save"))
 	EventBus.notice_requested.connect(_on_notice)
+	EventBus.sfx_requested.connect(func(id: StringName) -> void: play(id))
 
 
 func _on_day_changed(day: int) -> void:

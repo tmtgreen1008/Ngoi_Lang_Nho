@@ -113,6 +113,7 @@ func shoot() -> bool:
 		return false
 	shots_taken += 1
 	var is_pocketed: bool = is_in_sweet_zone(_power)
+	EventBus.sfx_requested.emit(&"pocket" if is_pocketed else &"cue")
 	if is_pocketed:
 		pocketed += 1
 	_feedback_label.text = "Vào lỗ!" if is_pocketed else "Trượt rồi (lực %d%%)." % int(_power * 100.0)
