@@ -39,6 +39,8 @@ func run() -> void:
 	check("cuốc đất", controller.use_tool_at(Vector2i(1, 1)))
 	controller.set_tool(1)
 	check("gieo hạt", controller.use_tool_at(Vector2i(1, 1)))
+	controller.set_tool(4)
+	check("tưới ô vừa gieo", controller.use_tool_at(Vector2i(1, 1)) and home.field.get_plot(Vector2i(1, 1)).watered)
 	check("hạt giống bị trừ", player.inventory.count_of(seed_item) == 9)
 	await shot("flow_home_planted.png")
 
@@ -79,7 +81,12 @@ func run() -> void:
 	var home2: Node = sm.current_map
 	var plot: Variant = home2.field.get_plot(Vector2i(1, 1))
 	check("cây vẫn còn sau chuyến đi", plot != null and plot.is_planted())
-	check("cây tự bù 4 ngày vắng mặt và đã chín", plot != null and plot.days_grown == 4 and plot.is_ripe())
+	check("đi vắng 4 ngày: chỉ ngày đã tưới được tính (lớn 1 ngày), chưa chín", plot != null and plot.days_grown == 1 and not plot.is_ripe() and not plot.watered)
+	for day: int in 3:
+		home2.controller.set_tool(4)
+		home2.controller.use_tool_at(Vector2i(1, 1))
+		tm.sleep_until_morning()
+	check("tưới và ngủ thêm 3 ngày ở nhà thì lúa chín", plot.days_grown == 4 and plot.is_ripe())
 	check("công cụ vườn gắn đúng kho Player", home2.controller.inventory == player.inventory)
 	await shot("flow_home_ripe.png")
 	home2.controller.set_tool(2)

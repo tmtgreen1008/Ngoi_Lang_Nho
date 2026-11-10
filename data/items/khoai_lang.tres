@@ -15,3 +15,4 @@ description = "Khoai lang tươi vừa thu hoạch."
 icon = SubResource("AtlasTexture_icon")
 category = 1
 base_price = 49
+energy = 8

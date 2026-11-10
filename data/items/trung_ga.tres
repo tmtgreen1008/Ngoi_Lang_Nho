@@ -15,3 +15,4 @@ description = "Trứng gà ta."
 icon = SubResource("AtlasTexture_04cbl")
 category = 2
 base_price = 12
+energy = 6

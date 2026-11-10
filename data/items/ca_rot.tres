@@ -15,3 +15,4 @@ description = "Cà rốt tươi vừa thu hoạch."
 icon = SubResource("AtlasTexture_icon")
 category = 1
 base_price = 37
+energy = 5

@@ -5,13 +5,19 @@ extends Node
 ## FarmField không biết kho đồ; controller này trừ hạt giống khi gieo và thêm
 ## nông sản khi thu hoạch. Phản hồi cho người chơi đi qua signal [signal feedback].
 
-enum Tool { HOE, SEED, HARVEST, FERTILIZE }
+enum Tool { HOE, SEED, HARVEST, FERTILIZE, WATER }
+
+## Tên hành động của từng công cụ, dùng để tra mức tốn sức (StaminaManager.COSTS).
+const TOOL_ACTIONS: Dictionary = {
+	Tool.HOE: &"hoe", Tool.SEED: &"seed", Tool.HARVEST: &"harvest", Tool.FERTILIZE: &"fertilize", Tool.WATER: &"water",
+}
 
 const TOOL_NAMES: Dictionary = {
 	Tool.HOE: "Cuốc",
 	Tool.SEED: "Gieo hạt",
 	Tool.HARVEST: "Thu hoạch",
 	Tool.FERTILIZE: "Bón phân",
+	Tool.WATER: "Tưới nước",
 }
 
 ## Công cụ đổi.
@@ -95,6 +101,8 @@ func use_tool_at(cell: Vector2i) -> bool:
 			return _use_harvest(cell)
 		Tool.FERTILIZE:
 			return _use_fertilize(cell)
+		Tool.WATER:
+			return _use_water(cell)
 	return false
 
 
@@ -137,6 +145,14 @@ func _use_harvest(cell: Vector2i) -> bool:
 	EventBus.item_picked.emit(product, amount)
 	_say("Thu hoạch được %d %s." % [amount, product.display_name])
 	return true
+
+
+func _use_water(cell: Vector2i) -> bool:
+	var reason: String = field.get_water_block_reason(cell)
+	if not reason.is_empty():
+		_say(reason)
+		return false
+	return field.water(cell)
 
 
 ## Vật phẩm phân bón (mỗi lần bón tốn 1).

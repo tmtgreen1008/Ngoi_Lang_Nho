@@ -27,13 +27,13 @@ khi chuyển cảnh.
 | `Esc` | Mở/đóng menu tạm dừng (Tiếp tục, Lưu game, Tải game); đóng cửa hàng |
 | `Tab` hoặc `I` | Mở/đóng túi đồ (xem chi tiết vật phẩm, kéo thả, sắp xếp) |
 | Chuột trái | Dùng công cụ lên ô đất (ở khu nhà) |
-| `1` `2` `3` `4` | Chọn công cụ: Cuốc, Gieo hạt, Thu hoạch, Bón phân (ở khu nhà) |
+| `1` `2` `3` `4` `5` | Chọn công cụ: Cuốc, Gieo hạt, Thu hoạch, Bón phân, Tưới nước (ở khu nhà) |
 
 ### Cách chơi thử nhanh
 
 1. **Ván mới**, bạn đứng ở khu nhà với 10 hạt giống lúa và 100 đ.
-2. Bấm `1`, cuốc một ô đất; bấm `2`, gieo hạt; đi đến giường (phía trên) bấm `E` để ngủ.
-3. Lúa chín sau 4 ngày; bấm `3` để thu hoạch.
+2. Bấm `1`, cuốc một ô đất; bấm `2`, gieo hạt; bấm `5`, tưới nước (cây chỉ lớn vào ngày được tưới); vào nhà, đến giường bấm `E` để ngủ (hồi đầy thể lực).
+3. Tưới mỗi ngày, lúa chín sau 4 ngày được tưới; bấm `3` để thu hoạch. Hết sức thì bấm `Tab` mở túi đồ và ăn gì đó.
 4. Ra cổng phía đông là tới **Làng**: bước vào cửa **Tiệm Tạp Hóa** (mở 6h-21h) để mua hạt giống, vào **Chợ Quê** (mở 5h-11h, ba sạp) để bán nông sản, xuống ngõ phía nam vào **Quán Net / Quán Bida** chơi mini-game kiếm tiền.
    **Khu Giải trí** (Quán Net, Quán Bida) để mua bán và chơi mini-game kiếm tiền.
 
@@ -63,6 +63,8 @@ khi chuyển cảnh.
 | Xếp lớp theo chiều sâu | Player là con của map hiện tại (SceneManager đưa Player về `world` trước khi dỡ map rồi vào map mới), map và view vườn bật y-sort: đi sau nhà, chuồng, cây thì bị che, đi trước thì đè lên. Gốc toạ độ của đồ vật và cây ở chân nên so sánh với chân Player |
 | Bản đồ | Sân nhà (viền rặng cây, đường đất bo góc, biển chỉ đường), trong nhà (giường), Làng (xem dòng dưới); chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
 | Túi đồ | Màn hình túi đồ (`BagScreen`, phím `Tab` hoặc `I`): lưới ô dùng lại `InventoryUI` (kéo/thả đổi chỗ), bấm một ô để xem chi tiết (tên, nhóm, số đang có, giá gốc; hạt giống ghi mùa gieo, số ngày lớn, sản lượng), nút Sắp xếp gộp chồng và xếp theo nhóm rồi tên. Số ô theo nâng cấp túi. Không mở được khi đang nói chuyện, mua bán, chơi mini-game |
+| Thể lực | `StaminaManager` (autoload): tối đa 100, thanh thể lực trên HUD. Việc đồng áng ở sân nhà tốn sức theo từng ô (cuốc 3; gieo, tưới, thu hoạch, bón phân 1), hết sức thì không làm được. Ngủ giường hồi đầy; thức quá nửa đêm thì sáng mai chỉ hồi tới 50. Ăn đồ trong túi (nút Ăn ở màn hình túi đồ) để hồi sức: món nấu hồi bằng 1/3 giá món, đồ sống hồi ít |
+| Tưới cây | Công cụ số 5. Ở sân nhà cây chỉ lớn thêm vào ngày ô đó được tưới (`FarmField.needs_water`); sang ngày đất khô lại, những ngày đi vắng không ai tưới nên cây đứng yên. Ô đã tưới vẽ đất ướt |
 | Làng | Một map lớn 2304x1296 có camera cuộn theo Player (`Camera2D` trên Player, giới hạn theo `MapBase.world_size`): đường làng, Tiệm Tạp Hóa, Quán Net và Quán Bida là nhà có mặt tiền, bước vào cửa để vào trong (`MapBase.add_building`, bên trong là `InteriorMap`); Chợ Quê là sân chợ có rào và cổng với ba sạp; thêm nhà dân, ao làng, chòi nghỉ, cây cối. Cả ba cổng của sân nhà đều dẫn ra làng |
 | Sân nhà gọn | Vườn gốc 8x5 ô; chuồng gà, chuồng lợn và máng trâu nằm trong một sân rào tre có cổng (`MapBase.add_fence` cho cạnh ngang, `add_fence_side` cho cạnh dọc), ao vịt rào ba mặt (cho ăn / thu trứng từ ngoài rào); bé Tí và chó Vàng chơi ở bãi cỏ phía nam vườn |
 | Chăn nuôi | Chuồng gà (đẻ trứng mỗi ngày) và chuồng lợn (nuôi 5 ngày rồi xuất chuồng); mua con giống ở Tạp Hóa, thả vào chuồng, cho ăn (gà ăn cám gà mua ở Tạp Hóa, lợn ăn lúa), thu sản phẩm bằng phím `E`; chuồng được nhớ khi đổi map |
@@ -197,6 +199,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_terrain` | Sheet nền đất 48x48, lát nền bốn map, đổi toạ độ chuột sang ô vườn |
 | `test_inventory_ui` | Giao diện kho, kéo/thả giữa hai kho |
 | `test_bag` | Sắp xếp kho (gộp chồng, thứ tự nhóm, không mất đồ), Tab/I/Esc mở đóng túi, chọn ô xem chi tiết, nút Sắp xếp, số ô theo nâng cấp, không mở khi đang bận, chuột không cuốc đất khi túi mở |
+| `test_stamina_water` | Thể lực (tốn, hồi, ngủ giường / thức khuya, lưu/nạp), cây chỉ lớn vào ngày được tưới (kể cả khi đi vắng), công cụ tốn sức và bị chặn khi kiệt sức, cụm nhiều ô chỉ làm số ô đủ sức, ăn đồ trong túi, thanh thể lực trên HUD |
 | `test_shop_ui` | Giao diện cửa hàng dùng chung, nút mua/bán, khoá khi đóng cửa |
 | `test_game_flow` | Luồng chơi trọn vẹn qua các map, vườn được nhớ và tự bù ngày |
 | `test_livestock` | Dữ liệu loài, chuồng (thả, ăn, đếm ngày, thu, lưu/nạp), thứ tự ưu tiên khi bấm E, túi đầy/chuồng đầy, chuồng ở khu nhà được nhớ khi đổi map |

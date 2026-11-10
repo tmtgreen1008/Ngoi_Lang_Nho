@@ -2,6 +2,7 @@
 # Sinh dữ liệu món ăn (data/items/<id>.tres) và công thức nấu (data/recipes/<id>.tres) từ bảng dưới đây. Chạy lại được.
 # Giá món (base_price, cô Ba thu mua x0,7) cao hơn tổng giá bán nguyên liệu sống khoảng 15-30% để bù công nấu;
 # tests/test_cooking.gd kiểm tra khoảng này và việc không có chênh lệch giá.
+# Thể lực hồi khi ăn một món (energy) = giá / 3, tối đa 100: ăn món đắt hồi nhiều sức hơn nhưng mất khoản tiền bán.
 # Cột: id | tên | sheet icon (a/b) | ô icon (0-11) | giá | nguyên liệu (id:số lượng, cách nhau dấu phẩy) | số phút nấu
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -35,6 +36,7 @@ description = "Món nấu sẵn, bán cho cô Ba ở chợ được giá hơn ng
 icon = SubResource("AtlasTexture_icon")
 category = 2
 base_price = ${price}
+energy = $(( price / 3 > 100 ? 100 : price / 3 ))
 TRES
 	ids=""; amounts=""
 	IFS=',' read -ra parts <<< "$ingredients"

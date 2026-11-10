@@ -44,6 +44,8 @@ func run() -> void:
 	controller.use_tool_at(Vector2i(1, 1))
 	economy.spend(20)
 	for i: int in 2:
+		controller.set_tool(4)  # tưới mỗi ngày thì cây mới lớn
+		controller.use_tool_at(Vector2i(1, 1))
 		tm.sleep_until_morning()
 	await wait(0.2)
 	check("tự lưu khi sang ngày mới", sv.has_save(&"autosave") and int(sv.get_slot_info(&"autosave").get("day", 0)) == 3)

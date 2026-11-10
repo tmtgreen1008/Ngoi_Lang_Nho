@@ -15,3 +15,4 @@ description = "Gói mì ăn liền, no nhanh."
 icon = SubResource("AtlasTexture_2oeac")
 category = 2
 base_price = 8
+energy = 10

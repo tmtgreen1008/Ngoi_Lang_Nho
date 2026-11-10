@@ -35,6 +35,7 @@ const TOOL_ICONS: Dictionary = {
 	FarmToolController.Tool.SEED: ["res://assets/art/icons/seed_icons.png", Rect2(0, 0, 32, 32)],
 	FarmToolController.Tool.HARVEST: ["res://assets/art/icons/tools_basic.png", Rect2(128, 128, 64, 64)],
 	FarmToolController.Tool.FERTILIZE: ["res://assets/art/icons/farm_goods_icons.png", Rect2(0, 64, 32, 32)],
+	FarmToolController.Tool.WATER: ["res://assets/art/icons/tools_basic.png", Rect2(128, 0, 64, 64)],
 }
 
 var field: FarmField
@@ -103,6 +104,7 @@ func _build_garden() -> void:
 	view.position = Vector2(FARM_CELL * TerrainTiles.TILE_SIZE)
 	add_child(view)
 	field.field_area = _garden_area()  # theo cấp nâng cấp "Mở rộng vườn"
+	field.needs_water = true  # luật của game: cây chỉ lớn vào ngày được tưới
 	view.setup(field)
 	EventBus.upgrade_purchased.connect(_on_upgrade_purchased)
 
@@ -238,6 +240,34 @@ func update_tool_preview(world_pos: Vector2) -> void:
 	view.set_preview(cells)
 
 
+## Dùng công cụ đang cầm tại [param target] (toạ độ thế giới) lên các ô theo cấp "Dụng cụ tốt hơn". Mỗi ô làm được
+## tốn thể lực (StaminaManager.COSTS); không đủ sức cho cả cụm thì chỉ làm số ô còn đủ sức, hết sức thì báo mệt.
+## Trả về số ô đã làm.
+func use_tool_at_world(target: Vector2) -> int:
+	var cost: int = StaminaManager.get_cost(FarmToolController.TOOL_ACTIONS[controller.current_tool])
+	var pattern: Array[Vector2i] = FarmToolController.pattern_for(UpgradeManager.get_value(UpgradeManager.TOOL))
+	if cost > 0:
+		var affordable: int = StaminaManager.stamina / cost
+		if affordable <= 0:
+			_show_feedback("Bạn mệt quá rồi. Ăn gì đó (Tab mở túi đồ) hoặc về giường ngủ.")
+			EventBus.sfx_requested.emit(&"error")
+			return 0
+		if affordable < pattern.size():
+			pattern = pattern.slice(0, affordable)
+	var done: int = controller.use_tool_area_at(view.world_to_cell(target), pattern)
+	if done <= 0:
+		return 0
+	StaminaManager.spend(cost * done)
+	# Cuốc hoặc tưới được thì Player vung công cụ về phía ô vừa làm.
+	var player: Node = get_tree().get_first_node_in_group("player")
+	if player is Player:
+		if controller.current_tool == FarmToolController.Tool.HOE:
+			(player as Player).play_action(&"hoe", target)
+		elif controller.current_tool == FarmToolController.Tool.WATER:
+			(player as Player).play_action(&"water", target)
+	return done
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	# Đang mở túi đồ, hộp thoại, cửa hàng... (Player bị khoá) thì chuột không dùng công cụ lên vườn.
 	var busy_player: Node = get_tree().get_first_node_in_group("player")
@@ -248,14 +278,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_show_feedback("")
-		var target: Vector2 = view.get_global_mouse_position()
-		var pattern: Array[Vector2i] = FarmToolController.pattern_for(UpgradeManager.get_value(UpgradeManager.TOOL))
-		var used: bool = controller.use_tool_area_at(view.world_to_cell(target), pattern) > 0
-		# Cuốc được đất thì Player vung cuốc về phía ô vừa cuốc.
-		if used and controller.current_tool == FarmToolController.Tool.HOE:
-			var player: Node = get_tree().get_first_node_in_group("player")
-			if player is Player:
-				(player as Player).play_action(&"hoe", target)
+		use_tool_at_world(view.get_global_mouse_position())
 	elif event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
 			KEY_1:
@@ -266,6 +289,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				controller.set_tool(FarmToolController.Tool.HARVEST)
 			KEY_4:
 				controller.set_tool(FarmToolController.Tool.FERTILIZE)
+			KEY_5:
+				controller.set_tool(FarmToolController.Tool.WATER)
 
 
 ## Nền khu nhà: cỏ rải hoa, cùng con đường đất nối cửa nhà, vườn và cổng phía đông.
@@ -328,7 +353,7 @@ func _build_hud() -> void:
 		_tool_buttons[tool] = button
 		row.add_child(button)
 	var hint := Label.new()
-	hint.text = "Chuột trái để dùng  ·  Tab: túi đồ"
+	hint.text = "Tab: túi đồ"
 	hint.add_theme_font_size_override("font_size", 14)
 	hint.add_theme_color_override("font_color", UiTheme.INK_SOFT)
 	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER

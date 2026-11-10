@@ -15,3 +15,4 @@ description = "Cà chua chín đỏ."
 icon = SubResource("AtlasTexture_m081m")
 category = 1
 base_price = 40
+energy = 5

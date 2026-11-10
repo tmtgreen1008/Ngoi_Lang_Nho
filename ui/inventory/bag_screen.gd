@@ -1,7 +1,7 @@
 class_name BagScreen
 extends CanvasLayer
 ## Màn hình túi đồ của người chơi: lưới ô kho (kéo/thả để sắp xếp) bên trái, chi tiết vật phẩm đang chọn bên phải,
-## nút "Sắp xếp" gộp và xếp lại đồ. Mở/đóng bằng phím Tab hoặc I (hành động "inventory"); Esc cũng đóng.
+## nút "Ăn" cho đồ ăn được (hồi thể lực), nút "Sắp xếp" gộp và xếp lại đồ. Mở/đóng bằng phím Tab hoặc I (hành động "inventory"); Esc cũng đóng.
 ##
 ## Dùng lại InventoryUI (lưới ô). Khi mở thì phát dialogue_opened(&"bag") để Player đứng yên và menu tạm dừng nhường
 ## Esc, giống các bảng khác. Không mở được khi đang nói chuyện, mua bán, chơi mini-game, chuyển map hay ở màn hình chính.
@@ -22,6 +22,7 @@ var _icon: TextureRect
 var _name_label: Label
 var _info_label: Label
 var _description_label: Label
+var _eat_button: Button
 var _open: bool = false
 var _busy: bool = false  # đang có hộp thoại / cửa hàng / mini-game
 
@@ -73,6 +74,12 @@ func _ready() -> void:
 	_description_label.custom_minimum_size = Vector2(268, 90)
 	_description_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(_description_label)
+	_eat_button = Button.new()
+	_eat_button.text = "Ăn"
+	_eat_button.focus_mode = Control.FOCUS_NONE
+	_eat_button.pressed.connect(eat_selected)
+	_eat_button.hide()
+	box.add_child(_eat_button)
 	var sort_button := Button.new()
 	sort_button.text = "Sắp xếp"
 	sort_button.focus_mode = Control.FOCUS_NONE
@@ -142,6 +149,26 @@ func select(index: int) -> void:
 	_refresh_detail()
 
 
+## Ăn một cái của vật phẩm đang chọn để hồi thể lực. Trả về true nếu đã ăn.
+func eat_selected() -> bool:
+	if _inventory == null or selected_index < 0 or selected_index >= _inventory.slots.size():
+		return false
+	var slot: InventorySlot = _inventory.slots[selected_index]
+	if slot.is_empty() or slot.item.energy <= 0:
+		return false
+	var item: ItemData = slot.item
+	if StaminaManager.is_full():
+		EventBus.notice_requested.emit("Bạn đang khỏe, chưa cần ăn.", &"info")
+		return false
+	_inventory.remove_item(item, 1)
+	var restored: int = StaminaManager.restore(item.energy)
+	EventBus.item_used.emit(item, 1)
+	EventBus.sfx_requested.emit(&"pickup")
+	EventBus.notice_requested.emit("Bạn ăn %s, hồi %d thể lực." % [item.display_name.to_lower(), restored], &"success")
+	_refresh_detail()
+	return true
+
+
 ## Gộp các chồng cùng loại và xếp lại theo nhóm rồi theo tên.
 func sort_items() -> void:
 	if _inventory == null:
@@ -176,6 +203,7 @@ func _refresh_detail() -> void:
 		_name_label.text = "Chọn một vật phẩm"
 		_info_label.text = "Bấm vào ô để xem chi tiết. Kéo thả để đổi chỗ."
 		_description_label.text = ""
+		_eat_button.hide()
 		return
 	var item: ItemData = slot.item
 	_icon.texture = item.icon
@@ -188,7 +216,12 @@ func _refresh_detail() -> void:
 		for season: int in crop.allowed_seasons:
 			seasons.append(String(TimeManager.SEASON_NAMES.get(season, "?")))
 		text += "\nGieo vào mùa: %s. Lớn trong %d ngày, thu %d nông sản." % [", ".join(seasons) if not seasons.is_empty() else "mùa nào cũng được", crop.grow_days, crop.harvest_amount]
+	if item.energy > 0:
+		text += "
+Ăn được: hồi %d thể lực." % item.energy
 	_description_label.text = text
+	_eat_button.visible = item.energy > 0
+	_eat_button.text = "Ăn (+%d sức)" % item.energy
 
 
 ## Đăng ký hành động "inventory" (Tab, I) nếu dự án chưa khai báo.

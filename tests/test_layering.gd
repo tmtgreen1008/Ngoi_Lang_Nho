@@ -29,6 +29,7 @@ func run() -> void:
 	tm.pause()
 	var player: Node = main.player
 	var home: Node = sm.current_map
+	home.field.needs_water = false  # bài này kiểm tra xếp lớp; tắt luật tưới để cây lớn theo ngày cho gọn
 
 	# --- cấu trúc ---
 	check("map bật xếp lớp theo y", home.y_sort_enabled)

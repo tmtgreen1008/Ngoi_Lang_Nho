@@ -70,7 +70,7 @@ func run() -> void:
 	var lua: ItemData = db.get_item(&"lua")
 	var a := Vector2i(1, 1)
 	var b := Vector2i(2, 1)
-	check("công cụ thứ tư là Bón phân", controller.TOOL_NAMES.size() == 4 and controller.TOOL_NAMES[3] == "Bón phân")
+	check("công cụ thứ tư là Bón phân, thứ năm là Tưới nước", controller.TOOL_NAMES.size() == 5 and controller.TOOL_NAMES[3] == "Bón phân" and controller.TOOL_NAMES[4] == "Tưới nước")
 	check("ô trống không bón được", field.get_fertilize_block_reason(a) == "Chỉ bón phân cho ô đang có cây." and not field.fertilize(a))
 	for cell: Vector2i in [a, b]:
 		field.till(cell)
@@ -127,7 +127,7 @@ func run() -> void:
 			apart = apart and spots[i].distance_to(spots[j]) > 100.0
 	check("bốn chỗ nuôi nằm trong vùng chơi và không chồng lên nhau", apart)
 	check("nâng cấp chuồng gà không ảnh hưởng ao vịt", home.duck_pond.upgrade_id == &"" and home.buffalo_post.upgrade_id == &"")
-	check("thanh công cụ có ô Bón phân, phím 4 chọn nó", home._tool_buttons.size() == 4 and home._tool_buttons[3].icon != null)
+	check("thanh công cụ có ô Bón phân, phím 4 chọn nó", home._tool_buttons.size() == 5 and home._tool_buttons[3].icon != null)
 	var key := InputEventKey.new()
 	key.keycode = KEY_4
 	key.pressed = true

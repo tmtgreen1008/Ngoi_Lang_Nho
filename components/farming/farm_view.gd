@@ -17,6 +17,9 @@ const FARMLAND_FURROWS := Vector2i(0, 0)
 const FARMLAND_SEEDED := Vector2i(0, 1)
 ## Luống ướt, sẫm màu: ô có cây đã bón phân.
 const FARMLAND_FERTILIZED := Vector2i(1, 0)
+## Đất vừa tưới (lấm tấm nước): luống thường và đất có hốc hạt.
+const FARMLAND_WET := Vector2i(3, 0)
+const FARMLAND_WET_SEEDED := Vector2i(1, 1)
 ## Màu khung xem trước ô sẽ bị công cụ tác động.
 const PREVIEW_FILL := Color(1.0, 0.95, 0.6, 0.22)
 const PREVIEW_BORDER := Color(1.0, 0.92, 0.5, 0.85)
@@ -117,6 +120,9 @@ func _refresh_cell(cell: Vector2i) -> void:
 	var plot: FarmPlot = field.get_plot(cell)
 	if plot == null or not plot.is_tilled:
 		_ground.set_cell(cell, SOURCE_TERRAIN, TerrainTiles.atlas_coords(TerrainTiles.Tile.GRASS))
+	elif plot.watered:
+		var just_seeded: bool = plot.is_planted() and plot.days_grown == 0
+		_ground.set_cell(cell, SOURCE_FARMLAND, FARMLAND_WET_SEEDED if just_seeded else FARMLAND_WET)
 	elif plot.fertilized:
 		_ground.set_cell(cell, SOURCE_FARMLAND, FARMLAND_FERTILIZED)
 	elif plot.is_planted() and plot.days_grown == 0:
@@ -180,7 +186,7 @@ static func _build_tile_set() -> TileSet:
 	var farmland := TileSetAtlasSource.new()
 	farmland.texture = load(FARMLAND_PATH)
 	farmland.texture_region_size = Vector2i(TILE_SIZE, TILE_SIZE)
-	for coords: Vector2i in [FARMLAND_FURROWS, FARMLAND_SEEDED, FARMLAND_FERTILIZED]:
+	for coords: Vector2i in [FARMLAND_FURROWS, FARMLAND_SEEDED, FARMLAND_FERTILIZED, FARMLAND_WET, FARMLAND_WET_SEEDED]:
 		farmland.create_tile(coords)
 	tile_set.add_source(farmland, SOURCE_FARMLAND)
 	return tile_set

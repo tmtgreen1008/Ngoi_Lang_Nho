@@ -10,6 +10,8 @@ var crop: CropItemData = null
 var days_grown: int = 0
 ## Đã bón phân cho cây đang trồng (thu hoạch được thêm nông sản); hết khi cây bị nhổ.
 var fertilized: bool = false
+## Hôm nay đã được tưới (cây chỉ lớn thêm vào ngày được tưới, nếu vườn bật needs_water); sang ngày mới thì khô lại.
+var watered: bool = false
 
 
 func is_planted() -> bool:

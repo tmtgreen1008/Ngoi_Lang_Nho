@@ -15,3 +15,4 @@ description = "Món nấu sẵn, bán cho cô Ba ở chợ được giá hơn ng
 icon = SubResource("AtlasTexture_icon")
 category = 2
 base_price = 39
+energy = 13

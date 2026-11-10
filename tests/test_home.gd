@@ -129,10 +129,10 @@ func run() -> void:
 	# --- thanh công cụ có icon, hoạt ảnh cuốc đất ---
 	var controller: Node = home.controller
 	var tool_buttons: Dictionary = home._tool_buttons
-	var all_icons: bool = tool_buttons.size() == 4
+	var all_icons: bool = tool_buttons.size() == 5
 	for tool: int in tool_buttons:
 		all_icons = all_icons and tool_buttons[tool].icon != null and tool_buttons[tool].text.is_empty() and tool_buttons[tool].tooltip_text.contains(controller.TOOL_NAMES[tool])
-	check("thanh công cụ: 4 ô có icon, tên nằm ở tooltip", all_icons)
+	check("thanh công cụ: 5 ô có icon, tên nằm ở tooltip", all_icons)
 	controller.set_tool(2)
 	check("đổi công cụ: ô Thu hoạch được chọn, ô Cuốc nhả ra", tool_buttons[2].button_pressed and not tool_buttons[0].button_pressed)
 	check("ô đang chọn dùng khung viền vàng khác khung thường", tool_buttons[2].get_theme_stylebox("pressed").texture.region != tool_buttons[2].get_theme_stylebox("normal").texture.region)
@@ -199,7 +199,7 @@ func run() -> void:
 	var home2: Node = sm.current_map
 	check("về đúng chỗ ngay dưới cửa nhà", player.position.distance_to(home2.get_spawn_position(&"from_house")) < 5)
 	var plot: Variant = home2.field.get_plot(Vector2i(1, 1))
-	check("ngủ trong nhà: cây ngoài vườn đã lớn đủ 4 ngày và chín", plot != null and plot.is_planted() and plot.days_grown == 4 and plot.is_ripe())
+	check("ngủ 4 đêm mà không tưới: cây vẫn còn nhưng không lớn thêm (cây chỉ lớn vào ngày được tưới)", plot != null and plot.is_planted() and plot.days_grown == 0 and not plot.is_ripe())
 
 	# --- quay về từ các nơi khác: đứng ngay trong cổng, trong vùng chơi ---
 	travel("grocery_store")

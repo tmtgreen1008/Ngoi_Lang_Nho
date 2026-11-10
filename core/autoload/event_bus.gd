@@ -89,6 +89,10 @@ signal cooking_requested(cook: Node)
 ## Player đặt chân xuống một bước (khung hình chân chạm đất); AudioManager phát tiếng bước chân.
 signal player_stepped
 
+# --- Thể lực ---
+## Thể lực của người chơi đổi (StaminaManager phát; HUD nghe).
+signal stamina_changed(current: int, maximum: int)
+
 # --- Âm thanh ---
 ## Yêu cầu phát một hiệu ứng âm thanh theo id (xem SfxSynth.SOUND_IDS); dùng cho âm không gắn với sự kiện game
 ## sẵn có, vd. tiếng trong mini-game. AudioManager nghe.

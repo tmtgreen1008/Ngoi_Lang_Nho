@@ -17,6 +17,9 @@ var _toast_panel: PanelContainer
 var _prompt_panel: PanelContainer
 var _toast_timer: Timer
 var _shop_open: bool = false
+var _stamina_label: Label
+var _stamina_bar: ProgressBar
+var _stamina_fill: StyleBoxFlat
 
 
 func _ready() -> void:
@@ -37,6 +40,27 @@ func _ready() -> void:
 	var left_row := _make_row(left)
 	_season_icon = _make_icon(left_row, UiTheme.HudIcon.SPRING)
 	_time_label = _make_label(left_row, 18)
+
+	# Trái trên, dưới ngày giờ: thanh thể lực.
+	var stamina_panel := _make_panel(root)
+	stamina_panel.position = Vector2(0, 62)
+	var stamina_row := _make_row(stamina_panel)
+	_stamina_label = _make_label(stamina_row, 15)
+	_stamina_bar = ProgressBar.new()
+	_stamina_bar.custom_minimum_size = Vector2(150, 14)
+	_stamina_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_stamina_bar.show_percentage = false
+	_stamina_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var bar_back := StyleBoxFlat.new()
+	bar_back.bg_color = Color("#4E3320")
+	bar_back.set_corner_radius_all(3)
+	_stamina_bar.add_theme_stylebox_override("background", bar_back)
+	_stamina_fill = StyleBoxFlat.new()
+	_stamina_fill.set_corner_radius_all(3)
+	_stamina_bar.add_theme_stylebox_override("fill", _stamina_fill)
+	stamina_row.add_child(_stamina_bar)
+	EventBus.stamina_changed.connect(_update_stamina)
+	_update_stamina(StaminaManager.stamina, StaminaManager.MAX_STAMINA)
 
 	# Phải trên: tiền + đồng xu.
 	var right := _make_panel(root)
@@ -154,6 +178,15 @@ func _make_icon(parent: Node, icon: UiTheme.HudIcon) -> TextureRect:
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(rect)
 	return rect
+
+
+## Thanh thể lực: xanh khi còn nhiều, vàng khi dưới một nửa, đỏ khi sắp kiệt.
+func _update_stamina(current: int, maximum: int) -> void:
+	_stamina_label.text = "Sức %d/%d" % [current, maximum]
+	_stamina_bar.max_value = maximum
+	_stamina_bar.value = current
+	var ratio: float = float(current) / maxf(maximum, 1.0)
+	_stamina_fill.bg_color = Color("#5A9A3C") if ratio > 0.5 else (Color("#D9A62E") if ratio > 0.2 else Color("#B5472F"))
 
 
 func _update_time() -> void:

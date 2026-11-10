@@ -57,8 +57,9 @@ func _build() -> void:
 
 
 func _on_bed_used(_interactor: Node) -> void:
+	StaminaManager.go_to_bed()  # ngủ giường thì sáng mai đầy sức
 	TimeManager.sleep_until_morning()
-	EventBus.notice_requested.emit("Bạn ngủ một giấc ngon. Sang ngày mới!", &"success")
+	EventBus.notice_requested.emit("Bạn ngủ một giấc ngon, thể lực đã hồi đầy. Sang ngày mới!", &"success")
 
 
 func _draw() -> void:

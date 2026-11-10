@@ -99,3 +99,10 @@ Các phần dưới đây được thêm sau và có test riêng giữ cân bằ
 | Ô ăn quan | phí 10 đ, 60 phút, thắng 30 đ (lãi 20 đ/giờ), hoà hoàn phí | `test_o_an_quan` |
 
 Quy tắc chung vẫn giữ: không có cặp "mua ở sạp này, bán ở sạp kia" hay "mua nguyên liệu, nấu rồi bán" nào có lời, vì giá thu mua cao nhất (x0,7, món ăn thêm tối đa 35%) luôn thấp hơn giá bán ra thấp nhất (x0,9 chỉ áp cho hạt giống, thứ không sạp nào thu mua).
+
+## Thể lực và tưới cây (giới hạn công việc mỗi ngày)
+
+- Thể lực tối đa 100 mỗi ngày (ngủ giường hồi đầy). Mỗi ô: cuốc 3; gieo, tưới, thu hoạch, bón phân 1.
+- Cây chỉ lớn vào ngày được tưới, nên một vườn 40 ô đang trồng tốn 40 sức mỗi ngày chỉ để tưới; ngày vừa thu hoạch vừa gieo lại cả vườn tốn khoảng 120 sức, tức phải ăn thêm.
+- Ăn hồi sức: món nấu hồi bằng 1/3 giá món (cơm trắng 17, bánh chưng 97), đồ sống hồi 5-15. Ăn một món nghĩa là bỏ khoản tiền bán món đó, nên thể lực có giá: khoảng 2 đ cho mỗi điểm sức khi ăn món nấu.
+- Các bảng lãi/ô/ngày ở trên giả định ô nào cũng được tưới đủ ngày; chưa có mô hình tính lãi sau khi trừ chi phí thể lực. Phần này cần chơi thử để chỉnh (mức tốn sức nằm ở `StaminaManager.COSTS`, năng lượng món ăn ở `tools/make_food_data.sh`).

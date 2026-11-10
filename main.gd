@@ -75,6 +75,7 @@ func start_new_game() -> void:
 	WorldStateManager.clear()
 	RelationshipManager.clear()
 	UpgradeManager.clear()  # mọi nâng cấp về cấp 0 (túi đồ về 16 ô)
+	StaminaManager.reset()
 	player.inventory.load_save_data([])
 	_give_starting_items()
 	_begin_playing()

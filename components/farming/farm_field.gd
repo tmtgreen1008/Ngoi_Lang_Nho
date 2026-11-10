@@ -19,6 +19,10 @@ signal area_changed(area: Rect2i)
 ## Khoá để WorldStateManager nhớ vườn này khi người chơi rời map (duy nhất trong map).
 @export var persistent_key: StringName = &"farm_field"
 
+## Cây có cần tưới mới lớn không. Tắt (mặc định) thì cây lớn theo ngày như cũ; map nhà bật lên: mỗi ngày cây chỉ
+## lớn thêm nếu hôm đó ô được tưới, và những ngày người chơi đi vắng không ai tưới nên cây đứng yên.
+@export var needs_water: bool = false
+
 var _plots: Dictionary = {}  # Vector2i -> FarmPlot
 var _last_day: int = 1
 
@@ -91,6 +95,34 @@ func plant(cell: Vector2i, crop: CropItemData) -> bool:
 	return true
 
 
+## Lý do không tưới được ô [param cell]; chuỗi rỗng nghĩa là tưới được.
+func get_water_block_reason(cell: Vector2i) -> String:
+	var plot: FarmPlot = get_plot(cell)
+	if plot == null or not plot.is_tilled:
+		return "Chỉ tưới được đất đã cuốc."
+	if plot.watered:
+		return "Ô này hôm nay đã tưới rồi."
+	return ""
+
+
+## Tưới ô [param cell] cho hôm nay. Trả về false nếu không tưới được.
+func water(cell: Vector2i) -> bool:
+	if not get_water_block_reason(cell).is_empty():
+		return false
+	_plots[cell].watered = true
+	plot_changed.emit(cell)
+	return true
+
+
+## Tưới mọi ô đã cuốc (dùng cho kiểm thử và mưa sau này). Trả về số ô vừa tưới.
+func water_all() -> int:
+	var count: int = 0
+	for cell: Vector2i in _plots:
+		if water(cell):
+			count += 1
+	return count
+
+
 ## Số nông sản thu thêm khi cây đã được bón phân.
 const FERTILIZER_BONUS: int = 1
 
@@ -146,6 +178,7 @@ func get_save_data() -> Dictionary:
 			"crop": String(plot.crop.id) if plot.crop != null else "",
 			"days": plot.days_grown,
 			"fert": plot.fertilized,
+			"wet": plot.watered,
 		})
 	return {"last_day": _last_day, "plots": entries}
 
@@ -163,6 +196,7 @@ func load_save_data(data: Dictionary) -> void:
 			plot.crop = ItemDatabase.get_item(crop_id) as CropItemData
 			plot.days_grown = int(entry.get("days", 0)) if plot.crop != null else 0
 			plot.fertilized = plot.crop != null and bool(entry.get("fert", false))
+		plot.watered = bool(entry.get("wet", false))
 		_plots[Vector2i(int(entry["x"]), int(entry["y"]))] = plot
 	# Trong lúc vắng mặt (đổi map, tắt game) thời gian vẫn trôi: bù lại số ngày đã qua.
 	_wither_out_of_season(TimeManager.season)
@@ -191,8 +225,14 @@ func _on_day_changed(day: int) -> void:
 		return
 	for cell: Vector2i in _plots:
 		var plot: FarmPlot = _plots[cell]
-		if plot.is_planted():
-			plot.days_grown += elapsed
+		var grown: int = elapsed
+		if needs_water:
+			grown = 1 if plot.watered else 0  # chỉ ngày đầu tiên (đã tưới) được tính; các ngày vắng mặt không ai tưới
+		var was_watered: bool = plot.watered
+		plot.watered = false
+		if plot.is_planted() and grown > 0:
+			plot.days_grown += grown
+		if plot.is_planted() or was_watered:
 			plot_changed.emit(cell)
 
 

@@ -21,6 +21,8 @@ enum Category { SEED, CROP, FOOD, TOOL, MATERIAL, MISC }
 @export var is_stackable: bool = true
 ## Số lượng tối đa trong một ô. Bị bỏ qua (coi là 1) khi is_stackable = false.
 @export_range(1, 999, 1) var max_stack_size: int = 99
+## Thể lực hồi được khi ăn một cái (0 = không ăn được). Xem StaminaManager và BagScreen.
+@export_range(0, 100, 1) var energy: int = 0
 
 
 ## Số lượng tối đa thực tế trong một ô kho.
