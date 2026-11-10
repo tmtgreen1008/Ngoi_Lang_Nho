@@ -239,6 +239,10 @@ func update_tool_preview(world_pos: Vector2) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Đang mở túi đồ, hộp thoại, cửa hàng... (Player bị khoá) thì chuột không dùng công cụ lên vườn.
+	var busy_player: Node = get_tree().get_first_node_in_group("player")
+	if event is InputEventMouseButton and busy_player != null and bool(busy_player.get("movement_locked")):
+		return
 	if event is InputEventMouseMotion:
 		update_tool_preview(get_canvas_transform().affine_inverse() * (event as InputEventMouseMotion).position)
 		return
@@ -324,7 +328,7 @@ func _build_hud() -> void:
 		_tool_buttons[tool] = button
 		row.add_child(button)
 	var hint := Label.new()
-	hint.text = "Chuột trái để dùng"
+	hint.text = "Chuột trái để dùng  ·  Tab: túi đồ"
 	hint.add_theme_font_size_override("font_size", 14)
 	hint.add_theme_color_override("font_color", UiTheme.INK_SOFT)
 	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER

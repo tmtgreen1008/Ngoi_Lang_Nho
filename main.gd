@@ -19,6 +19,7 @@ var pause_menu: PauseMenu
 var dialogue_box: DialogueBox
 var upgrade_ui: UpgradeUI
 var cooking_ui: CookingUI
+var bag_screen: BagScreen
 
 
 func _ready() -> void:
@@ -42,6 +43,8 @@ func _ready() -> void:
 	add_child(upgrade_ui)
 	cooking_ui = CookingUI.new()
 	add_child(cooking_ui)
+	bag_screen = BagScreen.new()
+	add_child(bag_screen)
 	var ui_layer := CanvasLayer.new()
 	ui_layer.layer = 20
 	add_child(ui_layer)

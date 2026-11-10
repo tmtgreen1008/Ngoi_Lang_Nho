@@ -61,6 +61,7 @@ run_test test_home
 run_test test_village
 run_test test_art
 run_test test_inventory_ui
+run_test test_bag
 run_test test_shop_ui
 run_test test_game_flow
 run_test test_livestock

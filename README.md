@@ -25,6 +25,7 @@ khi chuyển cảnh.
 | `W A S D` hoặc mũi tên | Đi lại |
 | `E` | Tương tác (nói chuyện, ngủ ở giường, nấu ăn ở bếp, giặt đồ, cho vật nuôi ăn, vuốt ve chó, chơi mini-game) |
 | `Esc` | Mở/đóng menu tạm dừng (Tiếp tục, Lưu game, Tải game); đóng cửa hàng |
+| `Tab` hoặc `I` | Mở/đóng túi đồ (xem chi tiết vật phẩm, kéo thả, sắp xếp) |
 | Chuột trái | Dùng công cụ lên ô đất (ở khu nhà) |
 | `1` `2` `3` `4` | Chọn công cụ: Cuốc, Gieo hạt, Thu hoạch, Bón phân (ở khu nhà) |
 
@@ -61,6 +62,7 @@ khi chuyển cảnh.
 | Nền đất theo mùa | Bốn sheet nền (Xuân, Hạ, Thu, Đông) cùng bố cục 8 ô; cỏ, đường, đất cuốc, nước đổi theo mùa của `TimeManager`, ô trong nhà giữ nguyên. Map vào đúng mùa đang chơi và vẽ lại khi sang mùa mới; vườn đổi tileset. Cây cối (chuối, tre, bụi hoa) được nhân màu theo mùa: Hạ đậm, Thu cam vàng, Đông xỉn lạnh. Sheet mùa ghép bằng `tools/compose_season_tiles.gd` |
 | Xếp lớp theo chiều sâu | Player là con của map hiện tại (SceneManager đưa Player về `world` trước khi dỡ map rồi vào map mới), map và view vườn bật y-sort: đi sau nhà, chuồng, cây thì bị che, đi trước thì đè lên. Gốc toạ độ của đồ vật và cây ở chân nên so sánh với chân Player |
 | Bản đồ | Sân nhà (viền rặng cây, đường đất bo góc, biển chỉ đường), trong nhà (giường), Làng (xem dòng dưới); chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
+| Túi đồ | Màn hình túi đồ (`BagScreen`, phím `Tab` hoặc `I`): lưới ô dùng lại `InventoryUI` (kéo/thả đổi chỗ), bấm một ô để xem chi tiết (tên, nhóm, số đang có, giá gốc; hạt giống ghi mùa gieo, số ngày lớn, sản lượng), nút Sắp xếp gộp chồng và xếp theo nhóm rồi tên. Số ô theo nâng cấp túi. Không mở được khi đang nói chuyện, mua bán, chơi mini-game |
 | Làng | Một map lớn 2304x1296 có camera cuộn theo Player (`Camera2D` trên Player, giới hạn theo `MapBase.world_size`): đường làng, Tiệm Tạp Hóa, Quán Net và Quán Bida là nhà có mặt tiền, bước vào cửa để vào trong (`MapBase.add_building`, bên trong là `InteriorMap`); Chợ Quê là sân chợ có rào và cổng với ba sạp; thêm nhà dân, ao làng, chòi nghỉ, cây cối. Cả ba cổng của sân nhà đều dẫn ra làng |
 | Sân nhà gọn | Vườn gốc 8x5 ô; chuồng gà, chuồng lợn và máng trâu nằm trong một sân rào tre có cổng (`MapBase.add_fence` cho cạnh ngang, `add_fence_side` cho cạnh dọc), ao vịt rào ba mặt (cho ăn / thu trứng từ ngoài rào); bé Tí và chó Vàng chơi ở bãi cỏ phía nam vườn |
 | Chăn nuôi | Chuồng gà (đẻ trứng mỗi ngày) và chuồng lợn (nuôi 5 ngày rồi xuất chuồng); mua con giống ở Tạp Hóa, thả vào chuồng, cho ăn (gà ăn cám gà mua ở Tạp Hóa, lợn ăn lúa), thu sản phẩm bằng phím `E`; chuồng được nhớ khi đổi map |
@@ -194,6 +196,7 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_art` | Icon vật phẩm, ảnh cây theo giai đoạn, ảnh người bán, hoạt ảnh Player, đồ vật chặn đường, giao diện giấy |
 | `test_terrain` | Sheet nền đất 48x48, lát nền bốn map, đổi toạ độ chuột sang ô vườn |
 | `test_inventory_ui` | Giao diện kho, kéo/thả giữa hai kho |
+| `test_bag` | Sắp xếp kho (gộp chồng, thứ tự nhóm, không mất đồ), Tab/I/Esc mở đóng túi, chọn ô xem chi tiết, nút Sắp xếp, số ô theo nâng cấp, không mở khi đang bận, chuột không cuốc đất khi túi mở |
 | `test_shop_ui` | Giao diện cửa hàng dùng chung, nút mua/bán, khoá khi đóng cửa |
 | `test_game_flow` | Luồng chơi trọn vẹn qua các map, vườn được nhớ và tự bù ngày |
 | `test_livestock` | Dữ liệu loài, chuồng (thả, ăn, đếm ngày, thu, lưu/nạp), thứ tự ưu tiên khi bấm E, túi đầy/chuồng đầy, chuồng ở khu nhà được nhớ khi đổi map |

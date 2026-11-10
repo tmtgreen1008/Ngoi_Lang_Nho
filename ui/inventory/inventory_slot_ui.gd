@@ -9,6 +9,9 @@ extends PanelContainer
 const DRAG_TYPE: String = "inventory_slot"
 const SLOT_SIZE: Vector2 = Vector2(72, 72)
 
+## Người chơi bấm chuột trái vào ô (để xem chi tiết vật phẩm).
+signal selected(index: int)
+
 ## Kho và vị trí ô mà ô giao diện này đại diện.
 var inventory: InventoryComponent
 var index: int = -1
@@ -81,6 +84,11 @@ func refresh() -> void:
 	tooltip_text = slot.item.display_name
 	if not slot.item.description.is_empty():
 		tooltip_text += "\n" + slot.item.description
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		selected.emit(index)
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:

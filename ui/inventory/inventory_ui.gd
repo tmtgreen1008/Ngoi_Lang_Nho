@@ -5,6 +5,9 @@ extends PanelContainer
 
 @export var columns: int = 6
 
+## Người chơi bấm vào ô số [param index].
+signal slot_selected(index: int)
+
 @onready var _title_label: Label = $Margin/VBox/TitleLabel
 @onready var _grid: GridContainer = $Margin/VBox/Grid
 
@@ -30,8 +33,14 @@ func setup(inventory: InventoryComponent, title: String) -> void:
 		var slot_ui := InventorySlotUI.new()
 		_grid.add_child(slot_ui)
 		slot_ui.setup(inventory, i)
+		slot_ui.selected.connect(func(index: int) -> void: slot_selected.emit(index))
 		_slot_uis.append(slot_ui)
 	inventory.slot_changed.connect(_on_slot_changed)
+
+
+## Đổi tiêu đề của bảng (vd. "Túi đồ (5/16 ô)").
+func set_title(title: String) -> void:
+	_title_label.text = title
 
 
 func _on_slot_changed(slot_index: int) -> void:

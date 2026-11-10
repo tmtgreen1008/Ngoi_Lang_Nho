@@ -146,6 +146,28 @@ func load_save_data(data: Array) -> void:
 	_notify_changed()
 
 
+## Gộp các chồng cùng loại rồi xếp lại từ ô đầu: theo nhóm vật phẩm (hạt giống, nông sản, thực phẩm...), trong
+## nhóm theo tên. Không làm mất hay thêm vật phẩm nào.
+func sort_slots() -> void:
+	_build_slots()
+	var totals: Dictionary = {}  # ItemData -> tổng số lượng
+	for slot: InventorySlot in slots:
+		if not slot.is_empty():
+			totals[slot.item] = int(totals.get(slot.item, 0)) + slot.amount
+	var items: Array = totals.keys()
+	items.sort_custom(func(a: ItemData, b: ItemData) -> bool:
+		if a.category != b.category:
+			return a.category < b.category
+		return a.display_name.naturalnocasecmp_to(b.display_name) < 0)
+	for slot: InventorySlot in slots:
+		slot.clear()
+	for item: ItemData in items:
+		add_item(item, int(totals[item]))
+	for i: int in slots.size():
+		slot_changed.emit(i)
+	_notify_changed()
+
+
 ## Đổi số ô kho thành [param count]: thêm ô trống ở cuối (nâng cấp túi), hoặc cắt bớt ô cuối (ván mới, khi kho
 ## đã được xoá; ô bị cắt mất đồ nếu còn chứa). Phát signal cho ô mới và EventBus.inventory_changed.
 func set_slot_count(count: int) -> void:
