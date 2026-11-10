@@ -16,14 +16,14 @@ var index: int = -1
 var _icon: TextureRect
 var _name_label: Label
 var _amount_label: Label
-var _normal_style: StyleBoxFlat
-var _hover_style: StyleBoxFlat
+var _normal_style: StyleBox
+var _hover_style: StyleBox
 
 
 func _init() -> void:
 	custom_minimum_size = SLOT_SIZE
-	_normal_style = _make_style(Color(0.20, 0.15, 0.10), Color(0.45, 0.33, 0.20))
-	_hover_style = _make_style(Color(0.28, 0.21, 0.13), Color(0.95, 0.78, 0.40))
+	_normal_style = UiTheme.slot_style(0)
+	_hover_style = UiTheme.slot_style(1)
 	add_theme_stylebox_override("panel", _normal_style)
 	# Viền sáng khi trỏ chuột vào ô (hoặc kéo đồ qua ô).
 	mouse_entered.connect(_set_highlight.bind(true))

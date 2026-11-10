@@ -34,6 +34,12 @@ run_test() {
 		code=1
 	fi
 	echo "$result"
+	# Lỗi script làm bài test dừng giữa chừng nhưng vẫn in RESULT với số kiểm tra đã chạy:
+	# coi là trượt để không bỏ sót các kiểm tra phía sau.
+	if grep -q 'SCRIPT ERROR' "$log"; then
+		grep -E 'SCRIPT ERROR' "$log" | head -5
+		code=1
+	fi
 	if [ "$code" -ne 0 ]; then
 		grep -E '^FAIL ' "$log"
 		failed_tests+=("${name}${*:+ $*}")

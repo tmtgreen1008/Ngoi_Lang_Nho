@@ -14,6 +14,15 @@ enum HudIcon { COIN, CLOCK, SPRING, SUMMER, AUTUMN, WINTER, KEY_E }
 const PANEL_PATH: String = "res://assets/art/ui/panel_paper.png"
 const BUTTONS_PATH: String = "res://assets/art/ui/buttons.png"
 const HUD_ICONS_PATH: String = "res://assets/art/ui/hud_icons.png"
+const SLOTS_PATH: String = "res://assets/art/ui/slots.png"
+const SLOT_CELL: int = 64
+## Số thứ tự ô trong ui/slots.png.
+const SLOT_NORMAL: int = 0
+const SLOT_HOVER: int = 1
+const SLOT_SELECTED: int = 2
+const SLOT_LOCKED: int = 3
+const SLOT_HOTBAR: int = 4
+const SLOT_HOTBAR_SELECTED: int = 5
 const HUD_ICON_CELL: int = 32
 const HUD_ICON_COLUMNS: int = 4
 ## Chiều cao mỗi trạng thái trong sheet nút; chiều rộng lấy từ ảnh.
@@ -69,6 +78,22 @@ static func hud_panel_style() -> StyleBoxTexture:
 	style.content_margin_right = 22
 	style.content_margin_top = 12
 	style.content_margin_bottom = 12
+	return style
+
+
+## Khung ô kho từ ui/slots.png (lưới 4x2, ô 64x64). [param cell] là số thứ tự ô trong sheet:
+## 0 thường, 1 trỏ chuột, 2 đang chọn, 3 khoá, 4 thanh nhanh, 5 thanh nhanh đang chọn.
+static func slot_style(cell: int) -> StyleBoxTexture:
+	var atlas := AtlasTexture.new()
+	atlas.atlas = load(SLOTS_PATH)
+	# Khung vẽ nhỏ hơn ô 64x64 (có viền trong suốt): cắt sát phần có hình để khung lấp đầy ô giao diện.
+	var cell_rect := Rect2i((cell % 4) * SLOT_CELL, (cell / 4) * SLOT_CELL, SLOT_CELL, SLOT_CELL)
+	var used: Rect2i = atlas.atlas.get_image().get_region(cell_rect).get_used_rect()
+	atlas.region = Rect2(cell_rect.position + used.position, used.size)
+	var style := StyleBoxTexture.new()
+	style.texture = atlas
+	style.set_texture_margin_all(14)
+	style.set_content_margin_all(6)
 	return style
 
 

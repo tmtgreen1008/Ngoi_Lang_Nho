@@ -53,9 +53,9 @@ func run() -> void:
 	check("ô trống không hiện icon, không hiện chữ", bag_slots[5]._icon.texture == null and bag_slots[5]._name_label.text == "" and bag_slots[5]._amount_label.text == "")
 	check("số lượng và tên trong ô kho là chữ trắng (đọc được trên ô tối)", bag_slots[1]._amount_label.get_theme_color("font_color") == Color.WHITE and bag_slots[0]._name_label.get_theme_color("font_color") == Color.WHITE)
 	bag_slots[1]._set_highlight(true)
-	check("trỏ vào ô: viền sáng hơn", bag_slots[1].get_theme_stylebox("panel").border_color != bag_slots[2].get_theme_stylebox("panel").border_color)
+	check("trỏ vào ô: đổi sang khung sáng (ô 1 của slots.png)", bag_slots[1].get_theme_stylebox("panel") == bag_slots[1]._hover_style and bag_slots[1]._hover_style.texture.region != bag_slots[1]._normal_style.texture.region)
 	bag_slots[1]._set_highlight(false)
-	check("rời chuột: viền về như cũ", bag_slots[1].get_theme_stylebox("panel").border_color == bag_slots[2].get_theme_stylebox("panel").border_color)
+	check("rời chuột: về khung thường", bag_slots[1].get_theme_stylebox("panel") == bag_slots[1]._normal_style)
 	await shot("inventory_ui_before.png")
 
 	var data: Dictionary = _drag_data(bag, 1)
