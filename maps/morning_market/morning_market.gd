@@ -23,9 +23,6 @@ func _build() -> void:
 	_add_stall(FOOD_VENDOR, Vector2(300, 570), "res://assets/art/props/stall_eggs.png", Vector2(412, 604))
 	_add_stall(SEED_VENDOR, Vector2(900, 196), "res://assets/art/props/stall_goods.png", Vector2(1012, 226))
 
-	# Cô Lan đi chợ, đứng gần lối vào.
-	add_villager("res://data/dialogues/co_lan.tres", 2, Vector2(470, 320))
-
 	add_decor(Decor.JAR, Vector2(300, 200))
 	add_decor(Decor.BANANA, Vector2(170, 190))
 	add_decor(Decor.BAMBOO, Vector2(1130, 200))

@@ -56,6 +56,9 @@ const VOID_COLOR := Color("#1B120D")
 
 var _exit_rects: Array[Rect2] = []
 var _foliage_sprites: Array[Sprite2D] = []
+var _villagers: Dictionary = {}  # id -> VillagerNPC đang có mặt theo lịch
+var _villager_hour: int = -1
+var _talking_to: StringName = &""
 
 
 func _ready() -> void:
@@ -69,6 +72,14 @@ func _ready() -> void:
 	_build()
 	if border_style == BorderStyle.TREES:
 		_build_tree_belt()
+	# Dân làng có mặt theo giờ (lịch trong data/schedules); cập nhật mỗi khi đồng hồ sang giờ mới.
+	_villager_hour = TimeManager.hour
+	sync_villagers()
+	EventBus.time_ticked.connect(_on_time_ticked)
+	EventBus.dialogue_opened.connect(func(speaker: StringName) -> void: _talking_to = speaker)
+	EventBus.dialogue_closed.connect(func(_speaker: StringName) -> void:
+		_talking_to = &""
+		sync_villagers(true))
 	if not map_title.is_empty():
 		EventBus.toast_requested.emit(map_title)
 
@@ -379,6 +390,58 @@ func add_signpost(feet: Vector2, entries: Array[String], points_right: bool = tr
 	signpost.points_right = points_right
 	add_child(signpost)
 	return signpost
+
+
+# --- Dân làng theo lịch sinh hoạt ---------------------------------------------------------
+
+
+## Tên map dùng trong lịch dân làng: tên file scene không đuôi (vd "home", "morning_market").
+func map_key() -> String:
+	return scene_file_path.get_file().get_basename()
+
+
+## Dân làng [param id] đang có mặt ở map này, hoặc null.
+func get_villager(id: StringName) -> VillagerNPC:
+	var villager: VillagerNPC = _villagers.get(id)
+	return villager if is_instance_valid(villager) else null
+
+
+## Id các dân làng đang có mặt.
+func get_villager_ids() -> Array:
+	var ids: Array = []
+	for id: StringName in _villagers:
+		if get_villager(id) != null:
+			ids.append(id)
+	return ids
+
+
+## Đặt / cất dân làng theo lịch (data/schedules) cho giờ hiện tại. [param announce] = true thì báo cho người chơi
+## khi có người đến hoặc đi (không báo lúc mới vào map). Người đang được trò chuyện thì ở lại tới khi nói xong.
+func sync_villagers(announce: bool = false) -> void:
+	var key: String = map_key()
+	var hour: int = TimeManager.hour
+	for schedule: VillagerSchedule in VillagerSchedule.load_all():
+		var id: StringName = schedule.get_id()
+		var stop: Dictionary = schedule.get_stop(key, hour)
+		var present: VillagerNPC = get_villager(id)
+		if stop.is_empty():
+			if present != null and id != _talking_to:
+				_villagers.erase(id)
+				present.queue_free()
+				if announce:
+					EventBus.notice_requested.emit(schedule.describe_departure(hour), &"info")
+		elif present == null:
+			var villager: VillagerNPC = add_villager(schedule.dialogue.resource_path, schedule.frame, VillagerSchedule.stop_position(stop), VillagerSchedule.stop_wander(stop))
+			villager.offers_upgrades = schedule.offers_upgrades
+			_villagers[id] = villager
+			if announce:
+				EventBus.notice_requested.emit("%s vừa tới." % schedule.dialogue.display_name, &"info")
+
+
+func _on_time_ticked(hour: int, _minute: int) -> void:
+	if hour != _villager_hour:
+		_villager_hour = hour
+		sync_villagers(true)
 
 
 ## Đặt một dân làng (NPC chỉ trò chuyện) tại [param pos]. [param frame] là khung trong villagers.png;

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="VillagerSchedule" format=3]
+
+[ext_resource type="Script" path="res://core/resources/villager_schedule.gd" id="1_schedule"]
+[ext_resource type="Resource" path="res://data/dialogues/chi_hanh.tres" id="2_dialogue"]
+
+[resource]
+script = ExtResource("1_schedule")
+dialogue = ExtResource("2_dialogue")
+frame = 0
+offers_upgrades = false
+stops = Array[Dictionary]([{"map": "grocery_store", "from": 6, "to": 12, "x": 470, "y": 330}, {"map": "entertainment", "from": 14, "to": 19, "x": 330, "y": 470}])

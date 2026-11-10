@@ -47,8 +47,13 @@ var duck_pond: LivestockHouse
 var buffalo_post: LivestockHouse
 var dog: PetDog
 var clothes_line: ClothesLine
-var ong_bay: VillagerNPC
-var be_ti: VillagerNPC
+## Dân làng có mặt ở sân nhà theo lịch (data/schedules); null khi người đó đang ở nơi khác.
+var ong_bay: VillagerNPC:
+	get:
+		return get_villager(&"ong_bay")
+var be_ti: VillagerNPC:
+	get:
+		return get_villager(&"be_ti")
 
 var _tool_buttons: Dictionary = {}  # FarmToolController.Tool -> Button
 var _feedback_panel: PanelContainer
@@ -81,7 +86,6 @@ func _build() -> void:
 
 	_build_garden()
 	_build_livestock()
-	_build_villagers()
 	_build_house()
 	_build_scenery()
 	remove_decor_in(_garden_world_rect())  # vườn đã mở rộng thì dọn cây cối vướng chỗ
@@ -169,13 +173,6 @@ func _add_livestock_house(feet: Vector2, structure: LivestockHouse.Structure, sp
 	house.capacity = capacity
 	add_child(house)
 	return house
-
-
-## Dân làng ở sân nhà: ông Bảy đứng cạnh lối mòn, bé Tí chạy chơi trên bãi cỏ phía bắc đường mòn.
-func _build_villagers() -> void:
-	ong_bay = add_villager("res://data/dialogues/ong_bay.tres", 1, Vector2(860, 330))
-	ong_bay.offers_upgrades = true  # nhận làm giúp: bảng nâng cấp
-	be_ti = add_villager("res://data/dialogues/be_ti.tres", 5, Vector2(760, 330), Rect2(700, 290, 160, 80))
 
 
 ## Ngôi nhà: hai dải chặn hai bên cửa, chừa khe hở cho Player bước vào.
