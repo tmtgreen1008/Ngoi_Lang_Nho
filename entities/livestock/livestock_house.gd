@@ -9,6 +9,15 @@ const STRUCTURES_SHEET: String = "res://assets/art/props/farm_structures.png"
 const ANIMALS_SHEET: String = "res://assets/art/animals/farm_a.png"
 const STRUCTURE_CELL := Vector2i(58, 53)
 const ANIMAL_CELL := Vector2i(34, 30)
+## Sheet hoạt ảnh theo loài (lưới 4x3; hàng đầu nhìn ngang: 3 khung bước và 1 khung mổ/ăn):
+## [đường dẫn, cỡ ô, khoảng trống dưới chân trong ô]. Loài không có ở đây vẽ ảnh tĩnh từ ANIMALS_SHEET.
+const ANIM_SHEETS: Dictionary = {
+	&"ga": ["res://assets/art/characters/anim_chicken.png", Vector2i(32, 32), 4],
+	&"lon": ["res://assets/art/characters/anim_pig.png", Vector2i(48, 40), 6],
+}
+## Chu kỳ khung của con vật: đứng, cúi mổ/ăn, bước vài bước tại chỗ.
+const ANIM_CYCLE: Array[int] = [1, 1, 1, 1, 3, 3, 3, 1, 0, 1, 2, 1]
+const ANIM_FRAME_SECONDS: float = 0.3
 ## Công trình phóng 2 lần cho cân với ngôi nhà (cũng phóng 2 lần).
 const STRUCTURE_SCALE: int = 2
 ## Khung của công trình trong sheet.
@@ -26,6 +35,7 @@ var interactable: InteractableComponent
 var _animal_layer: Node2D
 var _marker: Sprite2D
 var _inventory: InventoryComponent
+var _anim_time: float = 0.0
 
 
 func _ready() -> void:
@@ -96,20 +106,49 @@ func _on_interacted(_interactor: Node) -> void:
 	_refresh()
 
 
+func _process(delta: float) -> void:
+	_anim_time += delta
+	_animate_animals()
+
+
+## Khung hoạt ảnh của con thứ [param index] tại thời điểm hiện tại (mỗi con lệch pha nhau).
+func get_animal_frame(index: int) -> int:
+	var step: int = int(_anim_time / ANIM_FRAME_SECONDS) + index * 5
+	return ANIM_CYCLE[step % ANIM_CYCLE.size()]
+
+
+## Đặt khung cho các con vật có sheet hoạt ảnh (hàng 0: nhìn ngang).
+func _animate_animals() -> void:
+	if not ANIM_SHEETS.has(species.id):
+		return
+	for index: int in _animal_layer.get_child_count():
+		(_animal_layer.get_child(index) as Sprite2D).frame_coords = Vector2i(get_animal_frame(index), 0)
+
+
 ## Vẽ lại các con vật, dấu sản phẩm và lời nhắc.
 func _refresh() -> void:
 	for child: Node in _animal_layer.get_children():
 		child.free()
-	var sheet: Texture2D = load(ANIMALS_SHEET)
+	var anim: Array = ANIM_SHEETS.get(species.id, [])
 	for index: int in pen.get_count():
 		var animal := Sprite2D.new()
-		animal.texture = sheet
-		animal.region_enabled = true
-		animal.region_rect = Rect2(species.sprite_frame * ANIMAL_CELL.x, 0, ANIMAL_CELL.x, ANIMAL_CELL.y)
 		animal.centered = false
-		animal.offset = Vector2(-ANIMAL_CELL.x / 2.0, -ANIMAL_CELL.y)
+		if anim.is_empty():
+			animal.texture = load(ANIMALS_SHEET)
+			animal.region_enabled = true
+			animal.region_rect = Rect2(species.sprite_frame * ANIMAL_CELL.x, 0, ANIMAL_CELL.x, ANIMAL_CELL.y)
+			animal.offset = Vector2(-ANIMAL_CELL.x / 2.0, -ANIMAL_CELL.y)
+		else:
+			var cell: Vector2i = anim[1]
+			animal.texture = load(anim[0])
+			animal.hframes = 4
+			animal.vframes = 3
+			animal.offset = Vector2(-cell.x / 2.0, -cell.y + int(anim[2]))
+			# Con ở vị trí lẻ quay mặt ngược lại cho đàn trông tự nhiên.
+			animal.flip_h = index % 2 == 1
 		animal.position = _animal_spot(index)
 		_animal_layer.add_child(animal)
+	_animate_animals()
 	_marker.visible = pen.get_ready_count() > 0 and _marker.texture != null
 	var prompt: String = controller.get_prompt(_get_inventory())
 	if interactable.prompt_text != prompt:

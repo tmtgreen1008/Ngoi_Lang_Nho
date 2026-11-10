@@ -152,6 +152,20 @@ func run() -> void:
 	check("bấm E thả gà vào chuồng", home.coop.pen.get_count() == 1 and player.inventory.count_of(chick) == 0)
 	check("con vật hiện trên màn hình", home.coop.get_node("Animals").get_child_count() == 1)
 	check("lời nhắc đổi sau khi thả (chưa có lúa)", "Thả con giống" not in home.coop.interactable.prompt_text)
+	# Gà dùng sheet hoạt ảnh (4x3 khung): khung đổi theo thời gian, lấy từ chu kỳ đứng/mổ/bước.
+	var hen_sprite: Sprite2D = home.coop.get_node("Animals").get_child(0)
+	check("gà dùng sheet hoạt ảnh 4x3", hen_sprite.hframes == 4 and hen_sprite.vframes == 3 and String(hen_sprite.texture.resource_path).ends_with("anim_chicken.png"))
+	var seen_frames: Dictionary = {}
+	for i: int in 16:
+		seen_frames[hen_sprite.frame_coords.x] = true
+		await wait(0.3)
+	check("gà cử động: thấy cả khung đứng, mổ và bước", seen_frames.has(1) and seen_frames.has(3) and (seen_frames.has(0) or seen_frames.has(2)) and hen_sprite.frame_coords.y == 0)
+	# Hàng rào vườn mới: 8 đoạn tre liền nhau, dài đúng bằng bề ngang vườn.
+	var fence_count: int = 0
+	for child: Node in home.get_children():
+		if child is Sprite2D and child.texture != null and String(child.texture.resource_path).ends_with("fences_a.png"):
+			fence_count += 1
+	check("hàng rào tre mới: 8 đoạn dọc mép nam của vườn", fence_count == 8)
 	await shot("livestock_coop.png")
 
 	# Cho ăn rồi đi vắng: chuồng được nhớ và con vật vẫn ở đó.
