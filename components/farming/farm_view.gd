@@ -50,11 +50,18 @@ func _on_season_changed(season: int, _year: int) -> void:
 func setup(farm_field: FarmField) -> void:
 	field = farm_field
 	field.plot_changed.connect(_refresh_cell)
+	field.area_changed.connect(func(_area: Rect2i) -> void: _refresh_all())
+	_refresh_all()
+	if _grid.get_parent() == null:
+		add_child(_grid)
+	_grid.queue_redraw()
+
+
+## Vẽ lại mọi ô của vùng canh tác hiện tại (gọi khi vườn được mở rộng) và vẽ lại lưới.
+func _refresh_all() -> void:
 	for x: int in range(field.field_area.position.x, field.field_area.end.x):
 		for y: int in range(field.field_area.position.y, field.field_area.end.y):
 			_refresh_cell(Vector2i(x, y))
-	if _grid.get_parent() == null:
-		add_child(_grid)
 	_grid.queue_redraw()
 
 

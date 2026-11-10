@@ -69,3 +69,17 @@ Quán Net dễ kiếm đều nhưng có trần thấp; Quán Bida thưởng cao 
 
 - Chưa có khoản chi lớn nào ngoài hạt giống, cám gà và con giống, nên khi vườn đầy tiền sẽ dư. Hướng phát triển: nâng cấp nhà, mở rộng vườn, dụng cụ, trang trí.
 - Chưa mô phỏng người chơi thật; các con số mới được kiểm bằng mô hình lãi/ô/ngày và so sánh tương đối, cần chơi thử để chỉnh tiếp.
+
+## Nâng cấp (chỗ tiêu tiền)
+
+Nâng cấp mua qua ông Bảy ở sân nhà (bấm `E`, chọn **Nhờ làm giúp**). Dữ liệu nằm ở `data/upgrades/*.tres` (`UpgradeData`), mua bán do `UpgradeManager`, hiệu lực do từng hệ thống tự áp qua `EventBus.upgrade_purchased`.
+
+| Nâng cấp | Cấp 1 | Cấp 2 | Cấp 3 | Hiệu lực |
+|---|---|---|---|---|
+| Mở rộng vườn | 250 đ | 600 đ | 1200 đ | 7 -> 8 -> 9 -> 10 hàng (thêm hàng phía trên, +10 ô mỗi cấp) |
+| Dụng cụ tốt hơn | 400 đ | 900 đ | 1800 đ | 1 -> 2 -> 3 -> 6 ô mỗi lần cuốc/gieo/thu hoạch |
+| Mở rộng chuồng gà | 150 đ | 300 đ | | 4 -> 6 -> 8 gà |
+| Mở rộng chuồng lợn | 300 đ | 550 đ | | 4 -> 6 -> 8 lợn |
+| Túi đồ lớn hơn | 150 đ | 400 đ | | 16 -> 24 -> 32 ô |
+
+Tổng 7000 đ, tương đương khoảng 10 ngày thu nhập của một vườn đầy. Mỗi cấp tăng thu nhập (vườn, chuồng) đều hoàn vốn trong tối đa 20 ngày theo lãi tối thiểu (`tests/test_upgrades.gd` kiểm tra), nên đáng mua nhưng không phải mua ngay.

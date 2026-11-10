@@ -98,6 +98,7 @@ func load_game(slot: StringName = DEFAULT_SLOT) -> String:
 	EconomyManager.load_save_data(data.get("economy", {}))
 	WorldStateManager.load_save_data(data.get("world", {}))
 	RelationshipManager.load_save_data(data.get("relationships", {}))  # bản lưu cũ chưa có mục này
+	UpgradeManager.load_save_data(data.get("upgrades", {}))  # trước kho đồ: túi lớn hơn thì kho nạp đủ ô
 	if player != null:
 		player.inventory.load_save_data(player_data.get("inventory", []))
 	TimeManager.load_save_data(data.get("time", {}))
@@ -146,6 +147,7 @@ func _build_snapshot() -> Dictionary:
 		"economy": EconomyManager.get_save_data(),
 		"world": WorldStateManager.get_save_data(),
 		"relationships": RelationshipManager.get_save_data(),
+		"upgrades": UpgradeManager.get_save_data(),
 		"player": {
 			"inventory": player.inventory.get_save_data(),
 			"position": [player.global_position.x, player.global_position.y],

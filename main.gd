@@ -17,6 +17,7 @@ var hud: Hud
 var start_menu: StartMenu
 var pause_menu: PauseMenu
 var dialogue_box: DialogueBox
+var upgrade_ui: UpgradeUI
 
 
 func _ready() -> void:
@@ -36,6 +37,8 @@ func _ready() -> void:
 	add_child(MinigameHost.new())
 	dialogue_box = DialogueBox.new()
 	add_child(dialogue_box)
+	upgrade_ui = UpgradeUI.new()
+	add_child(upgrade_ui)
 	var ui_layer := CanvasLayer.new()
 	ui_layer.layer = 20
 	add_child(ui_layer)
@@ -65,6 +68,7 @@ func start_new_game() -> void:
 	EconomyManager.load_save_data({})
 	WorldStateManager.clear()
 	RelationshipManager.clear()
+	UpgradeManager.clear()  # mọi nâng cấp về cấp 0 (túi đồ về 16 ô)
 	player.inventory.load_save_data([])
 	_give_starting_items()
 	_begin_playing()

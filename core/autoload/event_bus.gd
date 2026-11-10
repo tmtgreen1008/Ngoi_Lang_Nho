@@ -75,6 +75,14 @@ signal crop_harvested(cell: Vector2i, crop: CropItemData)
 signal crop_withered(cell: Vector2i, crop: CropItemData)
 signal animal_fed(animal_id: StringName)
 
+# --- Nâng cấp ---
+## Mua xong một nâng cấp ([param upgrade_id], cấp mới [param level]). Vườn, công cụ, chuồng, túi đồ nghe để áp hiệu lực.
+signal upgrade_purchased(upgrade_id: StringName, level: int)
+## Trạng thái nâng cấp bị thay hàng loạt (nạp game, ván mới): mọi nơi áp lại hiệu lực theo cấp hiện tại.
+signal upgrades_reloaded
+## Người chơi muốn xem bảng nâng cấp (DialogueBox phát khi chọn "Nhờ làm giúp"); UpgradeUI nghe.
+signal upgrade_menu_requested
+
 # --- Nhân vật ---
 ## Player đặt chân xuống một bước (khung hình chân chạm đất); AudioManager phát tiếng bước chân.
 signal player_stepped

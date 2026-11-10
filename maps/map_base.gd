@@ -330,6 +330,29 @@ func add_fence(left_feet: Vector2, segments: int) -> Array[Sprite2D]:
 	return sprites
 
 
+## Dọn các món trang trí (cây cối, rào, chum và bóng đổ của chúng) có chân nằm trong [param world_rect], vd. khi
+## mở rộng vườn lấn sang chỗ có bụi tre. Trả về số món đã dọn (không tính bóng).
+func remove_decor_in(world_rect: Rect2) -> int:
+	var removed: int = 0
+	for child: Node in get_children():
+		if not child is Sprite2D:
+			continue
+		var sprite: Sprite2D = child as Sprite2D
+		var is_decor: bool = sprite.region_enabled and sprite.texture != null and sprite.texture.resource_path == DECOR_SHEET
+		var is_shadow: bool = sprite.name.begins_with("Shadow")
+		if not is_decor and not is_shadow:
+			continue
+		# Chân của món trang trí là position; bóng đặt cao hơn chân 2 px.
+		var feet: Vector2 = sprite.position + (Vector2(0, 2) if is_shadow else Vector2.ZERO)
+		if not world_rect.has_point(feet):
+			continue
+		_foliage_sprites.erase(sprite)
+		sprite.queue_free()
+		if is_decor:
+			removed += 1
+	return removed
+
+
 ## Trồng một cụm [param count] món [param decor] quanh [param center] (rải đều trong bán kính
 ## [param radius], hơi dẹt theo chiều dọc), xếp từ trên xuống để cây dưới che cây trên.
 ## Cùng [param seed_value] thì cụm luôn giống nhau.

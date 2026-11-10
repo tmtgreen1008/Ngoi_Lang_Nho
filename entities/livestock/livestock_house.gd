@@ -26,6 +26,8 @@ enum Structure { COOP, BARN }
 @export var species: AnimalData
 @export var structure: Structure = Structure.COOP
 @export var capacity: int = 4
+## Nâng cấp quyết định sức chứa (UpgradeManager.COOP / BARN); rỗng thì dùng [member capacity] cố định.
+@export var upgrade_id: StringName = &""
 @export var persistent_key: StringName = &"livestock_pen"
 
 var pen: LivestockPen
@@ -57,7 +59,7 @@ func _ready() -> void:
 
 	pen = LivestockPen.new()
 	pen.species = species
-	pen.capacity = capacity
+	pen.capacity = _upgraded_capacity()
 	pen.persistent_key = persistent_key
 	add_child(pen)
 	controller = LivestockController.new()
@@ -88,8 +90,23 @@ func _ready() -> void:
 
 	controller.feedback.connect(func(text: String, kind: StringName) -> void: EventBus.notice_requested.emit(text, kind))
 	pen.changed.connect(_refresh)
+	EventBus.upgrade_purchased.connect(_on_upgrade_purchased)
 	EventBus.inventory_changed.connect(func(_owner: StringName) -> void: _refresh())
 	_refresh()
+
+
+## Sức chứa theo cấp nâng cấp của chuồng (không có nâng cấp thì giữ [member capacity]).
+func _upgraded_capacity() -> int:
+	if upgrade_id == &"":
+		return capacity
+	var value: int = UpgradeManager.get_value(upgrade_id)
+	return value if value > 0 else capacity
+
+
+func _on_upgrade_purchased(id: StringName, _level: int) -> void:
+	if id == upgrade_id and upgrade_id != &"":
+		pen.capacity = _upgraded_capacity()
+		pen.changed.emit()  # vẽ lại lời nhắc (n/sức chứa)
 
 
 ## Kho đồ của Player (tìm lười, vì Player có thể được dựng sau map).

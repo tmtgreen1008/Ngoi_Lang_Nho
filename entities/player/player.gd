@@ -58,6 +58,10 @@ func _ready() -> void:
 	EventBus.shop_closed.connect(func(_vendor: Resource) -> void: movement_locked = false)
 	EventBus.dialogue_opened.connect(func(_speaker: StringName) -> void: movement_locked = true)
 	EventBus.dialogue_closed.connect(func(_speaker: StringName) -> void: movement_locked = false)
+	# Túi đồ theo cấp nâng cấp (mua thêm hoặc nạp game / ván mới).
+	EventBus.upgrade_purchased.connect(func(id: StringName, _level: int) -> void: _apply_bag_upgrade(id))
+	EventBus.upgrades_reloaded.connect(func() -> void: _apply_bag_upgrade(UpgradeManager.BAG))
+	_apply_bag_upgrade(UpgradeManager.BAG)
 	# Đứng yên trong lúc chuyển map.
 	EventBus.scene_change_requested.connect(func(_path: String, _spawn: StringName) -> void: _in_transition = true)
 	EventBus.scene_changed.connect(func(_path: String) -> void: _in_transition = false)
@@ -82,6 +86,13 @@ func _physics_process(delta: float) -> void:
 ## Đang chạy hoạt ảnh dùng công cụ (đứng yên cho tới khi xong).
 func is_acting() -> bool:
 	return _action_time >= 0.0
+
+
+## Đặt số ô túi đồ theo cấp nâng cấp túi (bỏ qua nếu [param id] không phải nâng cấp túi hoặc thiếu dữ liệu).
+func _apply_bag_upgrade(id: StringName) -> void:
+	var slots: int = UpgradeManager.get_value(UpgradeManager.BAG)
+	if id == UpgradeManager.BAG and slots > 0:
+		inventory.set_slot_count(slots)
 
 
 ## Chạy hoạt ảnh dùng công cụ [param action] ("hoe", "water"), quay mặt về [param target]

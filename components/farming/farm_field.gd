@@ -10,6 +10,9 @@ extends Node
 ## Một ô thay đổi (đất, cây hoặc giai đoạn lớn). FarmView nghe signal này.
 signal plot_changed(cell: Vector2i)
 
+## Vùng canh tác đổi (nâng cấp mở rộng vườn). FarmView nghe để vẽ thêm ô.
+signal area_changed(area: Rect2i)
+
 ## Vùng ô lưới được phép canh tác (toạ độ ô, không phải pixel).
 @export var field_area: Rect2i = Rect2i(0, 0, 10, 7)
 
@@ -25,6 +28,14 @@ func _ready() -> void:
 	_last_day = TimeManager.day
 	EventBus.day_changed.connect(_on_day_changed)
 	EventBus.season_changed.connect(_on_season_changed)
+
+
+## Đổi vùng canh tác thành [param area] (các ô đã cuốc/gieo giữ nguyên). Phát [signal area_changed] nếu có đổi.
+func set_area(area: Rect2i) -> void:
+	if area == field_area:
+		return
+	field_area = area
+	area_changed.emit(area)
 
 
 ## Ô nằm trong vùng canh tác không.

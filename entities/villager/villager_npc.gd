@@ -19,6 +19,8 @@ const FOOT_OFFSET: float = 14.0
 ## Khung đi dạo (toạ độ thế giới); rỗng (kích thước 0) = đứng yên.
 @export var wander_rect: Rect2 = Rect2()
 @export var wander_speed: float = 22.0
+## NPC nhận làm giúp (bảng nâng cấp): hộp thoại có thêm nút "Nhờ làm giúp".
+@export var offers_upgrades: bool = false
 
 ## Villager không có cửa hàng; DialogueBox đọc thuộc tính này để biết có hiện nút "Mua bán" không.
 var vendor: Node = null

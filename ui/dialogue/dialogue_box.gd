@@ -15,6 +15,7 @@ var _text_label: Label
 var _options: HBoxContainer
 var _shop_button: Button
 var _talk_button: Button
+var _upgrade_button: Button
 var _bye_button: Button
 
 var _npc: Node = null
@@ -67,6 +68,7 @@ func _ready() -> void:
 	box.add_child(_options)
 	_shop_button = _add_option("Mua bán", _on_shop_pressed)
 	_talk_button = _add_option("Trò chuyện", _on_talk_pressed)
+	_upgrade_button = _add_option("Nhờ làm giúp", _on_upgrade_pressed)
 	_bye_button = _add_option("Tạm biệt", _on_bye_pressed)
 
 	EventBus.npc_talk_requested.connect(_on_npc_talk_requested)
@@ -113,6 +115,7 @@ func open(npc: Node, interactor: Node) -> void:
 		greeting = _data.pick_first_meeting()
 	_text_label.text = greeting
 	_shop_button.visible = npc.get("vendor") != null
+	_upgrade_button.visible = npc.get("offers_upgrades") == true  # VendorNPC không có thuộc tính này (null)
 	_refresh_status()
 	show()
 	EventBus.dialogue_opened.emit(_data.speaker_id)
@@ -156,6 +159,12 @@ func _on_shop_pressed() -> void:
 	close()
 	if vendor != null and buyer != null:
 		EventBus.shop_open_requested.emit(vendor, buyer)
+
+
+## "Nhờ làm giúp": đóng hộp thoại và mở bảng nâng cấp (UpgradeUI nghe EventBus).
+func _on_upgrade_pressed() -> void:
+	close()
+	EventBus.upgrade_menu_requested.emit()
 
 
 func _on_talk_pressed() -> void:

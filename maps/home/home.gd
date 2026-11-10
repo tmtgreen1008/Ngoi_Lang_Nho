@@ -79,6 +79,7 @@ func _build() -> void:
 	_build_villagers()
 	_build_house()
 	_build_scenery()
+	remove_decor_in(_garden_world_rect())  # vườn đã mở rộng thì dọn cây cối vướng chỗ
 	_build_hud()
 
 
@@ -91,7 +92,9 @@ func _build_garden() -> void:
 	# Căn theo lưới ô 48px, không phóng to để pixel không méo.
 	view.position = Vector2(FARM_CELL * TerrainTiles.TILE_SIZE)
 	add_child(view)
+	field.field_area = _garden_area()  # theo cấp nâng cấp "Mở rộng vườn"
 	view.setup(field)
+	EventBus.upgrade_purchased.connect(_on_upgrade_purchased)
 
 	controller = FarmToolController.new()
 	controller.field = field
@@ -103,23 +106,49 @@ func _build_garden() -> void:
 	controller.feedback.connect(_show_feedback)
 
 	# Hàng rào tre liền mạch phía nam mảnh vườn, dài bằng bề ngang vườn.
-	var fence_y: float = (FARM_CELL.y + field.field_area.size.y) * TerrainTiles.TILE_SIZE + 24.0
+	var fence_y: float = (FARM_CELL.y + field.field_area.end.y) * TerrainTiles.TILE_SIZE + 24.0  # end.y: đáy vườn không đổi khi mở rộng lên trên
 	var farm_width: float = field.field_area.size.x * TerrainTiles.TILE_SIZE
 	add_fence(Vector2(FARM_CELL.x * TerrainTiles.TILE_SIZE, fence_y), int(farm_width / FENCE_STEP))
 
 
+## Số hàng gốc của mảnh vườn (chưa nâng cấp); vườn mở rộng thêm các hàng phía TRÊN, đáy vườn (cạnh hàng rào) cố định.
+const BASE_GARDEN_ROWS: int = 7
+const GARDEN_COLUMNS: int = 10
+
+
+## Vùng canh tác (toạ độ ô trong view vườn) theo cấp nâng cấp: các hàng thêm nằm ở toạ độ y âm.
+func _garden_area() -> Rect2i:
+	var rows: int = maxi(UpgradeManager.get_value(UpgradeManager.GARDEN), BASE_GARDEN_ROWS)
+	return Rect2i(0, BASE_GARDEN_ROWS - rows, GARDEN_COLUMNS, rows)
+
+
+## Vùng canh tác hiện tại theo toạ độ thế giới (pixel).
+func _garden_world_rect() -> Rect2:
+	var area: Rect2i = field.field_area
+	var tile: int = TerrainTiles.TILE_SIZE
+	return Rect2(Vector2(FARM_CELL * tile) + Vector2(area.position * tile), Vector2(area.size * tile))
+
+
+func _on_upgrade_purchased(id: StringName, _level: int) -> void:
+	if id != UpgradeManager.GARDEN:
+		return
+	field.set_area(_garden_area())
+	remove_decor_in(_garden_world_rect())
+
+
 ## Chuồng gà và chuồng lợn ở bãi trống phía nam đường mòn, cạnh mảnh vườn.
 func _build_livestock() -> void:
-	coop = _add_livestock_house(Vector2(736, 560), LivestockHouse.Structure.COOP, "res://data/animals/ga.tres", &"coop")
-	barn = _add_livestock_house(Vector2(890, 572), LivestockHouse.Structure.BARN, "res://data/animals/lon.tres", &"barn")
+	coop = _add_livestock_house(Vector2(736, 560), LivestockHouse.Structure.COOP, "res://data/animals/ga.tres", &"coop", UpgradeManager.COOP)
+	barn = _add_livestock_house(Vector2(890, 572), LivestockHouse.Structure.BARN, "res://data/animals/lon.tres", &"barn", UpgradeManager.BARN)
 
 
-func _add_livestock_house(feet: Vector2, structure: LivestockHouse.Structure, species_path: String, key: StringName) -> LivestockHouse:
+func _add_livestock_house(feet: Vector2, structure: LivestockHouse.Structure, species_path: String, key: StringName, upgrade_id: StringName) -> LivestockHouse:
 	var house := LivestockHouse.new()
 	house.position = feet
 	house.structure = structure
 	house.species = load(species_path)
 	house.persistent_key = key
+	house.upgrade_id = upgrade_id
 	add_child(house)
 	return house
 
@@ -127,6 +156,7 @@ func _add_livestock_house(feet: Vector2, structure: LivestockHouse.Structure, sp
 ## Dân làng ở sân nhà: ông Bảy đứng cạnh lối mòn, bé Tí chạy chơi trên bãi cỏ phía bắc đường mòn.
 func _build_villagers() -> void:
 	ong_bay = add_villager("res://data/dialogues/ong_bay.tres", 1, Vector2(860, 330))
+	ong_bay.offers_upgrades = true  # nhận làm giúp: bảng nâng cấp
 	be_ti = add_villager("res://data/dialogues/be_ti.tres", 5, Vector2(760, 330), Rect2(700, 290, 160, 80))
 
 
@@ -163,7 +193,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_show_feedback("")
 		var target: Vector2 = view.get_global_mouse_position()
-		var used: bool = controller.use_tool_at(view.world_to_cell(target))
+		var pattern: Array[Vector2i] = FarmToolController.pattern_for(UpgradeManager.get_value(UpgradeManager.TOOL))
+		var used: bool = controller.use_tool_area_at(view.world_to_cell(target), pattern) > 0
 		# Cuốc được đất thì Player vung cuốc về phía ô vừa cuốc.
 		if used and controller.current_tool == FarmToolController.Tool.HOE:
 			var player: Node = get_tree().get_first_node_in_group("player")

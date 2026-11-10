@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/upgrade_data.gd" id="1_upgrade"]
+
+[resource]
+script = ExtResource("1_upgrade")
+id = &"bag"
+display_name = "Túi đồ lớn hơn"
+description = "May thêm ngăn túi, mang được nhiều loại đồ hơn."
+costs = PackedInt32Array(150, 400)
+values = PackedInt32Array(16, 24, 32)
+value_format = "%d ô"

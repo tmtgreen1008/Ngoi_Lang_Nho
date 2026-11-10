@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/upgrade_data.gd" id="1_upgrade"]
+
+[resource]
+script = ExtResource("1_upgrade")
+id = &"tool"
+display_name = "Dụng cụ tốt hơn"
+description = "Cuốc, gieo và thu hoạch cùng lúc nhiều ô liền nhau (hàng ngang quanh ô bạn bấm), đỡ phải bấm từng ô."
+costs = PackedInt32Array(400, 900, 1800)
+values = PackedInt32Array(1, 2, 3, 6)
+value_format = "%d ô mỗi lần"

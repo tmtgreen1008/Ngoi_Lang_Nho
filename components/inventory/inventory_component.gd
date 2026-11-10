@@ -146,6 +146,25 @@ func load_save_data(data: Array) -> void:
 	_notify_changed()
 
 
+## Đổi số ô kho thành [param count]: thêm ô trống ở cuối (nâng cấp túi), hoặc cắt bớt ô cuối (ván mới, khi kho
+## đã được xoá; ô bị cắt mất đồ nếu còn chứa). Phát signal cho ô mới và EventBus.inventory_changed.
+func set_slot_count(count: int) -> void:
+	count = clampi(count, 1, 200)
+	_build_slots()
+	if count == slots.size():
+		return
+	var old_size: int = slots.size()
+	slot_count = count
+	if count < old_size:
+		slots.resize(count)
+	else:
+		for i: int in range(old_size, count):
+			slots.append(InventorySlot.new())
+		for i: int in range(old_size, count):
+			slot_changed.emit(i)
+	_notify_changed()
+
+
 func _build_slots() -> void:
 	if slots.size() == slot_count:
 		return

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/upgrade_data.gd" id="1_upgrade"]
+
+[resource]
+script = ExtResource("1_upgrade")
+id = &"coop"
+display_name = "Mở rộng chuồng gà"
+description = "Đóng thêm ổ và rào rộng hơn, nuôi được nhiều gà hơn (mỗi cấp thêm 2 con)."
+costs = PackedInt32Array(150, 300)
+values = PackedInt32Array(4, 6, 8)
+value_format = "%d gà"
