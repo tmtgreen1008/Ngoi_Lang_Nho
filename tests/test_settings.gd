@@ -55,8 +55,11 @@ func run() -> void:
 	check("kéo thanh trượt đổi âm lượng thật", is_equal_approx(am.sfx_volume, 0.5) and is_equal_approx(am.music_volume, 0.25))
 	pause._mute_check.button_pressed = true
 	check("công tắc Tắt tiếng bật tiếng tắt", am.muted)
+	var muted_icon: AtlasTexture = pause._mute_check.icon
+	check("đang tắt tiếng: icon loa gạch chéo (ô 10 của hud_icons_2.png)", muted_icon != null and muted_icon.atlas.resource_path.ends_with("hud_icons_2.png") and muted_icon.region == Rect2(64, 64, 32, 32))
 	pause._mute_check.button_pressed = false
 	check("tắt công tắc thì bật lại tiếng", not am.muted)
+	check("đang bật tiếng: icon loa có sóng (ô 9)", (pause._mute_check.icon as AtlasTexture).region == Rect2(32, 64, 32, 32))
 	am.set_muted(true)
 	await press_action("ui_cancel")
 	await press_action("ui_cancel")

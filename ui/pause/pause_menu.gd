@@ -67,7 +67,10 @@ func _ready() -> void:
 	_mute_check = CheckButton.new()
 	_mute_check.text = "Tắt tiếng (phím M)"
 	_mute_check.button_pressed = AudioManager.muted
-	_mute_check.toggled.connect(func(pressed: bool) -> void: AudioManager.set_muted(pressed))
+	_mute_check.toggled.connect(func(pressed: bool) -> void:
+		AudioManager.set_muted(pressed)
+		_refresh_mute_icon())
+	_refresh_mute_icon()
 	box.add_child(_mute_check)
 
 	_menu_button = _add_button(box, MENU_BUTTON_TEXT, _on_main_menu_pressed)
@@ -107,6 +110,7 @@ func open() -> void:
 	_sfx_slider.set_value_no_signal(AudioManager.sfx_volume * 100.0)
 	_music_slider.set_value_no_signal(AudioManager.music_volume * 100.0)
 	_mute_check.set_pressed_no_signal(AudioManager.muted)
+	_refresh_mute_icon()
 	_refresh_info()
 	show()
 	get_tree().paused = true
@@ -188,3 +192,8 @@ func _add_button(parent: Node, text: String, on_pressed: Callable) -> Button:
 	button.pressed.connect(on_pressed)
 	parent.add_child(button)
 	return button
+
+
+## Icon loa của công tắc Tắt tiếng theo trạng thái hiện tại (loa có sóng / loa gạch chéo).
+func _refresh_mute_icon() -> void:
+	_mute_check.icon = UiTheme.hud_icon_2(UiTheme.HUD2_SOUND_OFF if _mute_check.button_pressed else UiTheme.HUD2_SOUND_ON)

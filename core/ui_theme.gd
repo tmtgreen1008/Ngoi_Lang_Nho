@@ -23,6 +23,20 @@ const SLOT_SELECTED: int = 2
 const SLOT_LOCKED: int = 3
 const SLOT_HOTBAR: int = 4
 const SLOT_HOTBAR_SELECTED: int = 5
+const HUD_ICONS_2_PATH: String = "res://assets/art/ui/hud_icons_2.png"
+## Số thứ tự ô trong ui/hud_icons_2.png (theo thứ tự ảnh, trái sang phải, trên xuống dưới).
+const HUD2_BAG: int = 0
+const HUD2_WALLET: int = 1
+const HUD2_MAP: int = 2
+const HUD2_SETTINGS: int = 3
+const HUD2_QUEST_BOOK: int = 4
+const HUD2_OPEN_BOOK: int = 5
+const HUD2_HOME: int = 6
+const HUD2_BED: int = 7
+const HUD2_BELL: int = 8
+const HUD2_SOUND_ON: int = 9
+const HUD2_SOUND_OFF: int = 10
+const HUD2_HELP: int = 11
 const HUD_ICON_CELL: int = 32
 const HUD_ICON_COLUMNS: int = 4
 ## Chiều cao mỗi trạng thái trong sheet nút; chiều rộng lấy từ ảnh.
@@ -61,6 +75,14 @@ static func hud_icon(icon: HudIcon) -> Texture2D:
 	var atlas := AtlasTexture.new()
 	atlas.atlas = load(HUD_ICONS_PATH)
 	atlas.region = Rect2((icon % HUD_ICON_COLUMNS) * HUD_ICON_CELL, (icon / HUD_ICON_COLUMNS) * HUD_ICON_CELL, HUD_ICON_CELL, HUD_ICON_CELL)
+	return atlas
+
+
+## Texture của icon thứ [param cell] trong ui/hud_icons_2.png (lưới 4x3, ô 32x32), xem các hằng HUD2_*.
+static func hud_icon_2(cell: int) -> Texture2D:
+	var atlas := AtlasTexture.new()
+	atlas.atlas = load(HUD_ICONS_2_PATH)
+	atlas.region = Rect2((cell % HUD_ICON_COLUMNS) * HUD_ICON_CELL, (cell / HUD_ICON_COLUMNS) * HUD_ICON_CELL, HUD_ICON_CELL, HUD_ICON_CELL)
 	return atlas
 
 
