@@ -87,6 +87,14 @@ group_laundry() {
 	"$GODOT" --headless --path . -s tools/make_clothesline_empty.gd | grep -E "CLOTHESLINE"
 }
 
-if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2 market food laundry; fi
+group_oanquan() {
+	# Ô ăn quan: bàn cờ (thu về 222x111, mỗi pixel ứng với 8 pixel ảnh gốc), quân (dân trắng, dân xanh, quan, đống quân),
+	# và bản thu nhỏ của bàn làm trạm chơi trên bản đồ.
+	slice in=$SRC/141_o_an_quan_board.png out=$OUT/minigames/o_an_quan_board.png cell=222,111
+	slice in=$SRC/142_o_an_quan_pieces.png out=$OUT/minigames/o_an_quan_pieces.png cols=4 rows=1 split=auto anchor=feet px=13 cell=32,32 key=magenta defringe=1
+	slice in=$SRC/141_o_an_quan_board.png out=$OUT/props/o_an_quan_mat.png cell=96,48
+}
+
+if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2 market food laundry oanquan; fi
 for g in "$@"; do "group_$g"; done
 echo "Xong."

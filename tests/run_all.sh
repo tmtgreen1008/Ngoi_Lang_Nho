@@ -80,6 +80,7 @@ run_test test_laundry
 run_test test_schedules
 run_test test_save_load
 run_test test_minigames
+run_test test_o_an_quan
 run_test test_start_menu -- phase=A
 run_test test_start_menu -- phase=B
 run_test test_start_menu -- phase=C

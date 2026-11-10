@@ -1,5 +1,5 @@
 extends MapBase
-## Khu Giải trí: hai trạm chơi, Quán Net (bắn mục tiêu) và Quán Bida (canh lực).
+## Khu Giải trí: ba trạm chơi, Quán Net (bắn mục tiêu), Quán Bida (canh lực) và Chiếu Ô ăn quan (đấu với máy).
 ## Chơi xong, kết quả (tiền, thời gian trôi qua) được MinigameHost áp về thế giới chính.
 
 const HOME_MAP: String = "res://maps/home/home.tscn"
@@ -8,6 +8,8 @@ const AIM_GAME: PackedScene = preload("res://minigames/net_cafe/aim_game.tscn")
 const BILLIARDS_GAME: PackedScene = preload("res://minigames/billiards/billiards_game.tscn")
 const NET_PC_TEXTURE: Texture2D = preload("res://assets/art/props/net_pc_station.png")
 const BILLIARDS_TEXTURE: Texture2D = preload("res://assets/art/props/billiards_table.png")
+const O_AN_QUAN_GAME: PackedScene = preload("res://minigames/o_an_quan/o_an_quan_game.tscn")
+const O_AN_QUAN_TEXTURE: Texture2D = preload("res://assets/art/props/o_an_quan_mat.png")
 
 
 func _build() -> void:
@@ -17,6 +19,7 @@ func _build() -> void:
 
 	_add_station(AIM_GAME, "Quán Net", NET_PC_TEXTURE, Vector2(480, 400))
 	_add_station(BILLIARDS_GAME, "Quán Bida", BILLIARDS_TEXTURE, Vector2(900, 390))
+	_add_station(O_AN_QUAN_GAME, "Chiếu Ô ăn quan", O_AN_QUAN_TEXTURE, Vector2(640, 590))
 	add_decor(Decor.BUSH, Vector2(300, 200))
 	add_decor(Decor.BUSH, Vector2(1040, 220))
 
