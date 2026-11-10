@@ -46,6 +46,7 @@ var barn: LivestockHouse
 var duck_pond: LivestockHouse
 var buffalo_post: LivestockHouse
 var dog: PetDog
+var clothes_line: ClothesLine
 var ong_bay: VillagerNPC
 var be_ti: VillagerNPC
 
@@ -147,6 +148,10 @@ func _build_livestock() -> void:
 	# Ao vịt ở bãi cỏ phía bắc (cạnh nhà), máng ăn buộc trâu ở góc đông nam; cả hai không có nâng cấp sức chứa.
 	duck_pond = _add_livestock_house(Vector2(780, 262), LivestockHouse.Structure.POND, "res://data/animals/vit.tres", &"duck_pond", &"", 4)
 	buffalo_post = _add_livestock_house(Vector2(1018, 492), LivestockHouse.Structure.TROUGH, "res://data/animals/trau.tres", &"buffalo_post", &"", 1)
+	# Dây phơi đồ bên phải ngôi nhà.
+	clothes_line = ClothesLine.new()
+	clothes_line.position = Vector2(1090, 162)
+	add_child(clothes_line)
 	# Chó Vàng chạy chơi trên bãi cỏ cùng bé Tí.
 	dog = PetDog.new()
 	dog.position = Vector2(820, 350)

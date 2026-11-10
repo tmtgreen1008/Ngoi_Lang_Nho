@@ -146,6 +146,8 @@ func _refresh_status() -> void:
 	var text: String = "%s · %d điểm" % [RelationshipManager.get_level_name(id), RelationshipManager.get_points(id)]
 	if RelationshipManager.has_talked_today(id):
 		text += " · hôm nay đã trò chuyện"
+	elif RelationshipManager.is_wearing_clean():
+		text += " · áo quần sạch (x2 điểm)"
 	_status_label.text = text
 
 

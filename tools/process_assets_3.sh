@@ -81,6 +81,12 @@ group_food() {
 	slice in=$SRC/098_interior_kitchen.png out=$OUT/props/stove.png crop=0,0,443,443 anchor=feet px=6.5 cell=auto pad=0 key=magenta defringe=1
 }
 
-if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2 market food; fi
+group_laundry() {
+	# Dây phơi có quần áo, cắt sát; bản dây trống sinh từ ảnh này bằng tools/make_clothesline_empty.gd.
+	slice in=$SRC/022_clothesline.png out=$OUT/props/clothesline.png anchor=feet px=13 cell=auto pad=0 key=magenta defringe=1
+	"$GODOT" --headless --path . -s tools/make_clothesline_empty.gd | grep -E "CLOTHESLINE"
+}
+
+if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2 market food laundry; fi
 for g in "$@"; do "group_$g"; done
 echo "Xong."
