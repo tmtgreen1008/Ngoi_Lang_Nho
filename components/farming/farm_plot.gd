@@ -8,6 +8,8 @@ var is_tilled: bool = false
 var crop: CropItemData = null
 ## Số ngày cây đã lớn.
 var days_grown: int = 0
+## Đã bón phân cho cây đang trồng (thu hoạch được thêm nông sản); hết khi cây bị nhổ.
+var fertilized: bool = false
 
 
 func is_planted() -> bool:
@@ -22,3 +24,4 @@ func is_ripe() -> bool:
 func clear_crop() -> void:
 	crop = null
 	days_grown = 0
+	fertilized = false

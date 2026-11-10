@@ -35,6 +35,7 @@ const TOOL_ICONS: Dictionary = {
 	FarmToolController.Tool.HOE: ["res://assets/art/icons/tools_basic.png", Rect2(0, 0, 64, 64)],
 	FarmToolController.Tool.SEED: ["res://assets/art/icons/seed_icons.png", Rect2(0, 0, 32, 32)],
 	FarmToolController.Tool.HARVEST: ["res://assets/art/icons/tools_basic.png", Rect2(128, 128, 64, 64)],
+	FarmToolController.Tool.FERTILIZE: ["res://assets/art/icons/farm_goods_icons.png", Rect2(0, 64, 32, 32)],
 }
 
 var field: FarmField
@@ -42,6 +43,9 @@ var view: FarmView
 var controller: FarmToolController
 var coop: LivestockHouse
 var barn: LivestockHouse
+var duck_pond: LivestockHouse
+var buffalo_post: LivestockHouse
+var dog: PetDog
 var ong_bay: VillagerNPC
 var be_ti: VillagerNPC
 
@@ -140,15 +144,24 @@ func _on_upgrade_purchased(id: StringName, _level: int) -> void:
 func _build_livestock() -> void:
 	coop = _add_livestock_house(Vector2(736, 560), LivestockHouse.Structure.COOP, "res://data/animals/ga.tres", &"coop", UpgradeManager.COOP)
 	barn = _add_livestock_house(Vector2(890, 572), LivestockHouse.Structure.BARN, "res://data/animals/lon.tres", &"barn", UpgradeManager.BARN)
+	# Ao vịt ở bãi cỏ phía bắc (cạnh nhà), máng ăn buộc trâu ở góc đông nam; cả hai không có nâng cấp sức chứa.
+	duck_pond = _add_livestock_house(Vector2(780, 262), LivestockHouse.Structure.POND, "res://data/animals/vit.tres", &"duck_pond", &"", 4)
+	buffalo_post = _add_livestock_house(Vector2(1018, 492), LivestockHouse.Structure.TROUGH, "res://data/animals/trau.tres", &"buffalo_post", &"", 1)
+	# Chó Vàng chạy chơi trên bãi cỏ cùng bé Tí.
+	dog = PetDog.new()
+	dog.position = Vector2(820, 350)
+	dog.wander_rect = Rect2(700, 290, 160, 80)
+	add_child(dog)
 
 
-func _add_livestock_house(feet: Vector2, structure: LivestockHouse.Structure, species_path: String, key: StringName, upgrade_id: StringName) -> LivestockHouse:
+func _add_livestock_house(feet: Vector2, structure: LivestockHouse.Structure, species_path: String, key: StringName, upgrade_id: StringName, capacity: int = 4) -> LivestockHouse:
 	var house := LivestockHouse.new()
 	house.position = feet
 	house.structure = structure
 	house.species = load(species_path)
 	house.persistent_key = key
 	house.upgrade_id = upgrade_id
+	house.capacity = capacity
 	add_child(house)
 	return house
 
@@ -173,9 +186,8 @@ func _build_house() -> void:
 ## Cây cối thành cụm, bụi hoa thành hàng, chum đặt cạnh nhà.
 func _build_scenery() -> void:
 	add_decor(Decor.JAR, Vector2(866, 238))
-	# Rặng chuối cạnh nhà phía đông và góc dưới phải.
+	# Rặng chuối cạnh nhà phía đông (góc dưới phải nhường chỗ cho máng trâu).
 	add_cluster(Decor.BANANA, Vector2(1080, 210), 3, 28.0, 11)
-	add_cluster(Decor.BANANA, Vector2(1000, 560), 3, 30.0, 12)
 	# Bụi tre trên góc trái và dưới trái.
 	add_cluster(Decor.BAMBOO, Vector2(232, 150), 5, 40.0, 13)
 	add_cluster(Decor.BAMBOO, Vector2(210, 585), 3, 26.0, 14)
@@ -221,6 +233,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				controller.set_tool(FarmToolController.Tool.SEED)
 			KEY_3:
 				controller.set_tool(FarmToolController.Tool.HARVEST)
+			KEY_4:
+				controller.set_tool(FarmToolController.Tool.FERTILIZE)
 
 
 ## Nền khu nhà: cỏ rải hoa, cùng con đường đất nối cửa nhà, vườn và cổng phía đông.

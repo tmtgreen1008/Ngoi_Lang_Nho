@@ -5,12 +5,13 @@ extends Node
 ## FarmField không biết kho đồ; controller này trừ hạt giống khi gieo và thêm
 ## nông sản khi thu hoạch. Phản hồi cho người chơi đi qua signal [signal feedback].
 
-enum Tool { HOE, SEED, HARVEST }
+enum Tool { HOE, SEED, HARVEST, FERTILIZE }
 
 const TOOL_NAMES: Dictionary = {
 	Tool.HOE: "Cuốc",
 	Tool.SEED: "Gieo hạt",
 	Tool.HARVEST: "Thu hoạch",
+	Tool.FERTILIZE: "Bón phân",
 }
 
 ## Công cụ đổi.
@@ -92,6 +93,8 @@ func use_tool_at(cell: Vector2i) -> bool:
 			return _use_seed(cell)
 		Tool.HARVEST:
 			return _use_harvest(cell)
+		Tool.FERTILIZE:
+			return _use_fertilize(cell)
 	return false
 
 
@@ -125,7 +128,7 @@ func _use_harvest(cell: Vector2i) -> bool:
 	if product == null:
 		_say("Lỗi dữ liệu: không có vật phẩm thu hoạch.")
 		return false
-	var amount: int = plot.crop.harvest_amount
+	var amount: int = field.get_harvest_amount(cell)  # đã tính phân bón
 	if not inventory.can_add(product, amount):
 		_say("Túi đồ đã đầy.")
 		return false
@@ -133,6 +136,24 @@ func _use_harvest(cell: Vector2i) -> bool:
 	inventory.add_item(product, amount)
 	EventBus.item_picked.emit(product, amount)
 	_say("Thu hoạch được %d %s." % [amount, product.display_name])
+	return true
+
+
+## Vật phẩm phân bón (mỗi lần bón tốn 1).
+const FERTILIZER_ID: StringName = &"phan_bon"
+
+
+func _use_fertilize(cell: Vector2i) -> bool:
+	var fertilizer: ItemData = ItemDatabase.get_item(FERTILIZER_ID)
+	if fertilizer == null or not inventory.has_item(fertilizer):
+		_say("Không có phân bón (trâu cho phân bón mỗi ngày).")
+		return false
+	var reason: String = field.get_fertilize_block_reason(cell)
+	if not reason.is_empty():
+		_say(reason)
+		return false
+	inventory.remove_item(fertilizer, 1)
+	field.fertilize(cell)
 	return true
 
 

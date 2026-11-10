@@ -14,6 +14,8 @@ const ANIMAL_CELL := Vector2i(34, 30)
 const ANIM_SHEETS: Dictionary = {
 	&"ga": ["res://assets/art/characters/anim_chicken.png", Vector2i(32, 32), 4],
 	&"lon": ["res://assets/art/characters/anim_pig.png", Vector2i(48, 40), 6],
+	&"vit": ["res://assets/art/characters/anim_duck.png", Vector2i(32, 32), 4],
+	&"trau": ["res://assets/art/characters/anim_buffalo.png", Vector2i(64, 48), 5],
 }
 ## Chu kỳ khung của con vật: đứng, cúi mổ/ăn, bước vài bước tại chỗ.
 const ANIM_CYCLE: Array[int] = [1, 1, 1, 1, 3, 3, 3, 1, 0, 1, 2, 1]
@@ -21,7 +23,9 @@ const ANIM_FRAME_SECONDS: float = 0.3
 ## Công trình phóng 2 lần cho cân với ngôi nhà (cũng phóng 2 lần).
 const STRUCTURE_SCALE: int = 2
 ## Khung của công trình trong sheet.
-enum Structure { COOP, BARN }
+## COOP, BARN, TROUGH là ba khung trong farm_structures.png (phóng 2 lần, riêng máng ăn giữ cỡ gốc); POND là ao vịt (ảnh riêng).
+enum Structure { COOP, BARN, TROUGH, POND }
+const POND_TEXTURE: String = "res://assets/art/props/pond_small.png"
 
 @export var species: AnimalData
 @export var structure: Structure = Structure.COOP
@@ -38,24 +42,31 @@ var _animal_layer: Node2D
 var _marker: Sprite2D
 var _inventory: InventoryComponent
 var _anim_time: float = 0.0
+var _scale: int = STRUCTURE_SCALE
 
 
 func _ready() -> void:
-	var width: float = STRUCTURE_CELL.x * STRUCTURE_SCALE
-	var height: float = STRUCTURE_CELL.y * STRUCTURE_SCALE
+	var texture: Texture2D = load(POND_TEXTURE if structure == Structure.POND else STRUCTURES_SHEET)
+	var region := Rect2(structure * STRUCTURE_CELL.x, 0, STRUCTURE_CELL.x, STRUCTURE_CELL.y)
+	if structure == Structure.POND:
+		region = Rect2(Vector2.ZERO, texture.get_size())
+	_scale = 1 if structure == Structure.TROUGH else STRUCTURE_SCALE
+	var width: float = region.size.x * _scale
+	var height: float = region.size.y * _scale
 	var shadow: Sprite2D = Shadow.create(width * 0.9)
 	shadow.position = Vector2(0, -2)
 	add_child(shadow)
 
 	var sprite := Sprite2D.new()
-	sprite.texture = load(STRUCTURES_SHEET)
+	sprite.texture = texture
 	sprite.region_enabled = true
-	sprite.region_rect = Rect2(structure * STRUCTURE_CELL.x, 0, STRUCTURE_CELL.x, STRUCTURE_CELL.y)
+	sprite.region_rect = region
 	sprite.centered = false
-	sprite.offset = Vector2(-STRUCTURE_CELL.x / 2.0, -STRUCTURE_CELL.y)
-	sprite.scale = Vector2(STRUCTURE_SCALE, STRUCTURE_SCALE)
+	sprite.offset = Vector2(-region.size.x / 2.0, -region.size.y)
+	sprite.scale = Vector2(_scale, _scale)
 	add_child(sprite)
-	_add_blocker(width * 0.9)
+	# Ao nằm sát mặt đất nên chặn gần hết bề mặt; chuồng chỉ chặn dải sát chân.
+	_add_blocker(width * 0.9, height * 0.75 if structure == Structure.POND else 16.0)
 
 	pen = LivestockPen.new()
 	pen.species = species
@@ -181,17 +192,17 @@ func _animal_spot(index: int) -> Vector2:
 	var columns: int = 4
 	var column: int = index % columns
 	var row: int = index / columns
-	var spread: float = STRUCTURE_CELL.x * STRUCTURE_SCALE * 0.62
+	var spread: float = maxf(STRUCTURE_CELL.x * _scale * 0.62, 60.0)
 	var x: float = -spread / 2.0 + (spread / (columns - 1)) * column + (row % 2) * 8.0
 	return Vector2(x, 26.0 + row * 16.0 + (column % 2) * 6.0).round()
 
 
-func _add_blocker(width: float) -> void:
+func _add_blocker(width: float, height: float = 16.0) -> void:
 	var body := StaticBody2D.new()
 	var shape := CollisionShape2D.new()
 	var box := RectangleShape2D.new()
-	box.size = Vector2(width, 16.0)
+	box.size = Vector2(width, height)
 	shape.shape = box
-	body.position = Vector2(0, -8.0)
+	body.position = Vector2(0, -height / 2.0)
 	body.add_child(shape)
 	add_child(body)

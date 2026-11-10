@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AnimalData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/animal_data.gd" id="1_animal"]
+
+[resource]
+script = ExtResource("1_animal")
+id = &"vit"
+display_name = "Vịt"
+baby_item_id = &"vit_giong"
+feed_item_id = &"rau_muong"
+fed_days_per_product = 1
+product_item_id = &"trung_vit"
+product_amount = 2
+keeps_producing = true
+sprite_frame = 0

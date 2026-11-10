@@ -55,6 +55,15 @@ group_animals() {
 	slice in=$SRC/127_anim_pig.png out=$OUT/characters/anim_pig.png cols=4 rows=3 cell=48,40 key=magenta defringe=1
 }
 
-if [ "$#" -eq 0 ]; then set -- ui tools farm player animals; fi
+group_animals2() {
+	# Vịt, trâu, chó có hoạt ảnh: 12 khung (4x3). Trâu to hơn nên ô 64x48.
+	slice in=$SRC/132_anim_duck.png out=$OUT/characters/anim_duck.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
+	slice in=$SRC/128_anim_buffalo.png out=$OUT/characters/anim_buffalo.png cols=4 rows=3 cell=64,48 key=magenta defringe=1
+	slice in=$SRC/130_anim_dog.png out=$OUT/characters/anim_dog.png cols=4 rows=3 cell=32,32 key=magenta defringe=1
+	# Ao nhỏ (nửa phải của ảnh ao), cắt sát; trong game phóng 2 lần làm ao vịt.
+	slice in=$SRC/027_pond.png out=$OUT/props/pond_small.png crop=1320,150,663,560 anchor=feet px=9 cell=auto pad=0 key=magenta defringe=1
+}
+
+if [ "$#" -eq 0 ]; then set -- ui tools farm player animals animals2; fi
 for g in "$@"; do "group_$g"; done
 echo "Xong."

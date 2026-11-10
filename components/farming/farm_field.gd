@@ -91,6 +91,37 @@ func plant(cell: Vector2i, crop: CropItemData) -> bool:
 	return true
 
 
+## Số nông sản thu thêm khi cây đã được bón phân.
+const FERTILIZER_BONUS: int = 1
+
+
+## Lý do không bón phân được cho [param cell]; chuỗi rỗng nghĩa là bón được.
+func get_fertilize_block_reason(cell: Vector2i) -> String:
+	var plot: FarmPlot = get_plot(cell)
+	if plot == null or not plot.is_planted():
+		return "Chỉ bón phân cho ô đang có cây."
+	if plot.fertilized:
+		return "Cây này đã được bón phân."
+	return ""
+
+
+## Bón phân cho cây ở [param cell]: khi thu hoạch được thêm [constant FERTILIZER_BONUS] nông sản. Trả về false nếu không bón được.
+func fertilize(cell: Vector2i) -> bool:
+	if not get_fertilize_block_reason(cell).is_empty():
+		return false
+	_plots[cell].fertilized = true
+	plot_changed.emit(cell)
+	return true
+
+
+## Số nông sản sẽ thu được ở [param cell] (đã tính phân bón); 0 nếu không có cây.
+func get_harvest_amount(cell: Vector2i) -> int:
+	var plot: FarmPlot = get_plot(cell)
+	if plot == null or not plot.is_planted():
+		return 0
+	return plot.crop.harvest_amount + (FERTILIZER_BONUS if plot.fertilized else 0)
+
+
 ## Thu hoạch cây đã chín: trả về CropItemData của cây (để bên gọi tính nông sản),
 ## ô trở lại đất trống. Trả về null nếu chưa có cây chín.
 func harvest(cell: Vector2i) -> CropItemData:
@@ -114,6 +145,7 @@ func get_save_data() -> Dictionary:
 			"y": cell.y,
 			"crop": String(plot.crop.id) if plot.crop != null else "",
 			"days": plot.days_grown,
+			"fert": plot.fertilized,
 		})
 	return {"last_day": _last_day, "plots": entries}
 
@@ -130,6 +162,7 @@ func load_save_data(data: Dictionary) -> void:
 		if crop_id != &"":
 			plot.crop = ItemDatabase.get_item(crop_id) as CropItemData
 			plot.days_grown = int(entry.get("days", 0)) if plot.crop != null else 0
+			plot.fertilized = plot.crop != null and bool(entry.get("fert", false))
 		_plots[Vector2i(int(entry["x"]), int(entry["y"]))] = plot
 	# Trong lúc vắng mặt (đổi map, tắt game) thời gian vẫn trôi: bù lại số ngày đã qua.
 	_wither_out_of_season(TimeManager.season)

@@ -106,4 +106,4 @@ func run() -> void:
 	for id: StringName in CROP_IDS:
 		sold_ok = sold_ok and grocery.fixed_items.has(db.get_item(StringName("hat_giong_%s" % id)))
 	check("tạp hóa bán hạt giống lúa và 11 loại mới", sold_ok)
-	check("tạp hóa có 17 món: mì, cám, xà phòng, hạt lúa, gà giống, lợn giống và 11 hạt giống mới", grocery.fixed_items.size() == 17)
+	check("tạp hóa có 19 món: mì, cám, xà phòng, hạt lúa, 4 con giống và 11 hạt giống mới", grocery.fixed_items.size() == 19)

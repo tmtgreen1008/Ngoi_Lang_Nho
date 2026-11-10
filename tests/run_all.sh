@@ -73,6 +73,7 @@ run_test test_dialogue
 run_test test_villagers
 run_test test_economy
 run_test test_upgrades
+run_test test_more_animals
 run_test test_save_load
 run_test test_minigames
 run_test test_start_menu -- phase=A

@@ -129,10 +129,10 @@ func run() -> void:
 	# --- thanh công cụ có icon, hoạt ảnh cuốc đất ---
 	var controller: Node = home.controller
 	var tool_buttons: Dictionary = home._tool_buttons
-	var all_icons: bool = tool_buttons.size() == 3
+	var all_icons: bool = tool_buttons.size() == 4
 	for tool: int in tool_buttons:
 		all_icons = all_icons and tool_buttons[tool].icon != null and tool_buttons[tool].text.is_empty() and tool_buttons[tool].tooltip_text.contains(controller.TOOL_NAMES[tool])
-	check("thanh công cụ: 3 ô có icon, tên nằm ở tooltip", all_icons)
+	check("thanh công cụ: 4 ô có icon, tên nằm ở tooltip", all_icons)
 	controller.set_tool(2)
 	check("đổi công cụ: ô Thu hoạch được chọn, ô Cuốc nhả ra", tool_buttons[2].button_pressed and not tool_buttons[0].button_pressed)
 	check("ô đang chọn dùng khung viền vàng khác khung thường", tool_buttons[2].get_theme_stylebox("pressed").texture.region != tool_buttons[2].get_theme_stylebox("normal").texture.region)

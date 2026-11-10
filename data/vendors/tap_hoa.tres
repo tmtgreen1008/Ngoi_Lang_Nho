@@ -7,6 +7,8 @@
 [ext_resource type="Resource" path="res://data/crops/hat_giong_lua.tres" id="5_7r3qq"]
 [ext_resource type="Resource" path="res://data/items/ga_giong.tres" id="7_gagiong"]
 [ext_resource type="Resource" path="res://data/items/lon_giong.tres" id="8_longiong"]
+[ext_resource type="Resource" path="res://data/items/vit_giong.tres" id="9_vitgiong"]
+[ext_resource type="Resource" path="res://data/items/trau_giong.tres" id="10_traugiong"]
 [ext_resource type="Texture2D" path="res://assets/art/characters/npc_ba_tu.png" id="6_f7gat"]
 [ext_resource type="Resource" path="res://data/crops/hat_giong_ca_chua.tres" id="20_ca_chua"]
 [ext_resource type="Resource" path="res://data/crops/hat_giong_bap_cai.tres" id="21_bap_cai"]
@@ -29,5 +31,5 @@ id = &"tap_hoa"
 display_name = "Tiệm Tạp Hóa bà Tư"
 npc_sheet = ExtResource("6_f7gat")
 dialogue = ExtResource("99_dialogue")
-fixed_items = Array[ExtResource("1_h7r1v")]([ExtResource("2_f7gat"), ExtResource("3_0j37l"), ExtResource("4_b3vlj"), ExtResource("5_7r3qq"), ExtResource("7_gagiong"), ExtResource("8_longiong"), ExtResource("20_ca_chua"), ExtResource("21_bap_cai"), ExtResource("22_dua_leo"), ExtResource("23_rau_muong"), ExtResource("24_ngo"), ExtResource("25_ca_rot"), ExtResource("26_khoai_lang"), ExtResource("27_ot"), ExtResource("28_bi_do"), ExtResource("29_dua_hau"), ExtResource("30_dau")])
+fixed_items = Array[ExtResource("1_h7r1v")]([ExtResource("2_f7gat"), ExtResource("3_0j37l"), ExtResource("4_b3vlj"), ExtResource("5_7r3qq"), ExtResource("7_gagiong"), ExtResource("8_longiong"), ExtResource("9_vitgiong"), ExtResource("10_traugiong"), ExtResource("20_ca_chua"), ExtResource("21_bap_cai"), ExtResource("22_dua_leo"), ExtResource("23_rau_muong"), ExtResource("24_ngo"), ExtResource("25_ca_rot"), ExtResource("26_khoai_lang"), ExtResource("27_ot"), ExtResource("28_bi_do"), ExtResource("29_dua_hau"), ExtResource("30_dau")])
 buys_from_player = false

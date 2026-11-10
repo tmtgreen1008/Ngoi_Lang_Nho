@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://core/resources/item_data.gd" id="1_item"]
+[ext_resource type="Texture2D" path="res://assets/art/characters/anim_duck.png" id="2_sheet"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_icon"]
+atlas = ExtResource("2_sheet")
+region = Rect2(96, 64, 32, 32)
+
+[resource]
+script = ExtResource("1_item")
+id = &"vit_giong"
+display_name = "Vịt giống"
+description = "Vịt con, thả xuống ao vịt và cho ăn rau muống để lấy trứng vịt."
+icon = SubResource("AtlasTexture_icon")
+category = 5
+base_price = 60
+is_stackable = true
+max_stack_size = 10
