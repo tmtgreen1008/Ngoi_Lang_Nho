@@ -14,6 +14,16 @@ const WALK_CYCLE: Array[int] = [0, 1, 2, 1]
 const IDLE_FRAME: int = 1
 const WALK_FRAME_SECONDS: float = 0.14
 
+## Sheet hoạt ảnh dùng công cụ (3 khung x 4 hướng, ô 42x56), theo tên hành động.
+const ACTION_SHEETS: Dictionary = {
+	&"hoe": "res://assets/art/characters/player_hoe.png",
+	&"water": "res://assets/art/characters/player_water.png",
+}
+const ACTION_FRAMES: int = 3
+const ACTION_FRAME_SECONDS: float = 0.12
+## Đưa chân trong khung 42x56 về đúng chỗ chân của sheet đi bộ.
+const ACTION_SPRITE_OFFSET: Vector2 = Vector2(0, -16)
+
 @export_range(10.0, 600.0, 1.0) var speed: float = 120.0
 
 ## Kho đồ của người chơi (node con "Inventory").
@@ -28,6 +38,10 @@ var facing: Facing = Facing.DOWN
 
 var _walk_time: float = 0.0
 var _last_step: int = -1
+## Sprite riêng cho hoạt ảnh công cụ (khung to hơn sheet đi bộ); ẩn khi không dùng.
+var _action_sprite: Sprite2D
+## Thời gian đã chạy của hoạt ảnh công cụ; âm là không có hoạt ảnh nào.
+var _action_time: float = -1.0
 
 var _in_transition: bool = false
 var _in_minigame: bool = false
@@ -54,12 +68,62 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var direction := Vector2.ZERO
-	if not movement_locked and not _in_transition and not _in_minigame:
+	if not movement_locked and not _in_transition and not _in_minigame and not is_acting():
 		direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = direction * speed
 	move_and_slide()
-	_animate(direction, delta)
+	if is_acting():
+		_animate_action(delta)
+	else:
+		_animate(direction, delta)
 	_update_target()
+
+
+## Đang chạy hoạt ảnh dùng công cụ (đứng yên cho tới khi xong).
+func is_acting() -> bool:
+	return _action_time >= 0.0
+
+
+## Chạy hoạt ảnh dùng công cụ [param action] ("hoe", "water"), quay mặt về [param target]
+## (toạ độ thế giới). Trả về false nếu không có sheet cho hành động đó hoặc đang bận.
+func play_action(action: StringName, target: Vector2) -> bool:
+	if is_acting() or not ACTION_SHEETS.has(action):
+		return false
+	var to_target: Vector2 = target - global_position
+	if to_target != Vector2.ZERO:
+		if absf(to_target.x) > absf(to_target.y):
+			facing = Facing.RIGHT if to_target.x > 0.0 else Facing.LEFT
+		else:
+			facing = Facing.DOWN if to_target.y > 0.0 else Facing.UP
+	if _action_sprite == null:
+		_action_sprite = Sprite2D.new()
+		_action_sprite.hframes = ACTION_FRAMES
+		_action_sprite.vframes = 4
+		_action_sprite.offset = ACTION_SPRITE_OFFSET
+		add_child(_action_sprite)
+	_action_sprite.texture = load(ACTION_SHEETS[action])
+	_action_sprite.frame_coords = Vector2i(0, facing)
+	_action_sprite.show()
+	_sprite.hide()
+	_action_time = 0.0
+	return true
+
+
+## Toạ độ khung của hoạt ảnh công cụ đang chạy; (-1, -1) nếu không có. Dùng cho kiểm thử.
+func get_action_frame_coords() -> Vector2i:
+	return _action_sprite.frame_coords if is_acting() else Vector2i(-1, -1)
+
+
+func _animate_action(delta: float) -> void:
+	_action_time += delta
+	var frame: int = int(_action_time / ACTION_FRAME_SECONDS)
+	if frame >= ACTION_FRAMES:
+		_action_time = -1.0
+		_action_sprite.hide()
+		_sprite.show()
+		_sprite.frame_coords = Vector2i(IDLE_FRAME, facing)
+		return
+	_action_sprite.frame_coords = Vector2i(frame, facing)
 
 
 func _unhandled_input(event: InputEvent) -> void:

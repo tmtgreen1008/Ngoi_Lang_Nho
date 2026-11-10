@@ -126,8 +126,36 @@ func run() -> void:
 	check("đốm cỏ úa, cỏ rậm và vệt đất được bật", home.ground_variation)
 	await shot("home_layout.png")
 
-	# --- vào nhà qua cửa, ngủ trong nhà ---
+	# --- thanh công cụ có icon, hoạt ảnh cuốc đất ---
 	var controller: Node = home.controller
+	var tool_buttons: Dictionary = home._tool_buttons
+	var all_icons: bool = tool_buttons.size() == 3
+	for tool: int in tool_buttons:
+		all_icons = all_icons and tool_buttons[tool].icon != null and tool_buttons[tool].text.is_empty() and tool_buttons[tool].tooltip_text.contains(controller.TOOL_NAMES[tool])
+	check("thanh công cụ: 3 ô có icon, tên nằm ở tooltip", all_icons)
+	controller.set_tool(2)
+	check("đổi công cụ: ô Thu hoạch được chọn, ô Cuốc nhả ra", tool_buttons[2].button_pressed and not tool_buttons[0].button_pressed)
+	check("ô đang chọn dùng khung viền vàng khác khung thường", tool_buttons[2].get_theme_stylebox("pressed").texture.region != tool_buttons[2].get_theme_stylebox("normal").texture.region)
+	controller.set_tool(0)
+	var stand: Vector2 = player.position
+	check("chưa dùng công cụ: không có hoạt ảnh", not player.is_acting() and player.get_action_frame_coords() == Vector2i(-1, -1))
+	check("vung cuốc về bên phải: bắt đầu hoạt ảnh", player.play_action(&"hoe", player.global_position + Vector2(60, 4)))
+	check("đang vung: quay mặt sang phải, khung đầu của hàng phải", player.is_acting() and player.facing == player.Facing.RIGHT and player.get_action_frame_coords() == Vector2i(0, player.Facing.RIGHT))
+	check("đang vung thì không nhận hành động mới", not player.play_action(&"hoe", player.global_position))
+	check("hành động không có sheet bị từ chối", not player.play_action(&"khong_co", player.global_position))
+	Input.action_press("move_left")
+	# Hoạt ảnh chỉ dài 0,36 giây nên chụp thẳng ở đây (shot() chờ thêm 0,25 giây thì đã vung xong).
+	await wait(0.15)
+	check("đang vung cuốc thì đứng yên", player.position.distance_to(stand) < 0.5 and player.is_acting())
+	if DisplayServer.get_name() != "headless":
+		root.get_texture().get_image().save_png(SHOT_DIR + "home_hoe.png")
+	await wait(0.5)
+	Input.action_release("move_left")
+	check("vung xong: hết hoạt ảnh, đi lại được", not player.is_acting() and player.position.x < stand.x)
+	player.position = stand
+	await wait(0.1)
+
+	# --- vào nhà qua cửa, ngủ trong nhà ---
 	controller.set_tool(0)
 	controller.use_tool_at(Vector2i(1, 1))
 	controller.set_tool(1)

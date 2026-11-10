@@ -20,6 +20,10 @@ enum Decor { BANANA, BAMBOO, BUSH, FENCE, JAR }
 
 const DECOR_SHEET: String = "res://assets/art/props/decor_sheet.png"
 const DECOR_CELL: int = 48
+## Đoạn hàng rào tre thẳng trong props/fences_a.png (ô đầu, cắt sát phần có hình) và bước xếp các đoạn.
+const FENCE_SHEET: String = "res://assets/art/props/fences_a.png"
+const FENCE_REGION := Rect2(3, 24, 61, 26)
+const FENCE_STEP: int = 60
 ## Bề rộng bóng đổ ứng với từng món trang trí (pixel).
 const DECOR_SHADOW_WIDTH: Dictionary = {
 	Decor.BANANA: 30.0, Decor.BAMBOO: 26.0, Decor.BUSH: 32.0, Decor.FENCE: 36.0, Decor.JAR: 28.0,
@@ -304,6 +308,26 @@ func add_decor(decor: Decor, feet: Vector2, blocker_width: float = 0.0) -> Sprit
 	if blocker_width > 0.0:
 		_add_blocker(feet, blocker_width, 10.0)
 	return sprite
+
+
+## Dựng một dải hàng rào tre liền mạch gồm [param segments] đoạn (mỗi đoạn [constant FENCE_STEP] px),
+## mép trái-đáy ở [param left_feet]; cả dải chặn Player. Trả về các sprite đã tạo.
+func add_fence(left_feet: Vector2, segments: int) -> Array[Sprite2D]:
+	var sprites: Array[Sprite2D] = []
+	var texture: Texture2D = load(FENCE_SHEET)
+	for i: int in segments:
+		var sprite := Sprite2D.new()
+		sprite.texture = texture
+		sprite.region_enabled = true
+		sprite.region_rect = FENCE_REGION
+		sprite.centered = false
+		sprite.offset = Vector2(0, -FENCE_REGION.size.y)
+		sprite.position = left_feet + Vector2(i * FENCE_STEP, 0)
+		add_child(sprite)
+		sprites.append(sprite)
+	var right: float = left_feet.x + (segments - 1) * FENCE_STEP + FENCE_REGION.size.x
+	_add_blocker_span(left_feet.x, right, left_feet.y, 10.0)
+	return sprites
 
 
 ## Trồng một cụm [param count] món [param decor] quanh [param center] (rải đều trong bán kính

@@ -29,6 +29,13 @@ const TRUNK_COLUMN: int = 22
 const MAIN_ROAD_ROW: int = 8
 ## Các hàng ô lưới của ba lối ra phía đông (Tạp hóa, Khu giải trí, Chợ).
 const GATE_ROWS: Array[int] = [5, 8, 11]
+## Ô công cụ trên thanh công cụ và icon của từng công cụ: [đường dẫn sheet, vùng cắt].
+const TOOL_SLOT_SIZE := Vector2(60, 60)
+const TOOL_ICONS: Dictionary = {
+	FarmToolController.Tool.HOE: ["res://assets/art/icons/tools_basic.png", Rect2(0, 0, 64, 64)],
+	FarmToolController.Tool.SEED: ["res://assets/art/icons/seed_icons.png", Rect2(0, 0, 32, 32)],
+	FarmToolController.Tool.HARVEST: ["res://assets/art/icons/tools_basic.png", Rect2(128, 128, 64, 64)],
+}
 
 var field: FarmField
 var view: FarmView
@@ -95,10 +102,10 @@ func _build_garden() -> void:
 	controller.tool_changed.connect(func(_t: FarmToolController.Tool) -> void: _update_status())
 	controller.feedback.connect(_show_feedback)
 
-	# Hàng rào tre phía nam mảnh vườn, mỗi đoạn rộng một ô.
+	# Hàng rào tre liền mạch phía nam mảnh vườn, dài bằng bề ngang vườn.
 	var fence_y: float = (FARM_CELL.y + field.field_area.size.y) * TerrainTiles.TILE_SIZE + 24.0
-	for i: int in int(field.field_area.size.x):
-		add_decor(Decor.FENCE, Vector2(FARM_CELL.x * TerrainTiles.TILE_SIZE + 24.0 + i * TerrainTiles.TILE_SIZE, fence_y), 38.0)
+	var farm_width: float = field.field_area.size.x * TerrainTiles.TILE_SIZE
+	add_fence(Vector2(FARM_CELL.x * TerrainTiles.TILE_SIZE, fence_y), int(farm_width / FENCE_STEP))
 
 
 ## Chuồng gà và chuồng lợn ở bãi trống phía nam đường mòn, cạnh mảnh vườn.
@@ -155,7 +162,13 @@ func _build_scenery() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_show_feedback("")
-		controller.use_tool_at(view.world_to_cell(view.get_global_mouse_position()))
+		var target: Vector2 = view.get_global_mouse_position()
+		var used: bool = controller.use_tool_at(view.world_to_cell(target))
+		# Cuốc được đất thì Player vung cuốc về phía ô vừa cuốc.
+		if used and controller.current_tool == FarmToolController.Tool.HOE:
+			var player: Node = get_tree().get_first_node_in_group("player")
+			if player is Player:
+				(player as Player).play_action(&"hoe", target)
 	elif event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
 			KEY_1:
@@ -188,11 +201,11 @@ func _is_path_cell(cell: Vector2i) -> bool:
 func _build_hud() -> void:
 	var layer := CanvasLayer.new()
 	add_child(layer)
-	# Thanh công cụ góc dưới trái: ba nút bật/tắt, nút đang chọn lõm xuống.
+	# Thanh công cụ góc dưới trái: ba ô có icon, ô đang chọn viền vàng (khung thanh nhanh của slots.png).
 	var bar := PanelContainer.new()
 	bar.theme = UiTheme.get_theme()
 	bar.add_theme_stylebox_override("panel", UiTheme.hud_panel_style())
-	bar.position = Vector2(20, 640)
+	bar.position = Vector2(20, 612)
 	layer.add_child(bar)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
@@ -203,7 +216,25 @@ func _build_hud() -> void:
 		button.toggle_mode = true
 		button.button_group = group
 		button.focus_mode = Control.FOCUS_NONE
-		button.text = "%d  %s" % [tool + 1, FarmToolController.TOOL_NAMES[tool]]
+		button.custom_minimum_size = TOOL_SLOT_SIZE
+		button.icon = _tool_icon(tool)
+		button.expand_icon = true
+		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		button.tooltip_text = "%s (phím %d)" % [FarmToolController.TOOL_NAMES[tool], tool + 1]
+		for state: String in ["normal", "hover", "disabled"]:
+			button.add_theme_stylebox_override(state, UiTheme.slot_style(UiTheme.SLOT_HOTBAR))
+		for state: String in ["pressed", "hover_pressed"]:
+			button.add_theme_stylebox_override(state, UiTheme.slot_style(UiTheme.SLOT_HOTBAR_SELECTED))
+		# Số phím tắt ở góc trên trái của ô.
+		var key_label := Label.new()
+		key_label.text = str(tool + 1)
+		key_label.position = Vector2(7, 2)
+		key_label.add_theme_font_size_override("font_size", 13)
+		key_label.add_theme_color_override("font_color", Color.WHITE)
+		key_label.add_theme_color_override("font_outline_color", Color.BLACK)
+		key_label.add_theme_constant_override("outline_size", 4)
+		key_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		button.add_child(key_label)
 		button.pressed.connect(controller.set_tool.bind(tool))
 		_tool_buttons[tool] = button
 		row.add_child(button)
@@ -218,13 +249,22 @@ func _build_hud() -> void:
 	_feedback_panel = PanelContainer.new()
 	_feedback_panel.theme = UiTheme.get_theme()
 	_feedback_panel.add_theme_stylebox_override("panel", UiTheme.hud_panel_style())
-	_feedback_panel.position = Vector2(20, 590)
+	_feedback_panel.position = Vector2(20, 562)
 	_feedback_panel.hide()
 	layer.add_child(_feedback_panel)
 	_feedback_label = Label.new()
 	_feedback_label.add_theme_color_override("font_color", UiTheme.ACCENT_RED)
 	_feedback_panel.add_child(_feedback_label)
 	_update_status()
+
+
+## Icon của công cụ trên thanh công cụ, cắt từ sheet tương ứng trong [constant TOOL_ICONS].
+func _tool_icon(tool: int) -> Texture2D:
+	var info: Array = TOOL_ICONS[tool]
+	var atlas := AtlasTexture.new()
+	atlas.atlas = load(info[0])
+	atlas.region = info[1]
+	return atlas
 
 
 func _show_feedback(text: String) -> void:
