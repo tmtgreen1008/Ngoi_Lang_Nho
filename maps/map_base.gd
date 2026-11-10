@@ -24,6 +24,9 @@ const DECOR_CELL: int = 48
 const FENCE_SHEET: String = "res://assets/art/props/fences_a.png"
 const FENCE_REGION := Rect2(3, 24, 61, 26)
 const FENCE_STEP: int = 60
+## Cọc tre ở đầu đoạn rào (dùng cho cạnh rào dọc): bề rộng cọc và khoảng cách giữa các cọc.
+const FENCE_POST_WIDTH: float = 9.0
+const FENCE_POST_STEP: float = 16.0
 ## Bề rộng bóng đổ ứng với từng món trang trí (pixel).
 const DECOR_SHADOW_WIDTH: Dictionary = {
 	Decor.BANANA: 30.0, Decor.BAMBOO: 26.0, Decor.BUSH: 32.0, Decor.FENCE: 36.0, Decor.JAR: 28.0,
@@ -376,6 +379,27 @@ func add_decor(decor: Decor, feet: Vector2, blocker_width: float = 0.0) -> Sprit
 	if blocker_width > 0.0:
 		_add_blocker(feet, blocker_width, 10.0)
 	return sprite
+
+
+## Dựng một cạnh rào DỌC dài [param length] px bằng các cọc tre (cắt từ đầu cọc của đoạn rào ngang), đầu trên ở
+## [param top]; cả cạnh chặn Player. Dùng cùng [method add_fence] để vây kín một khoảng sân.
+func add_fence_side(top: Vector2, length: float) -> Array[Sprite2D]:
+	var sprites: Array[Sprite2D] = []
+	var texture: Texture2D = load(FENCE_SHEET)
+	var post := Rect2(FENCE_REGION.position.x, FENCE_REGION.position.y, FENCE_POST_WIDTH, FENCE_REGION.size.y)
+	var count: int = maxi(2, int(length / FENCE_POST_STEP) + 1)
+	for i: int in count:
+		var sprite := Sprite2D.new()
+		sprite.texture = texture
+		sprite.region_enabled = true
+		sprite.region_rect = post
+		sprite.centered = false
+		sprite.offset = Vector2(-FENCE_POST_WIDTH / 2.0, -post.size.y)
+		sprite.position = top + Vector2(0, length * i / float(count - 1))
+		add_child(sprite)
+		sprites.append(sprite)
+	_add_blocker(top + Vector2(0, length), FENCE_POST_WIDTH, length)
+	return sprites
 
 
 ## Dựng một dải hàng rào tre liền mạch gồm [param segments] đoạn (mỗi đoạn [constant FENCE_STEP] px),

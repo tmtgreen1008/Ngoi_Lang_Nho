@@ -6,7 +6,7 @@
 script = ExtResource("1_upgrade")
 id = &"garden"
 display_name = "Mở rộng vườn"
-description = "Khai hoang thêm một hàng đất phía trên mảnh vườn, thêm 10 ô để trồng."
-costs = PackedInt32Array(250, 600, 1200)
-values = PackedInt32Array(7, 8, 9, 10)
+description = "Khai hoang thêm một hàng đất phía trên mảnh vườn, thêm 8 ô để trồng."
+costs = PackedInt32Array(200, 450, 900)
+values = PackedInt32Array(5, 6, 7, 8)
 value_format = "%d hàng"

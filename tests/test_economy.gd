@@ -75,8 +75,8 @@ func run() -> void:
 	check("Quán Net hoàn hảo: %.1f đ/giờ trong khoảng %.0f-%.0f" % [aim_best, targets["min_minigame_hourly"], targets["max_minigame_hourly"]], aim_best >= targets["min_minigame_hourly"] and aim_best <= targets["max_minigame_hourly"])
 	check("Quán Bida hoàn hảo: %.1f đ/giờ trong khoảng %.0f-%.0f" % [pool_best, targets["min_minigame_hourly"], targets["max_minigame_hourly"]], pool_best >= targets["min_minigame_hourly"] and pool_best <= targets["max_minigame_hourly"])
 	var full_day_income: float = aim_best * 16.0
-	var farm_day_income: float = min_ppd * 70.0
-	check("chơi mini-game cả ngày (16 giờ) vẫn kiếm ít hơn một vườn đầy 70 ô (%.0f < %.0f đ/ngày)" % [full_day_income, farm_day_income], full_day_income < farm_day_income)
+	var farm_day_income: float = min_ppd * 64.0
+	check("chơi mini-game cả ngày (16 giờ) vẫn kiếm ít hơn một vườn đã mở rộng hết 64 ô (%.0f < %.0f đ/ngày)" % [full_day_income, farm_day_income], full_day_income < farm_day_income)
 	aim.free()
 	pool.free()
 

@@ -12,7 +12,7 @@ Mọi con số (giá, sản lượng, thưởng mini-game) nằm trong dữ li�
 
 - Người chơi **mua hạt giống ở Tạp Hóa** (giá = `base_price` x 1,0) và **bán nông sản ở Chợ** (giá = `base_price` x 0,6, chỉ nhận nhóm Cây trồng và Thực phẩm, mở 5h-11h). Chợ bán cho người chơi với hệ số 1,2.
 - Vì giá thu mua (0,6) luôn thấp hơn giá bán ra (1,0 và 1,2), không có cách kiếm lời bằng mua đi bán lại.
-- **Lãi/ô/ngày** (PPD) = (số nông sản x giá bán - giá hạt) / số ngày lớn. Đây là thước đo chính để so sánh các loại cây. Vườn có 70 ô.
+- **Lãi/ô/ngày** (PPD) = (số nông sản x giá bán - giá hạt) / số ngày lớn. Đây là thước đo chính để so sánh các loại cây. Vườn gốc có 40 ô (8x5), mở rộng tối đa 64 ô.
 - Vốn khởi đầu: 100 đ, 10 hạt lúa, 4 trứng gà.
 
 ## Mục tiêu
@@ -24,7 +24,7 @@ Mọi con số (giá, sản lượng, thưởng mini-game) nằm trong dữ li�
 | Gà giống hoàn vốn | tối đa 8 ngày |
 | Một lứa lợn (đã trừ giống và thức ăn) | lãi tối thiểu 40 đ |
 | Mini-game, chơi hoàn hảo | 8 - 45 đ/giờ trong game |
-| Mini-game cả ngày (16 giờ) | thấp hơn một vườn đầy 70 ô |
+| Mini-game cả ngày (16 giờ) | thấp hơn một vườn đã mở rộng hết (64 ô) |
 
 ## Giá hiện tại
 
@@ -76,13 +76,13 @@ Nâng cấp mua qua ông Bảy ở sân nhà (bấm `E`, chọn **Nhờ làm gi�
 
 | Nâng cấp | Cấp 1 | Cấp 2 | Cấp 3 | Hiệu lực |
 |---|---|---|---|---|
-| Mở rộng vườn | 250 đ | 600 đ | 1200 đ | 7 -> 8 -> 9 -> 10 hàng (thêm hàng phía trên, +10 ô mỗi cấp) |
+| Mở rộng vườn | 200 đ | 450 đ | 900 đ | 5 -> 6 -> 7 -> 8 hàng (thêm hàng phía trên, +8 ô mỗi cấp; vườn gốc 8x5 = 40 ô) |
 | Dụng cụ tốt hơn | 400 đ | 900 đ | 1800 đ | 1 -> 2 -> 3 -> 6 ô mỗi lần cuốc/gieo/thu hoạch |
 | Mở rộng chuồng gà | 150 đ | 300 đ | | 4 -> 6 -> 8 gà |
 | Mở rộng chuồng lợn | 300 đ | 550 đ | | 4 -> 6 -> 8 lợn |
 | Túi đồ lớn hơn | 150 đ | 400 đ | | 16 -> 24 -> 32 ô |
 
-Tổng 7000 đ, tương đương khoảng 10 ngày thu nhập của một vườn đầy. Mỗi cấp tăng thu nhập (vườn, chuồng) đều hoàn vốn trong tối đa 20 ngày theo lãi tối thiểu (`tests/test_upgrades.gd` kiểm tra), nên đáng mua nhưng không phải mua ngay.
+Tổng 6500 đ, tương đương khoảng 15 ngày thu nhập của vườn gốc 40 ô. Mỗi cấp tăng thu nhập (vườn, chuồng) đều hoàn vốn trong tối đa 20 ngày theo lãi tối thiểu (`tests/test_upgrades.gd` kiểm tra), nên đáng mua nhưng không phải mua ngay.
 
 ## Mở rộng sau đợt cân bằng đầu
 

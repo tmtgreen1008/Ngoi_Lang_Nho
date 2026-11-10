@@ -163,9 +163,9 @@ func run() -> void:
 	# Hàng rào vườn mới: 8 đoạn tre liền nhau, dài đúng bằng bề ngang vườn.
 	var fence_count: int = 0
 	for child: Node in home.get_children():
-		if child is Sprite2D and child.texture != null and String(child.texture.resource_path).ends_with("fences_a.png"):
+		if child is Sprite2D and child.texture != null and String(child.texture.resource_path).ends_with("fences_a.png") and is_equal_approx(child.position.y, 504.0) and child.region_rect.size.x > 20.0:
 			fence_count += 1
-	check("hàng rào tre mới: 8 đoạn dọc mép nam của vườn", fence_count == 8)
+	check("hàng rào tre: 6 đoạn dọc mép nam của vườn (vườn rộng 8 ô)", fence_count == 6)
 	await shot("livestock_coop.png")
 
 	# Cho ăn rồi đi vắng: chuồng được nhớ và con vật vẫn ở đó.

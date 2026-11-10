@@ -86,6 +86,7 @@ func _build() -> void:
 
 	_build_garden()
 	_build_livestock()
+	_build_pens()
 	_build_house()
 	_build_scenery()
 	remove_decor_in(_garden_world_rect())  # vườn đã mở rộng thì dọn cây cối vướng chỗ
@@ -121,8 +122,8 @@ func _build_garden() -> void:
 
 
 ## Số hàng gốc của mảnh vườn (chưa nâng cấp); vườn mở rộng thêm các hàng phía TRÊN, đáy vườn (cạnh hàng rào) cố định.
-const BASE_GARDEN_ROWS: int = 7
-const GARDEN_COLUMNS: int = 10
+const BASE_GARDEN_ROWS: int = 5
+const GARDEN_COLUMNS: int = 8
 
 
 ## Vùng canh tác (toạ độ ô trong view vườn) theo cấp nâng cấp: các hàng thêm nằm ở toạ độ y âm.
@@ -151,16 +152,40 @@ func _build_livestock() -> void:
 	barn = _add_livestock_house(Vector2(890, 572), LivestockHouse.Structure.BARN, "res://data/animals/lon.tres", &"barn", UpgradeManager.BARN)
 	# Ao vịt ở bãi cỏ phía bắc (cạnh nhà), máng ăn buộc trâu ở góc đông nam; cả hai không có nâng cấp sức chứa.
 	duck_pond = _add_livestock_house(Vector2(780, 262), LivestockHouse.Structure.POND, "res://data/animals/vit.tres", &"duck_pond", &"", 4)
-	buffalo_post = _add_livestock_house(Vector2(1018, 492), LivestockHouse.Structure.TROUGH, "res://data/animals/trau.tres", &"buffalo_post", &"", 1)
+	buffalo_post = _add_livestock_house(Vector2(1000, 526), LivestockHouse.Structure.TROUGH, "res://data/animals/trau.tres", &"buffalo_post", &"", 1)
 	# Dây phơi đồ bên phải ngôi nhà.
 	clothes_line = ClothesLine.new()
 	clothes_line.position = Vector2(1090, 162)
 	add_child(clothes_line)
-	# Chó Vàng chạy chơi trên bãi cỏ cùng bé Tí.
+	# Chó Vàng chạy chơi cùng bé Tí trên bãi cỏ phía nam mảnh vườn.
 	dog = PetDog.new()
-	dog.position = Vector2(820, 350)
-	dog.wander_rect = Rect2(700, 290, 160, 80)
+	dog.position = Vector2(300, 570)
+	dog.wander_rect = Rect2(220, 540, 320, 60)
 	add_child(dog)
+
+
+## Khu chăn nuôi: sân có rào tre vây quanh chuồng gà, chuồng lợn và máng trâu; cổng (khoảng hở) ở cạnh bắc, phía đường mòn.
+const YARD_LEFT: float = 604.0
+const YARD_NORTH: float = 456.0
+const YARD_SOUTH: float = 622.0
+## Cạnh bắc: 3 đoạn rào, khoảng hở làm cổng, rồi 3 đoạn nữa.
+const YARD_GATE_FROM: float = 786.0
+const YARD_GATE_TO: float = 850.0
+## Ao vịt: rào ba mặt (hai bên và phía trước); cho vịt ăn, thu trứng từ ngoài rào.
+const POND_PEN := Rect2(702, 176, 182, 150)
+
+
+## Rào quanh khu chăn nuôi và ao vịt.
+func _build_pens() -> void:
+	var yard_right: float = YARD_GATE_TO + 2 * FENCE_STEP + FENCE_REGION.size.x
+	add_fence(Vector2(YARD_LEFT, YARD_NORTH), 3)
+	add_fence(Vector2(YARD_GATE_TO, YARD_NORTH), 3)
+	add_fence(Vector2(YARD_LEFT, YARD_SOUTH), 7)
+	add_fence_side(Vector2(YARD_LEFT + 4.0, YARD_NORTH), YARD_SOUTH - YARD_NORTH)
+	add_fence_side(Vector2(yard_right - 4.0, YARD_NORTH), YARD_SOUTH - YARD_NORTH)
+	add_fence(Vector2(POND_PEN.position.x, POND_PEN.end.y), 3)
+	add_fence_side(Vector2(POND_PEN.position.x + 4.0, POND_PEN.position.y), POND_PEN.size.y)
+	add_fence_side(Vector2(POND_PEN.end.x - 4.0, POND_PEN.position.y), POND_PEN.size.y)
 
 
 func _add_livestock_house(feet: Vector2, structure: LivestockHouse.Structure, species_path: String, key: StringName, upgrade_id: StringName, capacity: int = 4) -> LivestockHouse:
@@ -250,7 +275,7 @@ func _tile_for_cell(cell: Vector2i) -> TerrainTiles.Tile:
 
 
 func _is_path_cell(cell: Vector2i) -> bool:
-	var farm_right: int = FARM_CELL.x + 10  # cột đầu tiên sau mảnh vườn
+	var farm_right: int = FARM_CELL.x + GARDEN_COLUMNS  # cột đầu tiên sau mảnh vườn
 	var yard: bool = cell.x == YARD_PATH_COLUMN and cell.y >= 5 and cell.y <= MAIN_ROAD_ROW  # từ cửa nhà xuống
 	var main_road: bool = cell.y == MAIN_ROAD_ROW and cell.x >= farm_right and cell.x <= TRUNK_COLUMN  # lối mòn tới vườn
 	var trunk: bool = cell.x == TRUNK_COLUMN and cell.y >= GATE_ROWS[0] and cell.y <= GATE_ROWS[2]  # đường dọc ở cổng

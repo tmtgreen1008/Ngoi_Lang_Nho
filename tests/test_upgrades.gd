@@ -42,29 +42,29 @@ func run() -> void:
 			total_cost += cost
 	check("5 nâng cấp hợp lệ (vườn, công cụ, chuồng gà, chuồng lợn, túi đồ)", data_ok and um.get_all().size() == 5)
 	check("giá tăng dần theo cấp và hiệu lực tăng dần", costs_ascending and values_ascending)
-	check("cấp 0: vườn 7 hàng, 1 ô/lần, 4 gà, 4 lợn, 16 ô túi", um.get_value(&"garden") == 7 and um.get_value(&"tool") == 1 and um.get_value(&"coop") == 4 and um.get_value(&"barn") == 4 and um.get_value(&"bag") == 16)
+	check("cấp 0: vườn 5 hàng, 1 ô/lần, 4 gà, 4 lợn, 16 ô túi", um.get_value(&"garden") == 5 and um.get_value(&"tool") == 1 and um.get_value(&"coop") == 4 and um.get_value(&"barn") == 4 and um.get_value(&"bag") == 16)
 	check("tổng giá mọi nâng cấp %d đ nằm trong 5000-12000 (chỗ tiêu tiền đáng kể, không quá xa)" % total_cost, total_cost >= 5000 and total_cost <= 12000)
 	var fmt: UpgradeData = um.get_data(&"garden")
-	check("định dạng hiệu lực: '7 hàng' -> '8 hàng'", fmt.format_value(0) == "7 hàng" and fmt.format_value(1) == "8 hàng" and fmt.format_value(99) == "10 hàng")
+	check("định dạng hiệu lực: '7 hàng' -> '8 hàng'", fmt.format_value(0) == "5 hàng" and fmt.format_value(1) == "6 hàng" and fmt.format_value(99) == "8 hàng")
 
 	# --- mua bán ---
 	var purchases: Array = []
 	bus.upgrade_purchased.connect(func(id: StringName, level: int) -> void: purchases.append([id, level]))
-	check("không đủ tiền: báo lỗi, tiền và cấp không đổi", um.buy(&"garden") == "Không đủ tiền: cần 250 đ." and economy.money == 100 and um.get_level(&"garden") == 0 and purchases.is_empty())
+	check("không đủ tiền: báo lỗi, tiền và cấp không đổi", um.buy(&"garden") == "Không đủ tiền: cần 200 đ." and economy.money == 100 and um.get_level(&"garden") == 0 and purchases.is_empty())
 	check("id lạ: báo lỗi", um.buy(&"khong_co") == "Không có nâng cấp này.")
 	economy.earn(5000)
 	var money_before: int = economy.money
-	check("mua cấp 1 vườn: trừ 250 đ", um.buy(&"garden") == "" and economy.money == money_before - 250 and um.get_level(&"garden") == 1 and um.get_value(&"garden") == 8)
+	check("mua cấp 1 vườn: trừ 200 đ", um.buy(&"garden") == "" and economy.money == money_before - 200 and um.get_level(&"garden") == 1 and um.get_value(&"garden") == 6)
 	check("phát tín hiệu mua với cấp mới", purchases == [[&"garden", 1]])
-	check("giá cấp kế tiếp 600 đ", um.get_next_cost(&"garden") == 600)
+	check("giá cấp kế tiếp 450 đ", um.get_next_cost(&"garden") == 450)
 	um.buy(&"garden")
 	um.buy(&"garden")
-	check("mua đủ 3 cấp: tối đa, 10 hàng", um.get_level(&"garden") == 3 and um.is_maxed(&"garden") and um.get_value(&"garden") == 10)
+	check("mua đủ 3 cấp: tối đa, 8 hàng", um.get_level(&"garden") == 3 and um.is_maxed(&"garden") and um.get_value(&"garden") == 8)
 	var money_max: int = economy.money
 	check("đã tối đa: không mua thêm, không mất tiền", um.buy(&"garden") == "Đã nâng cấp tối đa." and economy.money == money_max and um.get_next_cost(&"garden") == -1)
 	var saved: Dictionary = JSON.parse_string(JSON.stringify(um.get_save_data()))
 	um.clear()
-	check("clear: mọi cấp về 0", um.get_level(&"garden") == 0 and um.get_value(&"garden") == 7)
+	check("clear: mọi cấp về 0", um.get_level(&"garden") == 0 and um.get_value(&"garden") == 5)
 	um.load_save_data(saved)
 	check("lưu/nạp qua JSON giữ cấp", um.get_level(&"garden") == 3)
 	um.load_save_data({"garden": 99, "khong_co": 5, "tool": -3})
@@ -83,7 +83,7 @@ func run() -> void:
 	var pig_feed: ItemData = db.get_item(pig.feed_item_id)
 	var pig_feed_cost: int = market.get_sell_price(pig_feed)
 	var pig_daily: float = float(market.get_sell_price(db.get_item(pig.product_item_id)) * pig.product_amount - pig_feed_cost * pig.fed_days_per_product - pig_cost) / pig.fed_days_per_product
-	var garden_income: float = 10.0 * targets["min_crop_ppd"]  # một hàng thêm = 10 ô, lãi tối thiểu mỗi ô
+	var garden_income: float = 8.0 * targets["min_crop_ppd"]  # một hàng thêm = 8 ô, lãi tối thiểu mỗi ô
 	var garden_data: UpgradeData = um.get_data(&"garden")
 	var coop_data: UpgradeData = um.get_data(&"coop")
 	var barn_data: UpgradeData = um.get_data(&"barn")
@@ -172,7 +172,7 @@ func run() -> void:
 	var player: Node = main.player
 	var home: Node = sm.current_map
 	economy.earn(20000)  # Ván mới đặt lại tiền về 100 đ nên cấp vốn sau khi vào game
-	check("ván mới: các nâng cấp ở cấp 0, túi 16 ô, vườn 70 ô", um.get_level(&"garden") == 0 and player.inventory.slots.size() == 16 and home.field.field_area == Rect2i(0, 0, 10, 7))
+	check("ván mới: các nâng cấp ở cấp 0, túi 16 ô, vườn 40 ô", um.get_level(&"garden") == 0 and player.inventory.slots.size() == 16 and home.field.field_area == Rect2i(0, 0, 8, 5))
 	check("ông Bảy nhận làm giúp, bà Tư thì không", home.ong_bay.offers_upgrades)
 
 	# Túi đồ
@@ -194,17 +194,17 @@ func run() -> void:
 	check("thả đủ 8 gà vào chuồng nâng cấp", home.coop.pen.get_count() == 8 and home.coop.pen.is_full() and home.coop.get_node("Animals").get_child_count() == 8)
 
 	# Vườn: thêm hàng phía trên, dọn cây cối vướng, hàng rào giữ nguyên
-	var garden_rect := Rect2(192, 96, 480, 144)  # ba hàng thêm phía trên (y 96-240)
+	var garden_rect := Rect2(192, 96, 384, 144)  # ba hàng thêm phía trên (y 96-240)
 	var decor_before: int = _count_decor_in(home, garden_rect)
 	var fence_y_before: float = home.get_children().filter(func(n: Node) -> bool: return n is Sprite2D and n.position.y > 560.0 and n.position.y < 620.0 and n.position.x >= 192.0 and n.position.x < 700.0).size()
 	check("trước khi mở rộng, có cây cối ở dải đất sẽ khai hoang", decor_before > 0)
 	um.buy(&"garden")
-	check("vườn cấp 1: 8 hàng (80 ô), thêm hàng phía trên", home.field.field_area == Rect2i(0, -1, 10, 8) and home.field.is_farmable(Vector2i(0, -1)) and not home.field.is_farmable(Vector2i(0, -2)))
+	check("vườn cấp 1: 6 hàng (48 ô), thêm hàng phía trên", home.field.field_area == Rect2i(0, -1, 8, 6) and home.field.is_farmable(Vector2i(0, -1)) and not home.field.is_farmable(Vector2i(0, -2)))
 	check("ô mới của vườn đã được vẽ", home.view._ground.get_cell_source_id(Vector2i(3, -1)) != -1)
 	um.buy(&"garden")
 	um.buy(&"garden")
 	await wait(0.1)  # queue_free chạy cuối khung hình
-	check("vườn cấp 3: 10 hàng (100 ô)", home.field.field_area == Rect2i(0, -3, 10, 10) and home.field.field_area.get_area() == 100)
+	check("vườn cấp 3: 8 hàng (64 ô)", home.field.field_area == Rect2i(0, -3, 8, 8) and home.field.field_area.get_area() == 64)
 	check("đã dọn hết cây cối trên dải đất mới", _count_decor_in(home, garden_rect) == 0)
 	await shot("upgrade_garden.png")
 	check("cuốc được ô ở hàng mới trên cùng", home.controller.use_tool_at(Vector2i(2, -3)))
@@ -286,7 +286,7 @@ func run() -> void:
 	var home2: Node = sm.current_map
 	await wait(0.1)
 	check("nạp game khôi phục cấp nâng cấp", um.get_save_data() == levels_saved)
-	check("nạp game: túi 32 ô, vườn 100 ô, chuồng gà 8 chỗ, chuồng lợn 6 chỗ", player.inventory.slots.size() == 32 and home2.field.field_area == Rect2i(0, -3, 10, 10) and home2.coop.pen.capacity == 8 and home2.barn.pen.capacity == 6)
+	check("nạp game: túi 32 ô, vườn 64 ô, chuồng gà 8 chỗ, chuồng lợn 6 chỗ", player.inventory.slots.size() == 32 and home2.field.field_area == Rect2i(0, -3, 8, 8) and home2.coop.pen.capacity == 8 and home2.barn.pen.capacity == 6)
 	check("nạp game: cây cối trên đất khai hoang đã được dọn khi dựng map", _count_decor_in(home2, garden_rect) == 0)
 	DirAccess.remove_absolute(save.get_slot_path(&"test_upgrades"))
 	await wait(0.5)  # chờ hết hiệu ứng mờ của lần nạp (đang chuyển map thì yêu cầu mới bị bỏ qua)
@@ -294,4 +294,4 @@ func run() -> void:
 	await wait(1.0)
 	check("ván mới: mọi nâng cấp về 0", um.get_save_data().is_empty())
 	check("ván mới: túi 16 ô", main.player.inventory.slots.size() == 16)
-	check("ván mới: vườn 70 ô và chuồng 4 chỗ", sm.current_map.field.field_area == Rect2i(0, 0, 10, 7) and sm.current_map.coop.pen.capacity == 4)
+	check("ván mới: vườn 40 ô và chuồng 4 chỗ", sm.current_map.field.field_area == Rect2i(0, 0, 8, 5) and sm.current_map.coop.pen.capacity == 4)

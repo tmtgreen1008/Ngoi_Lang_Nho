@@ -186,6 +186,7 @@ func run() -> void:
 	check("có chỗ thì nhận được", dog.pet(player.inventory))
 	# Bấm E thật.
 	tm.sleep_until_morning()
+	dog.position = Vector2(630, 400)  # chỗ trống cạnh vườn, xa bé Tí và ông Bảy để nhắm cho chắc
 	player.position = dog.position + Vector2(0, 16)
 	dog.wander_rect = Rect2()  # đứng yên để nhắm cho chắc
 	await wait(0.3)
@@ -200,3 +201,36 @@ func run() -> void:
 	await wait(1.0)
 	check("về lại nhà: chó nhớ hôm nay đã tha quà", sm.current_scene_path.ends_with("home.tscn") and sm.current_map.dog.last_gift_day == gift_day and sm.current_map.dog.has_fetched_today())
 	check("ao vịt và trâu được nhớ qua đổi map", sm.current_map.duck_pond.pen.get_count() == 1 and sm.current_map.buffalo_post.pen.get_count() == 1)
+
+	# --- vườn thu gọn và khu chăn nuôi có rào ---
+	var yard: Node = sm.current_map
+	check("vườn gốc 8 x 5 = 40 ô", yard.field.field_area == Rect2i(0, 0, 8, 5))
+	var rails: int = 0
+	var posts: int = 0
+	for child: Node in yard.get_children():
+		if child is Sprite2D and child.texture != null and String(child.texture.resource_path).ends_with("fences_a.png"):
+			if child.region_rect.size.x > 20.0 and child.position.y > 440.0 and child.position.x >= yard.YARD_LEFT:
+				rails += 1
+			elif child.region_rect.size.x <= 20.0:
+				posts += 1
+	check("khu chăn nuôi có rào ngang hai cạnh (6 đoạn phía bắc chừa cổng, 7 đoạn phía nam) và cọc rào hai bên", rails == 13 and posts >= 30)
+	var yard_rect := Rect2(yard.YARD_LEFT, yard.YARD_NORTH, 430.0, yard.YARD_SOUTH - yard.YARD_NORTH)
+	check("chuồng gà, chuồng lợn và máng trâu nằm trong sân rào", yard_rect.has_point(yard.coop.position) and yard_rect.has_point(yard.barn.position) and yard_rect.has_point(yard.buffalo_post.position))
+	player.position = Vector2(680, 436)
+	Input.action_press("move_down")
+	await wait(0.8)
+	Input.action_release("move_down")
+	check("rào phía bắc chặn đường vào sân", player.position.y < yard.YARD_NORTH)
+	player.position = Vector2((yard.YARD_GATE_FROM + yard.YARD_GATE_TO) / 2.0, 436)
+	Input.action_press("move_down")
+	await wait(0.8)
+	Input.action_release("move_down")
+	check("đi qua cổng (khoảng hở) thì vào được sân", player.position.y > yard.YARD_NORTH + 20.0)
+	player.position = Vector2(780, 400)
+	Input.action_press("move_up")
+	await wait(1.0)
+	Input.action_release("move_up")
+	await wait(0.2)
+	check("rào ao vịt chặn phía trước ao", player.position.y > yard.POND_PEN.end.y - 4.0)
+	check("đứng ngoài rào vẫn cho vịt ăn / thu trứng được", player.get_target() == yard.duck_pond.interactable)
+	await shot("home_pens.png")

@@ -52,7 +52,7 @@ func run() -> void:
 	bus.notice_requested.connect(func(text: String, _kind: StringName) -> void: notices.append(text))
 	check("map nhà có tên khoá 'home'", home.map_key() == "home")
 	check("6 giờ: sân nhà có ông Bảy và bé Tí", home.ong_bay != null and home.be_ti != null and home.get_villager_ids().size() == 2)
-	check("bé Tí đi dạo trong khung của lịch", home.be_ti.wander_rect == Rect2(700, 290, 160, 80))
+	check("bé Tí đi dạo trong khung của lịch", home.be_ti.wander_rect == Rect2(220, 540, 320, 60))
 	notices.clear()
 	tm.advance_minutes(170)  # 8:50
 	check("8 giờ 50: chưa ai đi", home.be_ti != null and notices.is_empty())
