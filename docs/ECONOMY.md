@@ -83,3 +83,19 @@ Nâng cấp mua qua ông Bảy ở sân nhà (bấm `E`, chọn **Nhờ làm gi�
 | Túi đồ lớn hơn | 150 đ | 400 đ | | 16 -> 24 -> 32 ô |
 
 Tổng 7000 đ, tương đương khoảng 10 ngày thu nhập của một vườn đầy. Mỗi cấp tăng thu nhập (vườn, chuồng) đều hoàn vốn trong tối đa 20 ngày theo lãi tối thiểu (`tests/test_upgrades.gd` kiểm tra), nên đáng mua nhưng không phải mua ngay.
+
+## Mở rộng sau đợt cân bằng đầu
+
+Các phần dưới đây được thêm sau và có test riêng giữ cân bằng; `tools/economy_report.gd` chưa in các mục này.
+
+| Mục | Số liệu | Test |
+|---|---|---|
+| Vịt | giống 60 đ; ăn 1 rau muống/ngày; 2 trứng vịt/ngày (trứng base 17, cô Ba mua 11 đ) -> lãi khoảng 12 đ/ngày, hoàn vốn 5 ngày | `test_more_animals` |
+| Trâu | nghé 350 đ; ăn 1 rau muống/ngày; 1 phân bón/ngày; mỗi phân bón cho thêm 1 nông sản khi thu hoạch (14-71 đ tuỳ cây) | `test_more_animals` |
+| Sạp cô Ba | chỉ thu mua thực phẩm, x0,7 (chú Năm x0,6) | `test_market_stalls` |
+| Hàng xén cô Út | 3 loại hạt giống mỗi ngày, x0,9 giá Tạp Hóa; lãi/ô/ngày cao nhất khi mua ở đây vẫn <= 14 đ | `test_market_stalls` |
+| Món ăn | 10 công thức; giá món (bán cô Ba) bằng 1,10-1,35 lần giá bán nguyên liệu sống; mỗi món mất 15-60 phút | `test_cooking` |
+| Giặt đồ | 1 xà phòng (15 đ) + 60 phút cho 3 ngày gấp đôi điểm thân thiết | `test_laundry` |
+| Ô ăn quan | phí 10 đ, 60 phút, thắng 30 đ (lãi 20 đ/giờ), hoà hoàn phí | `test_o_an_quan` |
+
+Quy tắc chung vẫn giữ: không có cặp "mua ở sạp này, bán ở sạp kia" hay "mua nguyên liệu, nấu rồi bán" nào có lời, vì giá thu mua cao nhất (x0,7, món ăn thêm tối đa 35%) luôn thấp hơn giá bán ra thấp nhất (x0,9 chỉ áp cho hạt giống, thứ không sạp nào thu mua).

@@ -23,10 +23,10 @@ khi chuyển cảnh.
 | Phím | Việc |
 |---|---|
 | `W A S D` hoặc mũi tên | Đi lại |
-| `E` | Tương tác (nói chuyện với người bán, ngủ ở giường, chơi mini-game) |
+| `E` | Tương tác (nói chuyện, ngủ ở giường, nấu ăn ở bếp, giặt đồ, cho vật nuôi ăn, vuốt ve chó, chơi mini-game) |
 | `Esc` | Mở/đóng menu tạm dừng (Tiếp tục, Lưu game, Tải game); đóng cửa hàng |
 | Chuột trái | Dùng công cụ lên ô đất (ở khu nhà) |
-| `1` `2` `3` | Chọn công cụ: Cuốc, Gieo hạt, Thu hoạch (ở khu nhà) |
+| `1` `2` `3` `4` | Chọn công cụ: Cuốc, Gieo hạt, Thu hoạch, Bón phân (ở khu nhà) |
 
 ### Cách chơi thử nhanh
 
@@ -52,11 +52,17 @@ khi chuyển cảnh.
 | Dân làng | 5 NPC chỉ trò chuyện (`VillagerNPC`, ảnh `characters/villagers.png`): ông Bảy (người làm ruộng, mẹo trồng trọt) và bé Tí (chạy chơi trên bãi cỏ, dừng khi nói chuyện) ở sân nhà, chị Hạnh ở Tiệm Tạp Hóa, cô Lan ở Chợ, anh Hai chủ quán ở Khu Giải trí. Mỗi người một file `data/dialogues/<id>.tres` (chào, câu theo mùa, câu người quen, quà tặng riêng); thêm NPC mới chỉ cần ảnh, file thoại và một dòng `add_villager` trong map |
 | Cân bằng kinh tế | Giá cây trồng tính từ lãi mục tiêu mỗi ô mỗi ngày (7-14 đ, loại lãi nhất không quá 1,8 lần loại ít nhất); gà ăn cám gà (chi thật ở Tạp Hóa), lợn ăn lúa; mini-game có trần thưởng để không thành máy in tiền. `tools/economy_report.gd` in báo cáo, `tools/make_crop_data.sh` sinh dữ liệu từ bảng giá |
 | Nâng cấp | Nhờ ông Bảy làm giúp (`E`, nút **Nhờ làm giúp**): mở rộng vườn (7 -> 10 hàng, thêm phía trên), dụng cụ tốt hơn (cuốc/gieo/thu hoạch 1 -> 2 -> 3 -> 6 ô mỗi lần; rê chuột trên vườn thì các ô sẽ bị tác động được viền vàng), mở rộng chuồng gà và chuồng lợn (4 -> 8 con), túi đồ lớn hơn (16 -> 32 ô). `UpgradeData` (`data/upgrades/`), `UpgradeManager` giữ cấp và việc mua, từng hệ thống tự áp hiệu lực qua EventBus; lưu cùng ván chơi |
+| Vịt, trâu, chó | Ao vịt (vịt ăn rau muống, đẻ 2 trứng vịt mỗi ngày) và máng trâu (trâu ăn rau muống, mỗi ngày cho 1 phân bón) dùng chung `LivestockPen` với gà, lợn. Phân bón là công cụ số 4: bón cho ô đang có cây thì thu hoạch thêm 1 nông sản. Chó Vàng (`PetDog`) chạy quanh sân, vuốt ve lần đầu mỗi ngày được một hạt giống hợp mùa |
+| Chợ ba sạp | Sạp rau chú Năm (thu mua nông sản và thực phẩm x0,6), sạp trứng thịt cô Ba (chỉ thu mua thực phẩm, giá cao hơn: x0,7), hàng xén cô Út (mỗi ngày ba loại hạt giống rẻ hơn Tạp Hóa: x0,9, không thu mua). Không cặp sạp nào tạo ra chênh lệch giá để kiếm lời |
+| Nấu ăn | Bếp lò trong nhà (`E`): 10 công thức (`RecipeData`, `data/recipes/`, sinh từ bảng trong `tools/make_food_data.sh`) biến nông sản, trứng, thịt thành món ăn; mỗi lần nấu mất 15-60 phút trong game. Món bán cho cô Ba được hơn nguyên liệu sống 10-35% |
+| Giặt đồ | Dây phơi cạnh nhà (`ClothesLine`): giặt tốn 1 xà phòng và 60 phút, phơi qua đêm, hôm sau thu đồ thì có "áo quần sạch" 3 ngày: lần trò chuyện đầu ngày với mỗi người được gấp đôi điểm thân thiết |
+| Lịch sinh hoạt | Mỗi dân làng có lịch theo giờ (`VillagerSchedule`, `data/schedules/`): ông Bảy tối ra Khu Giải trí, bé Tí 9-11 giờ ra chợ, cô Lan chiều ghé Tạp Hóa, chị Hạnh chiều ra Khu Giải trí. `MapBase.sync_villagers` đặt / cất NPC khi vào map và mỗi giờ, có thông báo khi ai đó đến hoặc đi; người đang được trò chuyện ở lại tới khi nói xong |
+| Ô ăn quan | Mini-game thứ ba ở Khu Giải trí, đấu với máy theo luật dân gian (rải quân, bốc tiếp, ăn và ăn liên tiếp, quan đáng 10 điểm). Luật nằm riêng trong `OAnQuanBoard` (không phụ thuộc giao diện), máy chọn nước ăn được nhiều nhất. Thắng 30 đ, hoà hoàn phí |
 | Nền đất theo mùa | Bốn sheet nền (Xuân, Hạ, Thu, Đông) cùng bố cục 8 ô; cỏ, đường, đất cuốc, nước đổi theo mùa của `TimeManager`, ô trong nhà giữ nguyên. Map vào đúng mùa đang chơi và vẽ lại khi sang mùa mới; vườn đổi tileset. Cây cối (chuối, tre, bụi hoa) được nhân màu theo mùa: Hạ đậm, Thu cam vàng, Đông xỉn lạnh. Sheet mùa ghép bằng `tools/compose_season_tiles.gd` |
 | Xếp lớp theo chiều sâu | Player là con của map hiện tại (SceneManager đưa Player về `world` trước khi dỡ map rồi vào map mới), map và view vườn bật y-sort: đi sau nhà, chuồng, cây thì bị che, đi trước thì đè lên. Gốc toạ độ của đồ vật và cây ở chân nên so sánh với chân Player |
 | Bản đồ | Sân nhà (viền rặng cây, đường đất bo góc, biển chỉ đường), trong nhà (giường), Tiệm Tạp Hóa, Chợ Quê, Khu Giải trí; chuyển map có hiệu ứng mờ; trạng thái map được nhớ |
 | Chăn nuôi | Chuồng gà (đẻ trứng mỗi ngày) và chuồng lợn (nuôi 5 ngày rồi xuất chuồng); mua con giống ở Tạp Hóa, thả vào chuồng, cho ăn (gà ăn cám gà mua ở Tạp Hóa, lợn ăn lúa), thu sản phẩm bằng phím `E`; chuồng được nhớ khi đổi map |
-| Mini-game | Quán Net (bắn mục tiêu), Quán Bida (canh lực); trả kết quả (tiền, thời gian) về thế giới chính |
+| Mini-game | Quán Net (bắn mục tiêu), Quán Bida (canh lực), Chiếu Ô ăn quan (đấu với máy); trả kết quả (tiền, thời gian) về thế giới chính |
 | Lưu/nạp | File JSON, ghi an toàn, tự lưu khi sang ngày mới, màn hình chính "Ván mới / Tiếp tục" |
 
 ## Kiến trúc
@@ -198,6 +204,12 @@ GODOT=/duong/dan/toi/godot bash tests/run_all.sh
 | `test_villagers` | Ảnh 6 khung, 5 lời thoại hợp lệ và id không trùng, vị trí và khung ảnh trong 4 map, nói chuyện bằng E (không có Mua bán), bé Tí đi dạo / dừng khi nói chuyện, quà gà giống của anh Hai |
 | `test_economy` | Lãi/ô/ngày của 12 cây trong khoảng mục tiêu và không ăn đứt, không chênh lệch giá để kiếm lời, gà/lợn hoàn vốn đủ nhanh, mini-game không vượt vườn đầy |
 | `test_upgrades` | Dữ liệu và giá (tổng chi, hoàn vốn <= 20 ngày), mua bán và lưu/nạp, dụng cụ nhiều ô, túi đồ đổi số ô, vườn mở rộng và dọn cây vướng, chuồng nhiều chỗ, bảng nâng cấp qua ông Bảy, ván mới |
+| `test_more_animals` | Dữ liệu và giá của vịt, trâu; phân bón (bón, thu thêm, lưu/nạp, công cụ số 4); ao vịt và máng trâu trong game; chó Vàng đi dạo và tha quà mỗi ngày một lần |
+| `test_market_stalls` | Ba sạp chợ: giờ mở, cô Ba chỉ mua thực phẩm giá cao hơn, cô Út ba loại hạt mỗi ngày rẻ hơn Tạp Hóa, không chênh lệch giá giữa các sạp, mua bán trong game |
+| `test_cooking` | 10 công thức hợp lệ, giá món so với nguyên liệu sống, không chênh lệch giá, thiếu nguyên liệu / túi đầy, bếp và bảng nấu ăn (thời gian trôi, tiếng xèo) |
+| `test_laundry` | Áo quần sạch gấp đôi điểm thân thiết trong 3 ngày, dây phơi (giặt, chờ khô, thu), nhớ qua đổi map và bản lưu |
+| `test_schedules` | 5 lịch hợp lệ và không chồng giờ, đến / đi theo giờ có thông báo, đang trò chuyện thì ở lại, vào map đúng người đúng giờ, sáng hôm sau về chỗ cũ |
+| `test_o_an_quan` | Luật chơi qua các thế cờ dựng sẵn, máy chọn nước ăn nhiều nhất, 30 ván ngẫu nhiên bảo toàn 70 điểm và đều kết thúc, giao diện và trạm chơi |
 | `test_save_load` | Lưu/nạp, file hỏng/sai phiên bản, tự lưu, menu Esc |
 | `test_minigames` | Thu phí, dừng đồng hồ, áp kết quả, hai mini-game, các trường hợp biên |
 | `test_start_menu` | Màn hình chính (3 pha, mô phỏng mở lại game) |
@@ -217,7 +229,7 @@ nên test không được nhắc tên class dùng autoload bằng `X.new()` hay 
 
 ## Hạn chế hiện tại và hướng phát triển
 
-- Âm thanh và nhạc nền là âm tổng hợp bằng mã (thay bằng file thật: `assets/audio/sfx/<id>.ogg`, `assets/audio/music/<mùa>.ogg`), mini-game chưa có tiếng riêng. Art do AI tạo nên mỗi ảnh có mật độ pixel hơi khác nhau (nhà được phóng 2 lần cho cân với Player); nhân vật chỉ có hoạt ảnh đi bộ, chưa có hoạt ảnh cuốc/gieo/thu hoạch.
-- Chưa có: nấu ăn, giặt đồ, vịt/trâu/chó (đã có ảnh trong assets/art/animals/farm_b.png), nhiều sạp ở Chợ, NPC theo lịch sinh hoạt (đi lại giữa các nơi theo giờ), bà cụ (khung 4 trong `villagers.png`) chưa có vai.
+- Âm thanh và nhạc nền là âm tổng hợp bằng mã (thay bằng file thật: `assets/audio/sfx/<id>.ogg`, `assets/audio/music/<mùa>.ogg`). Art do AI tạo nên mỗi ảnh có mật độ pixel hơi khác nhau (nhà, chuồng, ao được phóng 2 lần cho cân với Player); nhân vật có hoạt ảnh đi bộ và cuốc đất, chưa có hoạt ảnh gieo/thu hoạch.
+- Chưa có: câu cá, cây ăn quả, lễ hội theo mùa, thời tiết (đã có ảnh gốc trong `assets/art/source/batch3`); bà cụ (khung 4 trong `villagers.png`) chưa có vai; dân làng chuyển chỗ tức thì theo giờ chứ không đi bộ qua các map; vịt đứng cạnh ao chứ không bơi.
 - Giá, sản lượng và thưởng mini-game đã cân bằng theo mô hình lãi/ô/ngày (xem [docs/ECONOMY.md](docs/ECONOMY.md)), nhưng chưa được chỉnh bằng chơi thử thật.
 - Chỉ có một slot lưu thủ công và một slot tự lưu; chưa có cơ chế nâng cấp định dạng file lưu giữa các phiên bản.
